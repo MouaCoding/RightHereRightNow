@@ -5,31 +5,31 @@
     <item
         android:id="@+id/map_pin"
         android:enabled="true"
-        android:icon="@mipmap/map_pin_marked"
+        android:icon="@drawable/map_pin_marked"
         android:title="Maps"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/megaphone"
         android:enabled="true"
-        android:icon="@mipmap/megaphone"
+        android:icon="@drawable/megaphone"
         android:title="What is this?"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu"
         android:enabled="true"
-        android:icon="@mipmap/menu"
+        android:icon="@drawable/menu"
         android:title="Menu"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/music_social_group"
         android:enabled="true"
-        android:icon="@mipmap/music_social_group"
+        android:icon="@drawable/music_social_group"
         android:title="Social"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/identity_card"
         android:enabled="true"
-        android:icon="@mipmap/identity_card"
+        android:icon="@drawable/identity_card"
         android:title="ID"
         app:showAsAction="ifRoom" />
 </menu>
