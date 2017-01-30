@@ -13,5 +13,15 @@
         <include layout="@layout/profile_main_layout" />
     </android.support.v7.widget.RecyclerView>
 
+    <android.support.design.widget.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_navigation"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@color/colorAccent"
+        app:itemTextColor="@color/colorAccent"
+        app:menu="@menu/bottom_navigation_main"
+        android:layout_gravity="bottom" />
+
 
 </android.support.design.widget.CoordinatorLayout>

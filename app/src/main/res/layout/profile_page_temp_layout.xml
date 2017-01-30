@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,11 +18,11 @@
 
             <include layout="@layout/profile_main_layout" />
 
-            <view
-                android:id=""
+            <View
+                android:id="@+id/view3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:drawable/divider_horizontal_dark"
+                android:background="?android:attr/listDivider"
                 />
 
             <TextView
@@ -35,6 +36,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView3" />
+            
+            <android.support.design.widget.BottomNavigationView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bottom_navigation"
+                app:itemBackground="@color/colorPrimary"
+                app:itemIconTint="@color/colorAccent"
+                app:itemTextColor="@color/colorAccent"
+                app:menu="@menu/bottom_navigation_main"
+                android:layout_gravity="bottom" />
 
         </LinearLayout>
     </ScrollView>

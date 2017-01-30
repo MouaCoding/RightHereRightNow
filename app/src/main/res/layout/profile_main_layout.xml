@@ -5,20 +5,20 @@
 
     <include layout="@layout/profile_cover_layout"/>
 
-    <view
-        android:id=""
+    <View
+        android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:drawable/divider_horizontal_dark"
+        android:background="?android:attr/listDivider"
         />
 
     <include layout="@layout/profile_stats_layout"/>
 
-    <view
-        android:id=""
+    <View
+        android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:drawable/divider_horizontal_dark"
+        android:background="?android:attr/listDivider"
         />
 
     <include layout="@layout/profile_about_layout"/>
