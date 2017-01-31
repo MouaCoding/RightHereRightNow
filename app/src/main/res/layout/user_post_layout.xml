@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/background_light">
+
+    <include layout="@layout/user_mini_header_layout"
+        android:id="@+id/user_post_mini_head" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:text="This is an example of a post. Notice how there is text, and that it fills up some space here in the post."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_post_body"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Large" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_heart"
+            android:id="@+id/user_post_like_button"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="16dp"
+            android:layout_margin="4dp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?android:attr/listDivider"/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_comment_black_24dp"
+            android:id="@+id/user_post_comment_button"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="16dp"
+            android:layout_margin="4dp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?android:attr/listDivider"/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_share_black_24dp"
+            android:id="@+id/user_post_repost_button"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="16dp"
+            android:layout_margin="4dp" />
+    </LinearLayout>
+
+</LinearLayout>
