@@ -1,4 +1,4 @@
-package com.example.matt.RightHereRightNow;
+package com.example.rhrn.RightHereRightNow;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
