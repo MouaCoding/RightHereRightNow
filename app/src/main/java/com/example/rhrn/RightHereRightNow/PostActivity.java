@@ -1,4 +1,4 @@
-package com.example.matt.RightHereRightNow;
+package com.example.rhrn.RightHereRightNow;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,17 +6,16 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-public class SocialActivity extends AppCompatActivity {
+public class PostActivity extends MainActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_social);
+        setContentView(R.layout.activity_post);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -36,6 +35,7 @@ public class SocialActivity extends AppCompatActivity {
                             case R.id.megaphone:
                                 Intent intent2 = new Intent (getApplicationContext(), PostActivity.class);
                                 startActivity(intent2);
+                                finish();
                                 break;
                             case R.id.menu:
 
@@ -54,7 +54,7 @@ public class SocialActivity extends AppCompatActivity {
                 });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.post_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

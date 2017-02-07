@@ -3,4 +3,20 @@
     <string name="title_activity_social">SocialActivity</string>
     <string name="title_activity_post">PostActivity</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">Invalid email address.</string>
+    <string name="error_invalid_password">Incorrect Password. Please try again.</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."</string>
+    <string name="facebook_app_id">1862159977386608</string>
+    <string name="error_signin">"Error logging in."</string>
+
 </resources>

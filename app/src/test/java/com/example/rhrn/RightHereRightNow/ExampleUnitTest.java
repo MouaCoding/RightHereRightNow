@@ -1,4 +1,4 @@
-package com.example.matt.RightHereRightNow;
+package com.example.rhrn.RightHereRightNow;
 
 import org.junit.Test;
 
