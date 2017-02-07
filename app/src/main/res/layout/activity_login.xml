@@ -1,14 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.example.rhrn.RightHereRightNow.LoginActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.rhrn.RightHereRightNow.LoginActivity">
 
         <ProgressBar
             android:id="@+id/login_progress"
@@ -28,6 +29,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <!--LOGO-->
+                <ImageView
+                    android:layout_height="130dp"
+                    app:srcCompat="@mipmap/ic_launcher"
+                    android:id="@+id/app_name"
+                    android:layout_gravity="center"
+                    android:layout_width="160dp"
+                    android:layout_margin="20dp" />
+
+                <TextView
+                    android:text="Right Here Right Now"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:id="@+id/profile_name_main"
+                    android:textAlignment="center"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:layout_gravity="center" />
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"

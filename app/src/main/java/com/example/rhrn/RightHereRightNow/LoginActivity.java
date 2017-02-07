@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,10 +36,16 @@ import android.widget.Toast;
 import android.app.ProgressDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,13 +62,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
@@ -76,6 +76,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
     private Button buttonSignup;
+    private CallbackManager callbackManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    //attemptLogin();
+                    signIn();
                     return true;
                 }
                 return false;
@@ -130,8 +133,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void registerUser() //https://www.simplifiedcoding.net/android-firebase-tutorial-1/
     {
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        String email = mEmailView.getText().toString().trim();
+        String password = mPasswordView.getText().toString().trim();
 
         progressDialog.setMessage("Registering Please Wait...");
         progressDialog.show();
@@ -142,10 +145,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //checking if success
                         if(task.isSuccessful()){
-                            //display some message here
                             Toast.makeText(LoginActivity.this,"Successfully registered",Toast.LENGTH_LONG).show();
                         }else{
-                            //display some message here
                             Toast.makeText(LoginActivity.this,"Registration Error",Toast.LENGTH_LONG).show();
                         }
                         progressDialog.dismiss();
@@ -153,25 +154,67 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 });
     }
 
+    //Facebook register user
+    private void facebookRegister()
+    {
+        LoginButton loginButton = (LoginButton)findViewById(R.id.login_button);
+        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                signIn();
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+
+            }
+        });
+    }
+
     //added a sign in
     private void signIn()
     {
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        String email = mEmailView.getText().toString().trim();
+        String password = mPasswordView.getText().toString().trim();
+
+        //if empty
+        if (TextUtils.isEmpty(email)) {
+            //get the string from strings.xml and display it
+            mEmailView.setError(getString(R.string.error_field_required));
+            return;
+        } else if (!isEmailValid(email)) {
+            //if not empty then it's wrong data
+            mEmailView.setError(getString(R.string.error_invalid_email));
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            return;
+        } else if (!isEmailValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+        }
 
         progressDialog.setMessage("Logging in...");
         progressDialog.show();
+
 
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            finish();
                             Toast.makeText(LoginActivity.this,"Successfully Logged In",Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                         } else {
-
+                            Toast.makeText(LoginActivity.this,"Login Error",Toast.LENGTH_LONG).show();
                         }
                         progressDialog.dismiss();
                     }
