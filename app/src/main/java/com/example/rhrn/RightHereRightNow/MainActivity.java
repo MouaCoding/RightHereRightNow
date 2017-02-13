@@ -1,19 +1,37 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
+    MainPagerAdapter pagerAdapter;
+    ViewPager mainViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile_page_temp_layout);
+        setContentView(R.layout.activity_main);
+
+        // populate fragments
+        pagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+
+        // populate pager with fragments
+        ViewPager pager = (ViewPager) findViewById(R.id.main_content_view_pager);
+//        pager.setAdapter();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
@@ -24,34 +42,58 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem bottom_navigation) {
                         switch (bottom_navigation.getItemId()) {
                             case R.id.map_pin:
-                                //do something when user clicks on each
-                                Intent intent1 = new Intent (getApplicationContext(), MapsActivity.class);
-                                startActivity(intent1);
+                                mainViewPager.setCurrentItem(0, true);
                                 break;
                             case R.id.megaphone:
-                                Intent intent2 = new Intent (getApplicationContext(), PostActivity.class);
-                                startActivity(intent2);
+                                mainViewPager.setCurrentItem(1, true);
                                 break;
                             case R.id.menu:
-
+                                //
                                 break;
                             case R.id.music_social_group:
-                                Intent intent4 = new Intent (getApplicationContext(), SocialActivity.class);
-                                startActivity(intent4);
+                                mainViewPager.setCurrentItem(3, true);
                                 break;
                             case R.id.identity_card:
-                                Intent intent5 = new Intent (getApplicationContext(), MainActivity.class);
-                                startActivity(intent5);
+                                mainViewPager.setCurrentItem(4, true);
                                 break;
                         }
                         return true;
                     }
                 });
-
-
-
     }
 
+    private class MainPagerAdapter extends FragmentStatePagerAdapter {
+        private static final int NUM_PAGES = 5;
 
+        public MainPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    // return map fragment
+                    break;
+                case 1:
+                    // return posts fragment
+                    break;
+                case 2:
+                    // return middle button fragment?
+                    break;
+                case 3:
+                    // return something?
+                    break;
+                case 4:
+                    return new ProfilePageFragment();// return profile page fragment
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
+    }
 
 }

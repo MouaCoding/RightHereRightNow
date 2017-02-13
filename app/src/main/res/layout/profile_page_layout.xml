@@ -1,27 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <include layout="@layout/profile_app_bar_layout"/>
-
-    <android.support.v7.widget.RecyclerView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <include layout="@layout/profile_main_layout" />
-    </android.support.v7.widget.RecyclerView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <android.support.design.widget.BottomNavigationView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bottom_navigation"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/colorAccent"
-        app:itemTextColor="@color/colorAccent"
-        app:menu="@menu/bottom_navigation_main"
-        android:layout_gravity="bottom" />
+            <include layout="@layout/profile_main_layout" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                />
 
-</android.support.design.widget.CoordinatorLayout>
+            <TextView
+                android:text="Events"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"
+                android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                android:layout_margin="8dp" />
+
+            <include layout="@layout/event_mini_layout"/>
+
+            <TextView
+                android:text="Posts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"
+                android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                android:layout_margin="8dp" />
+
+            <include layout="@layout/user_post_framed_layout"/>
+
+            <include layout="@layout/user_post_framed_layout"/>
+
+            <include layout="@layout/user_post_framed_layout"/>
+
+            <ProgressBar
+                style="@android:style/Widget.Material.Light.ProgressBar.Large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBar2"
+                android:indeterminate="true" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

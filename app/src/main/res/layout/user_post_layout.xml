@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/background_light">
+    android:background="@android:color/background_light"
+    android:layout_gravity="center">
 
     <include layout="@layout/user_mini_header_layout"
         android:id="@+id/user_post_mini_head" />
