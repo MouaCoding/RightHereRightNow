@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     //Added
     private FirebaseAuth firebaseAuth;
-    private ProgressDialog progressDialog;
+    public ProgressDialog progressDialog;
     private Button buttonSignup;
     private CallbackManager callbackManager;
 
@@ -120,7 +120,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                registerUser();
+
+                Intent intent = new Intent (getApplicationContext(), RegisterActivity.class);
+                startActivity(intent);
+                //registerUser();
             }
         });
 
@@ -129,8 +132,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    //Added a register button function
-    private void registerUser() //https://www.simplifiedcoding.net/android-firebase-tutorial-1/
+/*    //Added a register button function
+    public void registerUser() //https://www.simplifiedcoding.net/android-firebase-tutorial-1/
     {
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString().trim();
@@ -152,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         progressDialog.dismiss();
                     }
                 });
-    }
+    }*/
 
     //Facebook register user
     private void facebookRegister()
@@ -455,7 +458,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             signIn();
 
             // TODO: register the new account here.
-            registerUser();
+            //registerUser();
 
             return true;
         }
