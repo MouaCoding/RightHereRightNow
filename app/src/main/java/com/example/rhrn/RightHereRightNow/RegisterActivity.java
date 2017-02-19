@@ -77,7 +77,7 @@ public class RegisterActivity extends LoginActivity {
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         //TODO: this only saves one user right now, need to implement an efficient algorithm
         // to save tons of user and have fast access to each one.
-        DatabaseReference user = RootRef.child("User");
+        DatabaseReference user = RootRef.child("User").push();
         /*Map<String, Object> data = new HashMap<String,Object>();
         data.put("Email: ", email);
         data.put("Password: ", password);
