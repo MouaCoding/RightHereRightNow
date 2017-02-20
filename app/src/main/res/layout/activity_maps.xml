@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,15 +6,15 @@
     android:orientation="vertical">
 
     <!-- Top or Bottom? -->
-        <android.support.design.widget.BottomNavigationView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/bottom_navigation"
-            app:itemBackground="@color/colorPrimary"
-            app:itemIconTint="@color/colorAccent"
-            app:itemTextColor="@color/colorAccent"
-            app:menu="@menu/bottom_navigation_main"
-            android:layout_gravity="bottom" />
+    <android.support.design.widget.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/top_navigation"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@color/colorAccent"
+        app:itemTextColor="@color/colorAccent"
+        app:menu="@menu/top_navigation_menu"
+        android:layout_gravity="top" />
 
         <fragment
             android:id="@+id/map"
@@ -23,4 +23,13 @@
             android:layout_height="match_parent"
             tools:context="com.example.rhrn.RightHereRightNow.MapsActivity" />
 
-    </LinearLayout>
+    <android.support.design.widget.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_navigation"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@color/colorAccent"
+        app:itemTextColor="@color/colorAccent"
+        app:menu="@menu/bottom_navigation_main"
+        android:layout_gravity="bottom" />
+    </FrameLayout>

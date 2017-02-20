@@ -1,6 +1,7 @@
 
 package com.example.rhrn.RightHereRightNow;
 
+import android.*;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -92,6 +94,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -199,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_field_required));
             return;
-        } else if (!isEmailValid(password)) {
+        } else if (!isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
         }
 
@@ -470,12 +473,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                finish();
-                Intent intent = new Intent (getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                //finish();
+                //Intent intent = new Intent (getApplicationContext(), MainActivity.class);
+                //startActivity(intent);
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                //mPasswordView.setError(getString(R.string.error_incorrect_password));
+                //mPasswordView.requestFocus();
             }
         }
 

@@ -2,16 +2,24 @@ package com.example.rhrn.RightHereRightNow;
 
 import android.*;
 import android.Manifest;
+import android.animation.IntEvaluator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 
@@ -25,6 +33,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -32,8 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        ActivityCompat.OnRequestPermissionsResultCallback
-        {
+        ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int INITIAL_REQUEST=1337;
     private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
@@ -44,11 +53,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double longitude;
     private double latitude;
     private LocationRequest mLocationRequest;
+    private int radius = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -119,7 +130,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Location services connected.");
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){// && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            //&& ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //if no access, then request access.
             ActivityCompat.requestPermissions(MapsActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
@@ -180,7 +192,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .title("My Location");
         mMap.addMarker(options);
         //zoom in to 15, (10 is city view), but want user view.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+
+
+        final Circle circle = mMap.addCircle(new CircleOptions()
+                .center(new LatLng(currentLatitude,currentLongitude))
+                .strokeColor(Color.CYAN)
+                .radius(radius));
+
+        ValueAnimator vAnimator = new ValueAnimator();
+        vAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        vAnimator.setRepeatMode(ValueAnimator.RESTART);
+        //TODO: Implement radius change where user wants to change radius.
+        //radius can be changed.
+        vAnimator.setIntValues(0, radius);
+        //This sets how long you want the duration of animation to be.
+        vAnimator.setDuration(4000);
+        vAnimator.setEvaluator(new IntEvaluator());
+        vAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float animatedFraction = valueAnimator.getAnimatedFraction();
+                // Log.e("", "" + animatedFraction);
+                circle.setRadius(animatedFraction * radius);
+            }
+        });
+        vAnimator.start();
+
     }
 
 }
