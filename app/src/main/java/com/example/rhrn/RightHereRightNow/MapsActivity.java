@@ -32,7 +32,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+        ActivityCompat.OnRequestPermissionsResultCallback
+        {
 
     private static final int INITIAL_REQUEST=1337;
     private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
@@ -52,7 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        //mMap.setMyLocationEnabled(true);
+
 
         //Initializing googleApiClient
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -67,7 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
-        //onMapReady(mMap);
+
+
     }
 
     /**
@@ -86,48 +88,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).draggable(true).title("Marker in Sydney"));
+        //LatLng sydney = new LatLng(-34, 151);
+        //mMap.addMarker(new MarkerOptions().position(sydney).draggable(true).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
-        /*mMap.clear();
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //mMap.setMyLocationEnabled(true);
-            ActivityCompat.requestPermissions(MapsActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-            return;
-        }
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        handleNewLocation(location);*/
 
     }
+            @Override
+            public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+                switch (requestCode) {
+                    //Case 1 is Access_Fine_Location
+                    case 1: {
+                        //Permission granted
+                        if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                            //set location to my current location
+                            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                            if (location == null) {
+                                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                            }
+                            else {
+                                //set the map to the current location
+                                handleNewLocation(location);
+                            }
+                        }
+                    }
+                }
+            }
 
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Location services connected.");
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //mMap.setMyLocationEnabled(true);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){// && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //if no access, then request access.
             ActivityCompat.requestPermissions(MapsActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
             return;
         }
-        //mMap.setMyLocationEnabled(true);
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        else {
-            handleNewLocation(location);
-        }
-        /*longitude = location.getLongitude();
-        latitude = location.getLatitude();
+        //App then calls onRequestPermissionsResult
 
-
-        LatLng latlng = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(latlng).title("My Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
-*/
     }
 
     @Override
@@ -151,19 +150,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
         mGoogleApiClient.connect();
     }
 
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));            }
-        }
-    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -187,9 +176,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
-                .title("I am here!");
+                .draggable(true)
+                .title("My Location");
         mMap.addMarker(options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //zoom in to 15, (10 is city view), but want user view.
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
     }
 
 }

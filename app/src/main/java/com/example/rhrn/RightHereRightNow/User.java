@@ -6,7 +6,7 @@ package com.example.rhrn.RightHereRightNow;
 public class User
 {
     public String FirstName,LastName,Email,Phone,Address,City,State;
-    public String fullName = FirstName + " " + String.valueOf(LastName);
+    public String fullName;
 
     private String Password;
 
@@ -33,10 +33,12 @@ public class User
     {
         FirstName=aFirstName;
         LastName=aLastName;
+        fullName = FirstName + " " + String.valueOf(LastName);
         Email=aEmail;
         Password = aPassword;
         Address=aAddress;
         City=aCity;
         State=aState;
     }
+
 }
