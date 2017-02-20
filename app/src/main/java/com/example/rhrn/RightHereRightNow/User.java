@@ -5,9 +5,10 @@ package com.example.rhrn.RightHereRightNow;
  */
 public class User
 {
-    public String FirstName,LastName,Email,Password,Phone,Address,City,State;
+    public String FirstName,LastName,Email,Phone,Address,City,State;
     public String fullName = FirstName + " " + String.valueOf(LastName);
 
+    private String Password;
 
     public User(String aEmail, String fullname)
     {

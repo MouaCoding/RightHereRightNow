@@ -212,9 +212,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            finish();
+                            //TODO:Retrieve user information, and then move to MapsActivity
+                            // getUserData();
                             Toast.makeText(LoginActivity.this,"Successfully Logged In",Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                             startActivity(intent);
                         } else {
                             Toast.makeText(LoginActivity.this,"Login Error",Toast.LENGTH_LONG).show();

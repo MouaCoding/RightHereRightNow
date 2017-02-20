@@ -47,18 +47,13 @@ public class RegisterActivity extends LoginActivity {
         last_name = (EditText)findViewById(R.id.last_name);
         user_email = (EditText)findViewById(R.id.register_email);
         user_password = (EditText)findViewById(R.id.register_password);
-        //etCPassword = (EditText)findViewById(R.id.etCPassword);
         user_phone = (EditText)findViewById(R.id.register_phone);
         user_address = (EditText)findViewById(R.id.register_address);
         user_city = (EditText)findViewById(R.id.register_city);
         user_state = (EditText) findViewById(R.id.register_state);
 
-        //DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-        //DatabaseReference userNameRef = RootRef.child("User Name");
         firebaseAuth = FirebaseAuth.getInstance();
 
-
-        //registerUser();
     }
 
     private void saveData()
@@ -76,15 +71,9 @@ public class RegisterActivity extends LoginActivity {
 
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         //TODO: this only saves one user right now, need to implement an efficient algorithm
-        // to save tons of user and have fast access to each one.
+        // to save many user and have fast access to each one.
         DatabaseReference user = RootRef.child("User").push();
-        /*Map<String, Object> data = new HashMap<String,Object>();
-        data.put("Email: ", email);
-        data.put("Password: ", password);
-        data.put("Phone: ", phone);
-        data.put("Address: ", address);
-        data.put("City: ", city);
-        data.put("State: ", state);*/
+        //TODO: Add a new child to the User child, this child would be "Posts"
         user.setValue(fullname);
 
         user.child(fullname).setValue(new User(firstName,lastName,email,password,phone,address,city,state));//data);
@@ -95,34 +84,6 @@ public class RegisterActivity extends LoginActivity {
     {
         String email = user_email.getText().toString().trim();
         String password = user_password.getText().toString().trim();
-        /*String firstName = first_name.getText().toString().trim();
-        String lastName = last_name.getText().toString().trim();
-        String fullname = firstName + " " + String.valueOf(lastName);
-        //fullname = firstName.concat(String.valueOf(lastName));
-        String email = user_email.getText().toString().trim();
-        String password = user_password.getText().toString().trim();
-        String phone = user_phone.getText().toString().trim();
-        String address = user_address.getText().toString().trim();
-        String city = user_city.getText().toString().trim();
-        String state = user_state.getText().toString().trim();
-
-        DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-        //TODO: this only saves one user right now, need to implement an efficient algorithm
-        // to save tons of user and have fast access to each one.
-        DatabaseReference user = RootRef.child("User");
-//        user.setValue(fullname);
-        Map<String, Object> data = new HashMap<String,Object>();
-        data.put("Email: ", email);
-        data.put("Password: ", password);
-        data.put("Phone: ", phone);
-        data.put("Address: ", address);
-        data.put("City: ", city);
-        data.put("State: ", state);
-        user.setValue(fullname);
-
-        user.child(fullname).setValue(new User(firstName,lastName,email,password,phone,address,city,state));//data);
-        user.child(firstName).setValue(data);*/
-
 
         progressDialog.setMessage("Registering Please Wait...");
         progressDialog.show();
