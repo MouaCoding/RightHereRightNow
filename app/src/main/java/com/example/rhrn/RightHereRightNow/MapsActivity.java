@@ -1,6 +1,5 @@
 package com.example.rhrn.RightHereRightNow;
 
-import android.*;
 import android.Manifest;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
@@ -20,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.EditText;
 import android.widget.Toast;
 
 
@@ -38,22 +38,38 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
+    //Google maps current location variables
     private static final int INITIAL_REQUEST=1337;
     private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    //google map to load
     private GoogleMap mMap;
+
+    //displays the messages of the map's action
     public static final String TAG = MapsActivity.class.getSimpleName();
+
+    //Variable for the api client
     private GoogleApiClient mGoogleApiClient;
+
+    //longitude and latitude of location
     private double longitude;
     private double latitude;
     private LocationRequest mLocationRequest;
+
+    //Radius of the User's circle
     private int radius = 100;
+
+    private static final int REQUEST_LOCATION = 1;
+    private EditText view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +80,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
 
         //Initializing googleApiClient
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -107,10 +122,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
             @Override
             public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+                //Checks the permissions of user
                 switch (requestCode) {
                     //Case 1 is Access_Fine_Location
                     case 1: {
-                        //Permission granted
+                        //Permission granted for current location
                         if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                             //set location to my current location
                             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -134,7 +150,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //&& ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //if no access, then request access.
             ActivityCompat.requestPermissions(MapsActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+                    new String[]{ACCESS_FINE_LOCATION},1);
             return;
         }
         //App then calls onRequestPermissionsResult
@@ -175,39 +191,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location)
+    {
         handleNewLocation(location);
     }
 
     private void handleNewLocation(Location location) {
         Log.d(TAG, location.toString());
 
+        //Set the latitude and longitude to the current location
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
+        //set the options of the marker
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
                 .draggable(true)
                 .title("My Location");
+
+        //Add the marker with the options to the map
         mMap.addMarker(options);
+
         //zoom in to 15, (10 is city view), but want user view.
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
 
-
+        //Create a circle around the marker with the options
         final Circle circle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(currentLatitude,currentLongitude))
                 .strokeColor(Color.CYAN)
                 .radius(radius));
 
+        //Animate the circle outward to create a beacon-like location
         ValueAnimator vAnimator = new ValueAnimator();
+        //Repeat the animation forever
         vAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        //Once animation ends, repeat it
         vAnimator.setRepeatMode(ValueAnimator.RESTART);
         //TODO: Implement radius change where user wants to change radius.
         //radius can be changed.
         vAnimator.setIntValues(0, radius);
         //This sets how long you want the duration of animation to be.
         vAnimator.setDuration(4000);
+        //function calls to interpolate the animation
         vAnimator.setEvaluator(new IntEvaluator());
         vAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -218,8 +244,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 circle.setRadius(animatedFraction * radius);
             }
         });
+        //Begin the animation
         vAnimator.start();
 
     }
+
 
 }
