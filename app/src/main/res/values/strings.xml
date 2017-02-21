@@ -26,4 +26,18 @@
     <string name="error_signin">"Error logging in."</string>
     <string name="forgot_password">Forgot?</string>
 
+    <!-- Strings related to events-->
+    <string name="event_name">Event Name: </string>
+    <string name="event_start_date">Start Date: </string>
+    <string name="event_end_date">End Date: </string>
+    <string name="event_start_time">Start TIme: </string>
+    <string name="event_end_time">End Time: </string>
+    <string name="event_address">Address: </string>
+    <string name="event_private">Private Event </string>
+    <string name="event_location">Location </string>
+    <string name="event_description">Description </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

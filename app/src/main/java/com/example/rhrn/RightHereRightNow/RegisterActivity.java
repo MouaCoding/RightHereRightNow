@@ -72,8 +72,14 @@ public class RegisterActivity extends LoginActivity {
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         //TODO: this only saves one user right now, need to implement an efficient algorithm
         // to save many user and have fast access to each one.
+            // BB: Can have individual users and then have each post or event correspond to both a user
+            // and a different post (in reply) or as its own "base" post
+            // Will be able to search for post by userID :)
+
         DatabaseReference user = RootRef.child("User").push();
         //TODO: Add a new child to the User child, this child would be "Posts"
+            // BB: see above
+
         user.setValue(fullname);
 
         user.child(fullname).setValue(new User(firstName,lastName,email,password,phone,address,city,state));//data);

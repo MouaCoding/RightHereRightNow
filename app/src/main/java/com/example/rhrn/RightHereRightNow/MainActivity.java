@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
                     // return map fragment
                     break;
                 case 1:
-                    // return posts fragment
+                    // return posts and event fragment
+                    // return new EventFragment();
                     break;
                 case 2:
                     // return middle button fragment?
