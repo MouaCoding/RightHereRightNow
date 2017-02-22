@@ -30,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
 
         // populate pager with fragments
-        ViewPager pager = (ViewPager) findViewById(R.id.main_content_view_pager);
-//        pager.setAdapter();
+        mainViewPager = (ViewPager) findViewById(R.id.main_content_view_pager);
+        mainViewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.bottom_navigation);
+                findViewById(R.id.main_bottom_navigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -74,14 +74,16 @@ public class MainActivity extends AppCompatActivity {
             switch (position) {
                 case 0:
                     // return map fragment
-                    break;
+                    return new MapsFragment();
+                    // break;
                 case 1:
                     // return posts and event fragment
-                    // return new EventFragment();
-                    break;
+                    return new ProfilePageFragment();
+                    // break;
                 case 2:
                     // return middle button fragment?
-                    break;
+                    return new EventFragment();
+                    // break;
                 case 3:
                     // return something?
                     break;
@@ -93,7 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return NUM_PAGES;
+            return 2;
+//            return NUM_PAGES;
+            // TODO make it work for all 5
         }
     }
 
