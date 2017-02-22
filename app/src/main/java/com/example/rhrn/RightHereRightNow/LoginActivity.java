@@ -1,7 +1,6 @@
 
 package com.example.rhrn.RightHereRightNow;
 
-import android.*;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -54,6 +53,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>  {
@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -74,9 +75,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
-    //Added
+    //Firebase authentication object
     private FirebaseAuth firebaseAuth;
+
+    //process dialog to display to user
     public ProgressDialog progressDialog;
+
+    //Signup button
     private Button buttonSignup;
     private CallbackManager callbackManager;
 
@@ -90,18 +95,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Setup a Firebase object
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
+
+        //Sets the buttonSignup button to the register button on the xml layout
         buttonSignup = (Button) findViewById(R.id.register_button);
 
+        //set email object to user's text input
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+
+        //populate permissions
         populateAutoComplete();
 
-
+        //Set password
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    //attemptLogin();
+                    //If login mactches
                     signIn();
                     return true;
                 }
@@ -109,16 +119,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //attemptLogin();
                 signIn();
             }
         });
 
+        //If register button is clicked, switches activity to RegisterActivity
         Button registerButton = (Button) findViewById(R.id.register_button);
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -126,7 +135,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 Intent intent = new Intent (getApplicationContext(), RegisterActivity.class);
                 startActivity(intent);
-                //registerUser();
             }
         });
 
@@ -183,13 +191,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
     }
 
-    //added a sign in
+    //added a sign in function
     private void signIn()
     {
         String email = mEmailView.getText().toString().trim();
         String password = mPasswordView.getText().toString().trim();
 
-        //if empty
+        //if empty email, display error
         if (TextUtils.isEmpty(email)) {
             //get the string from strings.xml and display it
             mEmailView.setError(getString(R.string.error_field_required));
@@ -199,30 +207,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_invalid_email));
         }
 
+        //if password is empty
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_field_required));
             return;
         } else if (!isPasswordValid(password)) {
+            //if password is incorrect
             mPasswordView.setError(getString(R.string.error_invalid_password));
         }
 
+        //Displays the process display of logging in
         progressDialog.setMessage("Logging in...");
         progressDialog.show();
 
-
+        //Authenticate with firebase backend
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //TODO:Retrieve user information, and then move to MapsActivity
-                            // getUserData();
+                            //if successfully logs in, displays success,
                             Toast.makeText(LoginActivity.this,"Successfully Logged In",Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                         } else {
+                            //if failed, display error message
                             Toast.makeText(LoginActivity.this,"Login Error",Toast.LENGTH_LONG).show();
                         }
+                        //once done, process dialog disappears
                         progressDialog.dismiss();
                     }
                 });
@@ -236,6 +248,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         getLoaderManager().initLoader(0, null, this);
     }
 
+
+    //Function to request to use contacts from user
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -269,9 +283,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 populateAutoComplete();
             }
         }
+        //TODO: add Request location
     }
 
 
+    //May delete this function since it is part of default activity
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -334,6 +350,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return password.length() > 4;
     }
 
+    //May delete this function
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -487,6 +504,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+
     }
 }
 

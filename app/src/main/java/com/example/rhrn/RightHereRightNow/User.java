@@ -5,6 +5,7 @@ package com.example.rhrn.RightHereRightNow;
  */
 public class User {
 
+    //User's information is public to be stored in the database
     public String   FirstName,
                     LastName,
                     Email,
@@ -15,8 +16,10 @@ public class User {
 
     public String   fullName;
 
+    //Private password to not allow storage
     private String Password;
 
+    //Copy constructor to assign email to a user's full name
     public User(String aEmail, String fullname) {
         Email       = aEmail;
         fullName    = fullname;

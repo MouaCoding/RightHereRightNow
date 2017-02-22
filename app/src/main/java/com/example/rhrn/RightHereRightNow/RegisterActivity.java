@@ -27,14 +27,25 @@ import static com.example.rhrn.RightHereRightNow.R.id.register_email;
 
 public class RegisterActivity extends LoginActivity {
 
-    private EditText first_name, last_name, user_email, user_password, user_phone, user_address, user_city, user_state;
+    private EditText    first_name,
+                        last_name,
+                        user_email,
+                        user_password,
+                        user_phone,
+                        user_address,
+                        user_city,
+                        user_state;
+
+    //Button for when user fills in the texts and then clicks on button
     private Button button;
+    //create firebase auth object to store into database
     private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        //When user clicks the button, calls function registerUser();
         button = (Button) findViewById(R.id.register);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +54,7 @@ public class RegisterActivity extends LoginActivity {
             }
         });
 
+        //Initializes each text view to the class's objects
         first_name = (EditText)findViewById(R.id.first_name);
         last_name = (EditText)findViewById(R.id.last_name);
         user_email = (EditText)findViewById(R.id.register_email);
@@ -53,11 +65,12 @@ public class RegisterActivity extends LoginActivity {
         user_state = (EditText) findViewById(R.id.register_state);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
     }
 
+    //Function to save the data onto firebase
     private void saveData()
     {
+        //Convert all user inputs to string values
         String firstName = first_name.getText().toString().trim();
         String lastName = last_name.getText().toString().trim();
         String fullname = firstName + " " + String.valueOf(lastName);
@@ -69,6 +82,7 @@ public class RegisterActivity extends LoginActivity {
         String city = user_city.getText().toString().trim();
         String state = user_state.getText().toString().trim();
 
+        //Create a root reference of database onto the JSON tree provided by firebase
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         //TODO: this only saves one user right now, need to implement an efficient algorithm
         // to save many user and have fast access to each one.
@@ -76,24 +90,30 @@ public class RegisterActivity extends LoginActivity {
             // and a different post (in reply) or as its own "base" post
             // Will be able to search for post by userID :)
 
+        //Create a user reference which is a child of the Root, also generates a unique id per user
         DatabaseReference user = RootRef.child("User").push();
         //TODO: Add a new child to the User child, this child would be "Posts"
             // BB: see above
 
+        //Set the user reference to the user's name
         user.setValue(fullname);
 
+        //store and set the values associated with the user
         user.child(fullname).setValue(new User(firstName,lastName,email,password,phone,address,city,state));//data);
     }
 
     //Added a register button function
     public void registerUser() //https://www.simplifiedcoding.net/android-firebase-tutorial-1/
     {
+        //Init email and password into Strings
         String email = user_email.getText().toString().trim();
         String password = user_password.getText().toString().trim();
 
+        //Once register button is clicked, will display a progress dialog
         progressDialog.setMessage("Registering Please Wait...");
         progressDialog.show();
 
+        //calls firebase auth to create user email and password and store to authentication
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -103,6 +123,7 @@ public class RegisterActivity extends LoginActivity {
                         if(task.isSuccessful()){
                             saveData();
                             Toast.makeText(RegisterActivity.this,"Successfully registered",Toast.LENGTH_LONG).show();
+                            //Once successfully registered, changes activity to the login activity
                             Intent goBackToLogin = new Intent (getApplicationContext(), LoginActivity.class);
                             startActivity(goBackToLogin);
                         }else{
