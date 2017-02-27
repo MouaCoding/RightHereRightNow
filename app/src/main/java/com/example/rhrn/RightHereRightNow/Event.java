@@ -51,7 +51,7 @@ public class Event {
         RSVPs       = aRSVPs;
     }
 
-    public String getEventName() {
+/*    public String getEventName() {
         return EventName;
     }
 
@@ -85,4 +85,5 @@ public class Event {
     public int getRSVPs() {
         return RSVPs;
     }
+    */
 }
