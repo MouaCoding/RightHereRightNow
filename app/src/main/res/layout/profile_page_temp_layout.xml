@@ -34,7 +34,7 @@
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:layout_margin="8dp" />
 
-            <include layout="@layout/event_mini_layout"/>
+            <include layout="@layout/create_event_page_layout"/>
 
             <TextView
                 android:text="Posts"

@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                                 mainViewPager.setCurrentItem(1, true);
                                 break;
                             case R.id.menu:
-                                //
+                                mainViewPager.setCurrentItem(2, true);
                                 break;
                             case R.id.music_social_group:
                                 mainViewPager.setCurrentItem(3, true);
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     // break;
                 case 2:
                     // return middle button fragment?
-                    return new EventFragment();
+                    return new CreatePostOrEventTempShim();
                     // break;
                 case 3:
                     // return something?
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
 //            return NUM_PAGES;
             // TODO make it work for all 5
         }
