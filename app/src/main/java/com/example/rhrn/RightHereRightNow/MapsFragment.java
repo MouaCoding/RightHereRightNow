@@ -13,11 +13,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,6 +29,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -42,8 +46,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         LocationListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final int INITIAL_REQUEST=1337;
-    private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
+    private static final int LOCATIONS_PERMISSION = 0;
+    private static final int INITIAL_REQUEST = 1337;
+    private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private GoogleMap mMap;
     private MapView mapView;
@@ -56,12 +61,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup r = (ViewGroup) inflater.inflate(R.layout.activity_maps, container, false);
+        View r = (View) inflater.inflate(R.layout.activity_maps, container, false);
 
-        mapView = new MapView(getActivity());
-        mapView.getMapAsync(this);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        //mapView = new MapView(getActivity());
+        //mapView.getMapAsync(this);
 
-        r.addView(mapView);
+        //r.addView(mapView);
         // restore any state here if necessary
 
         return r;
@@ -106,49 +113,27 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);
         //mMap.addMarker(new MarkerOptions().position(sydney).draggable(true).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
 
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            //Case 1 is Access_Fine_Location
-            case 1: {
-                //Permission granted
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //set location to my current location
-                    Location location = null;
-                    try {
-                        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                    } catch (Exception e) {}
-                    if (location == null) {
-                        try {
-                            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-                        } catch (Exception e) {}
-                    } else {
-                        //set the map to the current location
-                        handleNewLocation(location);
-                    }
-                }
-            }
-        }
     }
 
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Location services connected.");
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            //&& ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //if no access, then request access.
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-            return;
-        }
-        //App then calls onRequestPermissionsResult
 
+        //if app has permission to use current location,
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            //finds the current location
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location == null) {
+                //if it cannot, then it requests for the location from client
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            } else {
+                //set the map to the current location
+                handleNewLocation(location);
+            }
+        }
     }
 
     @Override

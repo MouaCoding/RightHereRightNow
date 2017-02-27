@@ -50,7 +50,7 @@ public class User {
         State       = aState;
     }
 
-    public String getFirstName() {
+    /*public String getFirstName() {
         return FirstName;
     }
 
@@ -76,5 +76,5 @@ public class User {
 
     public String getState() {
         return State;
-    }
+    }*/
 }
