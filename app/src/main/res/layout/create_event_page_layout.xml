@@ -131,7 +131,30 @@
                 android:layout_marginTop="13dp"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="Name" />
+                android:text="@string/event_description_box" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="@string/event_name_box"
+                android:ems="10"
+                android:id="@+id/event_name"
+                android:layout_marginStart="18dp"
+                android:layout_alignBaseline="@+id/event_n"
+                android:layout_alignBottom="@+id/event_n"
+                android:layout_toEndOf="@+id/event_n" />
+
+            <Button
+                android:text="@string/event_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/create_event_confirm"
+                android:layout_below="@+id/event_des"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="13dp" />
+                <!-- android:onClick="createEvent" -->
+
 
         </RelativeLayout>
     </ScrollView>

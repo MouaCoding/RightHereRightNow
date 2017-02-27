@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 
 public class Event {
-    private String  EventName,
+    public String   EventName,
                     OwnerID,
                     StartDate,
                     EndDate,
@@ -19,16 +19,16 @@ public class Event {
     //  TODO: BB: Change dates and times to type Date
     // BB: we also might need some sort of unique event ID
 
-    private LatLng  Coordinates;
+    public double   Latitude,
+                    Longitude,
+                    ViewRadius;
 
-    private double  ViewRadius;
-
-    private int     Likes,
+    public int      Likes,
                     Comments,
                     RSVPs;
 
     public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
-                 String aEndTime, String aAddress, String aDescription, LatLng aCoordinate,
+                 String aEndTime, String aAddress, String aDescription, double aLat, double aLong,
                  double aViewRadius, int aLikes, int aComments, int aRSVPs) {
         EventName   = aName;
         OwnerID     = aOwner;
@@ -41,7 +41,8 @@ public class Event {
         Address     = aAddress;
         Description = aDescription;
 
-        Coordinates = aCoordinate;
+        Latitude    = aLat;
+        Longitude   = aLong;
 
         ViewRadius  = aViewRadius;
 
@@ -63,7 +64,7 @@ public class Event {
     }
 
     public LatLng getCoordinates() {
-        return Coordinates;
+        return new LatLng(Latitude, Longitude);
     }
 
     public double getViewRadius() {

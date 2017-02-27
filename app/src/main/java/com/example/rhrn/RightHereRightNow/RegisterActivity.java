@@ -92,8 +92,6 @@ public class RegisterActivity extends LoginActivity {
 
         //Create a user reference which is a child of the Root, also generates a unique id per user
         DatabaseReference user = RootRef.child("User").push();
-        //TODO: Add a new child to the User child, this child would be "Posts"
-            // BB: see above
 
         //Set the user reference to the user's name
         user.setValue(fullname);
