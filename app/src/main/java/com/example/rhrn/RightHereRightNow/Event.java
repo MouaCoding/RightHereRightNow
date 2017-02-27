@@ -8,82 +8,105 @@ import com.google.android.gms.maps.model.LatLng;
  */
 
 public class Event {
-    public String   EventName,
-                    OwnerID,
-                    StartDate,
-                    EndDate,
-                    StartTime,
-                    EndTime,
-                    Address,
-                    Description;
+
+    public String   eventName,
+                    ownerID,
+                    startDate,
+                    endDate,
+                    startTime,
+                    endTime,
+                    address,
+                    description;
     //  TODO: BB: Change dates and times to type Date
     // BB: we also might need some sort of unique event ID
 
-    public double   Latitude,
-                    Longitude,
-                    ViewRadius;
+    public double   latitude,
+                    longitude,
+                    viewRadius;
 
-    public int      Likes,
-                    Comments,
-                    RSVPs;
+    public int      likes,
+                    comments,
+                    rsvp;
+
+    public Event() {}
 
     public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
                  String aEndTime, String aAddress, String aDescription, double aLat, double aLong,
                  double aViewRadius, int aLikes, int aComments, int aRSVPs) {
-        EventName   = aName;
-        OwnerID     = aOwner;
+        eventName   = aName;
+        ownerID     = aOwner;
 
-        StartDate   = aStartDate;
-        EndDate     = aEndDate;
-        StartTime   = aStartTime;
-        EndTime     = aEndTime;
+        startDate   = aStartDate;
+        endDate     = aEndDate;
+        startTime   = aStartTime;
+        endTime     = aEndTime;
 
-        Address     = aAddress;
-        Description = aDescription;
+        address     = aAddress;
+        description = aDescription;
 
-        Latitude    = aLat;
-        Longitude   = aLong;
+        latitude    = aLat;
+        longitude   = aLong;
 
-        ViewRadius  = aViewRadius;
+        viewRadius  = aViewRadius;
 
-        Likes       = aLikes;
-        Comments    = aComments;
-        RSVPs       = aRSVPs;
+        likes       = aLikes;
+        comments    = aComments;
+        rsvp        = aRSVPs;
     }
 
-/*    public String getEventName() {
-        return EventName;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
-    public String getAddress() {
-        return Address;
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
     }
 
-    public String getDescription() {
-        return Description;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public LatLng getCoordinates() {
-        return new LatLng(Latitude, Longitude);
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
-    public double getViewRadius() {
-        return ViewRadius;
-    }
-    public void setViewRadius(double updatedRadius) {
-        ViewRadius = updatedRadius;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public int getLikes() {
-        return Likes;
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
-    public int getComments() {
-        return Comments;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public int getRSVPs() {
-        return RSVPs;
+    public void setDescription(String description) {
+        this.description = description;
     }
-    */
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setViewRadius(double viewRadius) {
+        this.viewRadius = viewRadius;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public void setComments(int comments) {
+        this.comments = comments;
+    }
+
+    public void setRsvp(int rsvp) {
+        this.rsvp = rsvp;
+    }
 }

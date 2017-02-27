@@ -19,6 +19,8 @@ public class User {
     //Private password to not allow storage
     private String Password;
 
+    public User() {}
+
     //Copy constructor to assign email to a user's full name
     public User(String aEmail, String fullname) {
         Email       = aEmail;

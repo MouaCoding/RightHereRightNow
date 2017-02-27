@@ -64,7 +64,6 @@ public class CreateEventFragment extends Fragment {
     }
 
     public void createEvent() {
-        Log.d("eventfragment","in clicked");
 
         String str_event_name = event_name.getText().toString().trim();
         String str_event_description = event_description.getText().toString().trim();
@@ -83,10 +82,11 @@ public class CreateEventFragment extends Fragment {
 
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference Event = RootRef.child("Event").push();
-            Event.setValue(str_event_name);
+            // Event.setValue(str_event_name);
+            // then, Event.child().setValue(...)
 
             // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
-            Event.child(str_event_name).setValue(new Event(str_event_name, "Fill in owner ID", "fill in start date",
+            Event.setValue(new Event(str_event_name, "Fill in owner ID", "fill in start date",
                     "fill in end date", "fill in start time", "fill in end time", "fill in address",
                     str_event_description, location.getLatitude(), location.getLongitude(), 10, 100,
                     0, 4));

@@ -25,6 +25,8 @@ public class Post {
 
     // is it an original post (0), response (1), or response to a response (2)
 
+    public Post() {}
+
     public Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
                 String aResponseID, LatLng aCoordinate, double aViewRadius, int aOrder, int aLikes,
                 int aComments) {
