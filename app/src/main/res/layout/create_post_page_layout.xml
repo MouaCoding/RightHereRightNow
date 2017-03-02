@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:text="back"
+            android:layout_width="78dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/button7"
+            style="@style/Widget.AppCompat.Button.Small" />
+
+        <TextView
+            android:text="New Post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView9"
+            android:layout_weight="1"
+            android:textSize="42sp"
+            android:textStyle="normal|bold"
+            android:textAlignment="center" />
+
+        <Button
+            android:text="post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button6"
+            android:layout_weight="0.30"
+            style="@style/Widget.AppCompat.Button.Small" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:inputType="textPersonName"
+        android:text="Enter Post Here"
+        android:ems="10"
+        android:id="@+id/editText4"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textSize="24sp"
+        android:gravity = "top"/>
+
+
+    <CheckBox
+        android:text="Anonymous"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBox2" />
+</LinearLayout>
