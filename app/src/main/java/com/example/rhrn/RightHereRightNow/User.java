@@ -12,14 +12,16 @@ public class User {
                     Phone,
                     Address,
                     City,
-                    State;
+                    State,
+                    id,
+                    uid; // added user id, easier to use with FirebaseUser instance
 
     public String   fullName;
 
     //Private password to not allow storage
     private String Password;
 
-    public User() {}
+    public User() {FirstName= LastName= Email= Phone= Address= City= State= id= uid = null;}
 
     //Copy constructor to assign email to a user's full name
     public User(String aEmail, String fullname) {
@@ -28,7 +30,7 @@ public class User {
     }
 
     public User(String aFirstName, String aLastName, String aEmail, String aPassword,
-                String aPhone,String aAddress,String aCity,String aState) {
+                String aPhone,String aAddress,String aCity,String aState,String aId, String aUid) {
         FirstName   = aFirstName;
         LastName    = aLastName;
         Email       = aEmail;
@@ -37,11 +39,13 @@ public class User {
         Address     = aAddress;
         City        = aCity;
         State       = aState;
+        id          = aId;
+        uid         = aUid;
     }
 
     //Since phone is optional, need a constructor for one without phone
     public User(String aFirstName, String aLastName, String aEmail, String aPassword,
-                String aAddress, String aCity, String aState) {
+                String aAddress, String aCity, String aState, String aId, String aUid) {
         FirstName   = aFirstName;
         LastName    = aLastName;
         fullName    = FirstName + " " + String.valueOf(LastName);
@@ -50,7 +54,11 @@ public class User {
         Address     = aAddress;
         City        = aCity;
         State       = aState;
+        id          = aId;
+        uid         = aUid;
+
     }
+
 
     /*public String getFirstName() {
         return FirstName;
