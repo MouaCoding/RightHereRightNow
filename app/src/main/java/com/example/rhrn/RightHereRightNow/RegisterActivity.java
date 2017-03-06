@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -81,6 +82,7 @@ public class RegisterActivity extends LoginActivity {
         String address = user_address.getText().toString().trim();
         String city = user_city.getText().toString().trim();
         String state = user_state.getText().toString().trim();
+        String id, uid;
 
         //Create a root reference of database onto the JSON tree provided by firebase
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
@@ -92,12 +94,16 @@ public class RegisterActivity extends LoginActivity {
 
         //Create a user reference which is a child of the Root, also generates a unique id per user
         DatabaseReference user = RootRef.child("User").push();
+        FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+        id = user.getKey();
+        uid = fbuser.getUid();
+
 
         //Set the user reference to the user's name
         user.setValue(fullname);
 
         //store and set the values associated with the user
-        user.child(fullname).setValue(new User(firstName,lastName,email,password,phone,address,city,state));//data);
+        user.setValue(new User(firstName,lastName,email,password,phone,address,city,state,id,uid));//data);
     }
 
     //Added a register button function

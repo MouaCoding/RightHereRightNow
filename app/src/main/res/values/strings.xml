@@ -7,6 +7,7 @@
     <!-- Temporary Strings (kept on top, so we see and clean this often) -->
     <string name="action_create_post">Create Post</string>
     <string name="action_create_event">Create Event</string>
+    <string name="action_create_message">Type Message</string>
 
     <!-- General Strings -->
     <string name="na">N/A</string>
