@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.google.android.gms.common.ConnectionResult;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.firebase.database.DataSnapshot;
@@ -260,13 +262,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         eventsOnMap.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+                for (final DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
 
                     Log.d("GOT AN EVENT ", " WOO");
 
                     Event ev = eventSnapshot.getValue(Event.class);
                     LatLng newEvent = new LatLng(ev.latitude, ev.longitude);
                     mMap.addMarker(new MarkerOptions().position(newEvent).draggable(false).title(ev.eventName));
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            ViewEventDialogFragment.createInstance(eventSnapshot.getKey());
+
+                            return false;
+                        }
+                    });
                 }
 
             }
