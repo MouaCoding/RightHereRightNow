@@ -9,9 +9,9 @@
         layout="@layout/event_filter_header" />
 
     <include
+        layout="@layout/event_filter_time"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/event_filter_time" />
+        android:layout_height="wrap_content" />
 
     <include
         android:layout_width="match_parent"

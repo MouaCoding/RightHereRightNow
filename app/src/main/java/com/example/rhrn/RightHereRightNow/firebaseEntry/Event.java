@@ -1,7 +1,4 @@
-package com.example.rhrn.RightHereRightNow;
-
-import java.util.Date;
-import com.google.android.gms.maps.model.LatLng;
+package com.example.rhrn.RightHereRightNow.firebaseEntry;
 
 /**
  * Created by Brian Becker on 2/20/2017.

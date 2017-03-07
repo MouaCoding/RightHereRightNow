@@ -5,8 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <!-- Top or Bottom? -->
+    <!-- Serves as container for MapView -->
 
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/primary_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
 </FrameLayout>

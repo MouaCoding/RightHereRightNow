@@ -1,4 +1,4 @@
-package com.example.rhrn.RightHereRightNow;
+package com.example.rhrn.RightHereRightNow.firebaseEntry;
 
 import com.google.android.gms.maps.model.LatLng;
 

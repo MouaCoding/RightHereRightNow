@@ -1,20 +1,14 @@
 package com.example.rhrn.RightHereRightNow;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     MainPagerAdapter pagerAdapter;
@@ -82,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     // break;
                 case 2:
                     // return middle button fragment?
-                    return new CreatePostOrEventTempShim();
+                    return new CreatePostOrEventTempShimFragment();
                     // break;
                 case 3:
                     // return something?

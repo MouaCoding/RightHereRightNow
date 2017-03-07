@@ -1,13 +1,13 @@
 package com.example.rhrn.RightHereRightNow;
 
-import android.app.Notification;
-import android.os.Message;
 import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+
+import com.example.rhrn.RightHereRightNow.firebaseEntry.Messages;
 import com.firebase.client.Firebase;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.FirebaseError;
@@ -32,12 +32,12 @@ public class MessageSource {
         HashMap<String, String> msg = new HashMap<>();
         msg.put(COLUMN_TEXT, message.getMessage());
         msg.put(COLUMN_SENDER, message.getSender());
-        sRef.child("Chat").child(conversationId).child(key).setValue(msg);
+        sRef.child("ChatActivity").child(conversationId).child(key).setValue(msg);
     }
 
     public static MessagesListener addMessagesListener(String convoId,  MessagesCallbacks messagesCallbacks) {
         MessagesListener listener = new MessagesListener(messagesCallbacks);
-        sRef.child("Chat").child(convoId).addChildEventListener(listener);
+        sRef.child("ChatActivity").child(convoId).addChildEventListener(listener);
         return listener;
     }
 

@@ -1,32 +1,21 @@
 package com.example.rhrn.RightHereRightNow;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.firebase.client.Firebase;
-import com.firebase.client.authentication.Constants;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.rhrn.RightHereRightNow.firebaseEntry.Messages;
+import com.example.rhrn.RightHereRightNow.firebaseEntry.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,21 +25,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
-//import static com.example.rhrn.RightHereRightNow.Messages.STATUS_SENT;
-import static java.security.AccessController.getContext;
+//import static com.example.rhrn.RightHereRightNow.firebaseEntry.Messages.STATUS_SENT;
+
 
 /**
  * Created by Matt on 3/2/2017.
  */
 
-public class Chat extends AppCompatActivity implements View.OnClickListener,
+public class ChatActivity extends AppCompatActivity implements View.OnClickListener,
         MessageSource.MessagesCallbacks{
 
     public static final String USER_EXTRA = "USER";
@@ -136,7 +121,7 @@ public class Chat extends AppCompatActivity implements View.OnClickListener,
     public class MessagesAdapter extends ArrayAdapter<Messages> {
         MessagesAdapter(ArrayList<Messages> messages){
 
-            super(Chat.this, R.layout.msg_item, R.id.msg, messages);
+            super(ChatActivity.this, R.layout.msg_item, R.id.msg, messages);
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {

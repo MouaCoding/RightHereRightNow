@@ -3,32 +3,20 @@ package com.example.rhrn.RightHereRightNow;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.app.ProgressDialog;
 
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.rhrn.RightHereRightNow.firebaseEntry.Event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.Console;
-import java.util.Calendar;
-import java.util.Date;
-
 import static android.content.Context.LOCATION_SERVICE;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class CreateEventFragment extends Fragment {
 
