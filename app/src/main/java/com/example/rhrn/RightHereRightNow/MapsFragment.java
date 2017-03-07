@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.example.rhrn.RightHereRightNow.firebaseEntry.Event;
+import com.example.rhrn.RightHereRightNow.firebaseEntry.Post;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -58,7 +59,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private LocationRequest mLocationRequest;
     private int radius = 100;
 
-    private DatabaseReference eventsOnMap;
+    private DatabaseReference   eventsOnMap,
+                                postsOnMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -254,8 +256,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     private void drawPointsWithinRadius() {
         eventsOnMap = FirebaseDatabase.getInstance().getReference("Event");
+        postsOnMap = FirebaseDatabase.getInstance().getReference("Post");
 
-        Log.d("GETTING EVENTS ", " IN FUNC");
+        Log.d("GETTING EVENTS, POSTS ", " IN drawPointsWithinRadius");
 
         eventsOnMap.addValueEventListener(new ValueEventListener() {
             @Override
@@ -265,16 +268,35 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     Log.d("GOT AN EVENT ", " WOO");
 
                     Event ev = eventSnapshot.getValue(Event.class);
-                    LatLng newEvent = new LatLng(ev.latitude, ev.longitude);
-                    mMap.addMarker(new MarkerOptions().position(newEvent).draggable(false).title(ev.eventName));
+                    LatLng location = new LatLng(ev.latitude, ev.longitude);
+                    mMap.addMarker(new MarkerOptions().position(location).draggable(false).title(ev.eventName));
                 }
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
-        });
+        });  // add listener for events
+
+
+        postsOnMap.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+
+                    Log.d("GOT A POST ", " WOO");
+
+                    Post p = postSnapshot.getValue(Post.class);
+                    LatLng location = new LatLng(p.latitude, p.longitude);
+                    mMap.addMarker(new MarkerOptions().position(location).draggable(false).title(p.content));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });  // add listener for posts
     }
 }

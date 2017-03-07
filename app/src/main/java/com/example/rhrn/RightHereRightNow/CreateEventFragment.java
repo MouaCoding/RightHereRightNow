@@ -23,8 +23,6 @@ public class CreateEventFragment extends Fragment {
     private EditText        event_name,
                             event_description;
 
-    private Button          create_event_confirm;
-
     private FirebaseAuth    firebaseAuth;
 
     @Override
@@ -32,7 +30,6 @@ public class CreateEventFragment extends Fragment {
 //        super.onCreateView(inflater, container, savedInstanceState);
         View r = inflater.inflate(R.layout.create_event_page_layout, container, false);
 
-        // Button doesnt seem to be getting called, idk. yes, it is named correctly
         Button b = (Button) r.findViewById(R.id.create_event_confirm);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,15 +66,16 @@ public class CreateEventFragment extends Fragment {
             progressDialog.show();
 
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-            DatabaseReference Event = RootRef.child("Event").push();
+            DatabaseReference createdEvent = RootRef.child("Event").push();
             // Event.setValue(str_event_name);
             // then, Event.child().setValue(...)
 
             // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
-            Event.setValue(new Event(str_event_name, "Fill in owner ID", "fill in start date",
+            createdEvent.setValue(new Event(str_event_name, "Fill in owner ID", "fill in start date",
                     "fill in end date", "fill in start time", "fill in end time", "fill in address",
                     str_event_description, location.getLatitude(), location.getLongitude(), 10, 100,
                     0, 4));
+
             // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
             //              String aEndTime, String aAddress, String aDescription, double aLat, double aLong,
             //              double aViewRadius, int aLikes, int aComments, int aRSVPs)
