@@ -38,4 +38,6 @@ public class ViewEventDialogFragment extends DialogFragment {
 
         return r;
     }
+
+
 }

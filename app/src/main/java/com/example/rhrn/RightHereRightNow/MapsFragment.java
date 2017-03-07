@@ -272,6 +272,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     Event ev = eventSnapshot.getValue(Event.class);
                     LatLng location = new LatLng(ev.latitude, ev.longitude);
                     mMap.addMarker(new MarkerOptions().position(location).draggable(false).title(ev.eventName));
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+
+                            return false;
+                        }
+                    });
                 }
             }
 
