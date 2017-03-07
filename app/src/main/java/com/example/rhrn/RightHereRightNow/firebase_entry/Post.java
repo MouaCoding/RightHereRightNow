@@ -7,80 +7,92 @@ import com.google.android.gms.maps.model.LatLng;
  */
 
 public class Post {
-    private String  OwnerID,
-                    PostID,
-                    CreateDate,
-                    CreateTime,
-                    Content,
-                    ResponseID;
+    public String   ownerID,
+                    postID,
+                    createDate,
+                    createTime,
+                    content,
+                    responseID;
     //  TODO: BB: Change dates and times to type Date
 
-    private LatLng  Coordinates;
+    public double   viewRadius,
+                    latitude,
+                    longitude;
 
-    private double  ViewRadius;
-
-    private int     Order,
-                    Likes,
-                    Comments;
-
-    // is it an original post (0), response (1), or response to a response (2)
+    public int      order,  // is it an original post (0), response (1), or response to a response (2)
+                    likes,
+                    comments;
 
     public Post() {}
 
     public Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
-                String aResponseID, LatLng aCoordinate, double aViewRadius, int aOrder, int aLikes,
-                int aComments) {
+                String aResponseID, double aViewRadius, double aLat, double aLong,
+                int aOrder, int aLikes, int aComments) {
 
-        OwnerID     = aOwner;
-        PostID      = aID;
+        ownerID     = aOwner;
+        postID      = aID;
 
-        CreateDate  = aCreateDate;
-        CreateTime  = aCreateTime;
+        createDate  = aCreateDate;
+        createTime  = aCreateTime;
 
-        Content     = aContent;
+        content     = aContent;
 
-        ResponseID  = aResponseID;
-        Coordinates = aCoordinate;
+        responseID  = aResponseID;
+        latitude    = aLat;
+        longitude   = aLong;
 
-        ViewRadius  = aViewRadius;
+        viewRadius  = aViewRadius;
 
-        Order       = aOrder;
-        Likes       = aLikes;
-        Comments    = aComments;
+        order       = aOrder;
+        likes       = aLikes;
+        comments    = aComments;
     }
 
-    public String getOwnerID() {
-        return OwnerID;
+    public void setComments(int comments) {
+        this.comments = comments;
     }
 
-    public String getPostID() {
-        return PostID;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
-    public String getContent() {
-        return Content;
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
     }
 
-    public LatLng getCoordinates() {
-        return Coordinates;
+    public void setPostID(String postID) {
+        this.postID = postID;
     }
 
-    public double getViewRadius() {
-        return ViewRadius;
-    }
-    public void setViewRadius(double updatedRadius) {
-        ViewRadius = updatedRadius;
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 
-    public int getOrder() {
-        return Order;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
-    public int getLikes() {
-        return Likes;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public int getComments() {
-        return Comments;
+    public void setResponseID(String responseID) {
+        this.responseID = responseID;
+    }
+
+    public void setViewRadius(double viewRadius) {
+        this.viewRadius = viewRadius;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }
