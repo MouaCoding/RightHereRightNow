@@ -242,7 +242,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
                     Event ev = eventSnapshot.getValue(Event.class);
                     LatLng newEvent = new LatLng(ev.latitude, ev.longitude);
-                    mMap.addMarker(new MarkerOptions().position(newEvent).draggable(true).title(ev.eventName));
+                    mMap.addMarker(new MarkerOptions().position(newEvent).draggable(false).title(ev.eventName));
                 }
 
             }
