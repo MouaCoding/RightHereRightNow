@@ -9,7 +9,7 @@
     <com.example.rhrn.RightHereRightNow.UserMiniHeaderView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/user_post_mini_head" />
+        android:id="@+id/user_event_mini_head" />
 
     <View
         android:layout_width="match_parent"
@@ -17,12 +17,12 @@
         android:background="?android:attr/listDivider" />
 
     <TextView
-        android:id="@+id/user_post_body"
+        android:text="This is an example of a post. Notice how there is text, and that it fills up some space here in the post."
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/user_post_body"
         android:layout_margin="8dp"
         android:padding="4dp"
-        android:text="@string/na"
         android:textAppearance="@android:style/TextAppearance.Material.Large" />
 
     <View

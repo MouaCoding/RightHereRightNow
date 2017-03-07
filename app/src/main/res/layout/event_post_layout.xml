@@ -110,7 +110,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_share_black_24dp"
-            android:id="@+id/user_post_repost_button"
+            android:id="@+id/user_post_share_button"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:padding="16dp"

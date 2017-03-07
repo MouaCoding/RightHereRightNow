@@ -31,17 +31,17 @@
             android:layout_margin="4dp" />
 
         <TextView
-            android:text="\@jsmith1"
+            android:id="@+id/mini_user_handle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/mini_user_handle"
-            android:layout_weight="1"
             android:layout_gravity="left|center_vertical"
-            android:gravity="top|left"
             android:layout_marginBottom="6dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="6dp"
-            android:layout_marginTop="2dp" />
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:gravity="top|left"
+            android:text="\@jsmith1" />
 
     </LinearLayout>
 
@@ -58,7 +58,7 @@
     <ImageButton
         android:layout_width="80dp"
         app:srcCompat="@drawable/ic_person_add_black_24dp"
-        android:id="@+id/mini_profile_follow"
+        android:id="@+id/mini_profile_add_button"
         android:layout_weight="0"
         android:layout_height="32dp"
         android:layout_gravity="center"
