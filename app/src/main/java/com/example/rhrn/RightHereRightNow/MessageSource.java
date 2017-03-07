@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.example.rhrn.RightHereRightNow.firebaseEntry.Messages;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
 import com.firebase.client.Firebase;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.FirebaseError;

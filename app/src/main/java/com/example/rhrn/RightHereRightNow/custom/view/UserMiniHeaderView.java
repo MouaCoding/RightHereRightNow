@@ -1,4 +1,4 @@
-package com.example.rhrn.RightHereRightNow;
+package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,6 +6,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.rhrn.RightHereRightNow.R;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -29,7 +31,7 @@ public class UserMiniHeaderView extends FrameLayout {
     }
 
     public void createView() {
-        inflate(getContext(),R.layout.user_mini_header_layout, this);
+        inflate(getContext(), R.layout.user_mini_header_layout, this);
         miniProfilePicView = (ImageView) findViewById(R.id.mini_profile_picture);
         displayNameView = (TextView) findViewById(R.id.mini_name);
         userHandleView = (TextView) findViewById(R.id.mini_user_handle);

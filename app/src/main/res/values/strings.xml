@@ -33,8 +33,13 @@
     <string name="error_signin">Error logging in.</string>
     <string name="forgot_password">Forgot?</string>
 
+    <!-- Strings relates to events -->
+    <string name="event_rsvp_not_going">Not Going</string>
+    <string name="event_rsvp_maybe">Maybe</string>
+    <string name="event_rsvp_going">Going</string>
+
     <!-- Strings related to event creation-->
-    <string name="event_name">Event Name:</string>
+    <string name="event_name">Event Name</string>
     <string name="event_name_box">event name here</string>
     <string name="event_start_date">Start Date</string>
     <string name="event_end_date">End Date</string>

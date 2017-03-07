@@ -1,4 +1,4 @@
-package com.example.rhrn.RightHereRightNow.firebaseEntry;
+package com.example.rhrn.RightHereRightNow.firebase_entry;
 
 /**
  * Created by Brian Becker on 2/20/2017.

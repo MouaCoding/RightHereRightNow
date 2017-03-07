@@ -6,7 +6,7 @@
     android:background="@android:color/background_light"
     android:layout_gravity="center">
 
-    <com.example.rhrn.RightHereRightNow.UserMiniHeaderView
+    <com.example.rhrn.RightHereRightNow.custom.view.UserMiniHeaderView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/user_event_mini_head" />
@@ -83,7 +83,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_margin="4dp" />
+            android:layout_margin="2dp"
+            android:layout_toEndOf="@+id/user_event_end_time"
+            android:gravity="right" />
 
     </RelativeLayout>
 

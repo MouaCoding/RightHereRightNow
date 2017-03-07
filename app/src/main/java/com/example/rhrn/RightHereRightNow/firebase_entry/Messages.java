@@ -1,4 +1,4 @@
-package com.example.rhrn.RightHereRightNow.firebaseEntry;
+package com.example.rhrn.RightHereRightNow.firebase_entry;
 
 import java.util.Date;
 

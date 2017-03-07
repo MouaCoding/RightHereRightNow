@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.app.ProgressDialog;
 
-import com.example.rhrn.RightHereRightNow.firebaseEntry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
