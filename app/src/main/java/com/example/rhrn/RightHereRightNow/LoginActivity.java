@@ -237,8 +237,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         if (task.isSuccessful()) {
                             //if successfully logs in, displays success,
                             Toast.makeText(LoginActivity.this,"Successfully Logged In",Toast.LENGTH_LONG).show();
-                            // Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                         } else {
                             //if failed, display error message

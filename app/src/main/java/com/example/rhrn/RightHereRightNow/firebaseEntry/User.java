@@ -1,5 +1,7 @@
 package com.example.rhrn.RightHereRightNow.firebaseEntry;
 
+import java.util.ArrayList;
+
 /**
  * Created by Matthew Moua on 2/17/2017.
  */
@@ -15,6 +17,7 @@ public class User {
                     State,
                     id,
                     uid; // added user id, easier to use with FirebaseUser instance
+    ArrayList<String> followers;
 
     public String   fullName;
 

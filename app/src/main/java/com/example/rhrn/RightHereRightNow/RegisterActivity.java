@@ -96,6 +96,7 @@ public class RegisterActivity extends LoginActivity {
 
         //store and set the values associated with the user
         user.setValue(new User(firstName,lastName,email,password,phone,address,city,state,id,uid));//data);
+
     }
 
     //Added a register button function
