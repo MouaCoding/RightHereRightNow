@@ -17,23 +17,23 @@
                 android:id="@+id/event_sd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/event_n"
-                android:layout_below="@+id/event_n"
-                android:layout_marginTop="16dp"
                 android:text="@string/event_start_date"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_below="@+id/event_name"
+                android:layout_alignStart="@+id/event_n"
+                android:layout_marginTop="19dp" />
 
             <TextView
                 android:id="@+id/event_st"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/event_sd"
                 android:layout_below="@+id/event_sd"
                 android:layout_marginTop="40dp"
                 android:text="@string/event_start_time"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_alignStart="@+id/event_sd" />
 
             <TextView
                 android:id="@+id/event_et"
@@ -42,10 +42,10 @@
                 android:layout_alignBaseline="@+id/event_st"
                 android:layout_alignBottom="@+id/event_st"
                 android:layout_marginStart="90dp"
-                android:layout_toEndOf="@+id/event_n"
                 android:text="@string/event_end_time"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_toStartOf="@+id/event_isPrivate" />
 
             <TextView
                 android:id="@+id/event_ed"
@@ -55,30 +55,31 @@
                 android:layout_alignStart="@+id/event_et"
                 android:text="@string/event_end_date"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_alignEnd="@+id/editEndDate" />
 
             <TextView
                 android:id="@+id/event_addr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/event_st"
-                android:layout_below="@+id/event_st"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/event_address"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_below="@+id/editStartTime"
+                android:layout_alignStart="@+id/editStartTime" />
 
             <TextView
                 android:id="@+id/event_private"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignTop="@+id/event_addr"
-                android:layout_marginStart="18dp"
-                android:layout_marginTop="42dp"
+                android:layout_marginTop="56dp"
                 android:text="@string/event_private"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_below="@+id/editAddress"
+                android:layout_toStartOf="@+id/editAddress"
+                android:layout_marginEnd="13dp" />
 
             <CheckBox
                 android:id="@+id/event_isPrivate"
@@ -87,7 +88,8 @@
                 android:layout_alignBaseline="@+id/event_private"
                 android:layout_alignBottom="@+id/event_private"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="51dp" />
+                android:layout_marginEnd="51dp"
+                android:checked="false" />
 
             <TextView
                 android:id="@+id/event_n"
@@ -104,12 +106,12 @@
                 android:id="@+id/event_loc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/event_private"
-                android:layout_below="@+id/event_isPrivate"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="74dp"
                 android:text="@string/event_location"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_below="@+id/event_isPrivate"
+                android:layout_alignEnd="@+id/event_addr" />
 
             <TextView
                 android:id="@+id/event_des"
@@ -153,7 +155,67 @@
                 android:layout_below="@+id/event_des"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="13dp" />
-                <!-- android:onClick="createEvent" -->
+
+            <EditText
+                android:id="@+id/editEndDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/event_et"
+                android:layout_alignStart="@+id/event_et"
+                android:layout_below="@+id/event_ed"
+                android:ems="10"
+                android:inputType="text"
+                android:text="@string/dateEndEnvent" />
+
+            <EditText
+                android:id="@+id/editStartDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/event_st"
+                android:layout_alignStart="@+id/event_st"
+                android:layout_below="@+id/event_sd"
+                android:layout_toStartOf="@+id/event_et"
+                android:ems="10"
+                android:inputType="text"
+                android:text="@string/dateStartEvent" />
+
+            <EditText
+                android:id="@+id/editStartTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/event_st"
+                android:layout_alignStart="@+id/event_st"
+                android:layout_below="@+id/event_st"
+                android:ems="10"
+                android:inputType="text"
+                android:text="@string/timeStartEvent"
+                android:textAlignment="center" />
+
+            <EditText
+                android:id="@+id/editAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="@string/addressEvent"
+                android:layout_alignBaseline="@+id/event_addr"
+                android:layout_alignBottom="@+id/event_addr"
+                android:layout_alignEnd="@+id/create_event_confirm" />
+
+            <EditText
+                android:id="@+id/editEndTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/event_et"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="@string/timeEndEvent"
+                android:textAlignment="center"
+                android:layout_alignEnd="@+id/event_et"
+                android:layout_below="@+id/event_et"
+                android:layout_alignBottom="@+id/editStartTime" />
+
+            <!-- android:onClick="createEvent" -->
 
 
         </RelativeLayout>

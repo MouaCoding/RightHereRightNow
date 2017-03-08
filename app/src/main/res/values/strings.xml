@@ -42,15 +42,20 @@
     <string name="event_name">Event Name</string>
     <string name="event_name_box">event name here</string>
     <string name="event_start_date">Start Date</string>
-    <string name="event_end_date">End Date</string>
+    <string name="event_end_date">" End Date "</string>
     <string name="event_start_time">Start Time</string>
-    <string name="event_end_time">End Time</string>
+    <string name="event_end_time">" End Time "</string>
     <string name="event_address">Address</string>
     <string name="event_private">Private Event</string>
     <string name="event_location">Location</string>
     <string name="event_description">Description</string>
     <string name="event_description_box">description goes here</string>
     <string name="event_button">Create Event</string>
+    <string name="dateStartEvent">00/00/00</string>
+    <string name="dateEndEnvent">00/00/00</string>
+    <string name="timeStartEvent">00:00</string>
+    <string name="timeEndEvent">00:00</string>
+    <string name="addressEvent">address</string>
 
     <!-- Strings related to event viewing-->
     <string name="event_time_divider">-</string>

@@ -1,8 +1,10 @@
 package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ public class UserEventView extends FrameLayout {
     private TextView eventStartTimeView;
     private TextView eventEndTimeView;
     private TextView eventLocationView;
+
 
     private Spinner eventRSVPStateSpinner;
 
@@ -56,6 +59,7 @@ public class UserEventView extends FrameLayout {
         eventEndTimeView = (TextView) findViewById(R.id.user_event_end_time);
         eventLocationView = (TextView) findViewById(R.id.user_event_location);
 
+
         eventRSVPStateSpinner = (Spinner) findViewById(R.id.user_event_rsvp_state_spinner);
 
         String[] rsvpStates = new String[] {getContext().getString(R.string.event_rsvp_not_going), getContext().getString(R.string.event_rsvp_maybe), getContext().getString(R.string.event_rsvp_going)};
@@ -78,6 +82,7 @@ public class UserEventView extends FrameLayout {
                 eventStartTimeView.setText(ev.startTime);
                 eventEndTimeView.setText(ev.endTime);
                 eventLocationView.setText(ev.address);
+
 
                 // eventMiniImageView.setImageBitmap(ev.image);
             }
