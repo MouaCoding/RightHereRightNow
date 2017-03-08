@@ -42,6 +42,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -64,6 +66,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private DatabaseReference   eventsOnMap,
                                 postsOnMap;
 
+    private HashMap<Marker, String> eventMarkerKeys = new HashMap<Marker, String>();
+    private HashMap<Marker, String> postMarkerKeys  = new HashMap<Marker, String>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View r = (View) inflater.inflate(R.layout.maps_fragment_layout, container, false);
@@ -72,6 +77,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 //        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapView.getMapAsync(this);
         mapView.onCreate(savedInstanceState);
+
+
         //mapView = new MapView(getActivity());
 
         // restore any state here if necessary
@@ -162,6 +169,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         mMap = googleMap;
 
         drawPointsWithinRadius();
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                if (eventMarkerKeys.containsKey(marker)) {
+                    ViewEventDialogFragment.createInstance(eventMarkerKeys.get(marker)).show(getChildFragmentManager(), null);
+                }  // if marker clicked is an event
+
+                else if (postMarkerKeys.containsKey(marker)) {
+                    ViewPostDialogFragment.createInstance(postMarkerKeys.get(marker)).show(getChildFragmentManager(), null);
+                }  // if marker clicked is a post
+
+                return true;
+            }
+        });  // add listeners for clicking markers
 
         // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);
@@ -260,25 +283,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         eventsOnMap = FirebaseDatabase.getInstance().getReference("Event");
         postsOnMap = FirebaseDatabase.getInstance().getReference("Post");
 
-        Log.d("GETTING EVENTS ", " IN FUNC");
-
         eventsOnMap.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (final DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+                    String key = eventSnapshot.getKey();
+                    Double latitude = (Double)eventSnapshot.child("latitude").getValue();
+                    Double longitude = (Double)eventSnapshot.child("longitude").getValue();
 
-                    Log.d("GOT AN EVENT ", " WOO");
+                    LatLng location = new LatLng(latitude, longitude);
 
-                    Event ev = eventSnapshot.getValue(Event.class);
-                    LatLng location = new LatLng(ev.latitude, ev.longitude);
-                    mMap.addMarker(new MarkerOptions().position(location).draggable(false).title(ev.eventName));
-                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(Marker marker) {
-
-                            return false;
-                        }
-                    });
+                    Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+                    eventMarkerKeys.put(m, key);
                 }
             }
 
@@ -288,17 +304,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             }
         });  // add listener for events
 
-
         postsOnMap.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String key = postSnapshot.getKey();
+                    Double latitude = (Double)postSnapshot.child("latitude").getValue();
+                    Double longitude = (Double)postSnapshot.child("longitude").getValue();
 
-                    Log.d("GOT A POST ", " WOO");
+                    LatLng location = new LatLng(latitude, longitude);
 
-                    Post p = postSnapshot.getValue(Post.class);
-                    LatLng location = new LatLng(p.latitude, p.longitude);
-                    mMap.addMarker(new MarkerOptions().position(location).draggable(false).title(p.content));
+                    Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+                    postMarkerKeys.put(m, key);
                 }
             }
 

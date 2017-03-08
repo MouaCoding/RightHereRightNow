@@ -7,6 +7,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -44,6 +49,19 @@ public class UserPostView extends FrameLayout {
     }
 
     public void getPost(String postID) {
-        // TODO fetch post information from params and fill fields
+        FirebaseDatabase.getInstance().getReference("Post").child(postID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Post p = dataSnapshot.getValue(Post.class);
+                postBodyTextView.setText(p.content);
+
+                // eventMiniImageView.setImageBitmap(ev.image);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

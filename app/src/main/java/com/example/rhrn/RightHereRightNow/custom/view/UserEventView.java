@@ -10,6 +10,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -64,5 +69,23 @@ public class UserEventView extends FrameLayout {
 
     public void getEvent(String eventID) {
         // TODO fetch event information from params and fill fields
+
+        FirebaseDatabase.getInstance().getReference("Event").child(eventID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Event ev = dataSnapshot.getValue(Event.class);
+                eventTitleView.setText(ev.eventName);
+                eventStartTimeView.setText(ev.startTime);
+                eventEndTimeView.setText(ev.endTime);
+                eventLocationView.setText(ev.address);
+
+                // eventMiniImageView.setImageBitmap(ev.image);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

@@ -30,6 +30,7 @@ public class ViewPostDialogFragment extends DialogFragment {
         args.putString("post_id", postID);
         ViewPostDialogFragment r = new ViewPostDialogFragment();
         r.setArguments(args);
+
         return r;
     }
 }

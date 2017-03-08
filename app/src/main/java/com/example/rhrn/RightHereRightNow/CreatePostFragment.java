@@ -1,25 +1,17 @@
 package com.example.rhrn.RightHereRightNow;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.rhrn.RightHereRightNow.firebaseEntry.Event;
-import com.example.rhrn.RightHereRightNow.firebaseEntry.Post;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

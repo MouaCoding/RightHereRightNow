@@ -26,7 +26,6 @@ public class ViewEventDialogFragment extends DialogFragment {
         eventView = (UserEventView) r.findViewById(R.id.user_event);
         eventView.getEvent(getArguments().getString("event_id")); // Can be modified
 
-
         return r;
     }
 
@@ -38,6 +37,4 @@ public class ViewEventDialogFragment extends DialogFragment {
 
         return r;
     }
-
-
 }
