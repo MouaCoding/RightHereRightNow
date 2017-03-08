@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -73,6 +74,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        ImageButton backButton = (ImageButton)findViewById(R.id.profile_app_bar_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                //startActivity(intent);
+                finish();
+            }
+        });
         Button sendMessage = (Button)findViewById(R.id.send_message);
         sendMessage.setOnClickListener(this);
 
