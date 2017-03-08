@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,10 +29,10 @@ public class CreatePostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 //        super.onCreateView(inflater, container, savedInstanceState);
-        View r = inflater.inflate(R.layout.create_event_page_layout, container, false);
+        View r = inflater.inflate(R.layout.create_post_page_layout, container, false);
             // TODO: set this page layout to post creation instead of event creation
 
-        Button b = (Button) r.findViewById(R.id.create_event_confirm);
+        Button b = (Button) r.findViewById(R.id.confirm_post_button);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,8 +43,8 @@ public class CreatePostFragment extends Fragment {
         //Initializes each text view to the class's objects
 
         // TODO: change these to post values instead of event values
-        post_content = (EditText)r.findViewById(R.id.event_name);
-        post_name = (EditText)r.findViewById(R.id.event_description);
+        post_content = (EditText)r.findViewById(R.id.content_post);
+      ///  post_name = (EditText)r.findViewById(R.id.event_description);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -52,13 +53,15 @@ public class CreatePostFragment extends Fragment {
 
     public void createPost() {
 
-        String str_event_name = post_name.getText().toString().trim();
+       // String str_event_name = post_name.getText().toString().trim();
         String str_event_content = post_content.getText().toString().trim();
+        Toast.makeText(getActivity(), "got here", Toast.LENGTH_LONG);
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         Location location;
 
         try {
+            Toast.makeText(getActivity(), "in try", Toast.LENGTH_LONG);
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             ProgressDialog progressDialog = new ProgressDialog(getActivity());
@@ -72,6 +75,7 @@ public class CreatePostFragment extends Fragment {
             // Event.setValue(str_event_name);
             // then, Event.child().setValue(...)
 
+            //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
             createdPost.setValue(new Post("ownerID", "postID", "createDate", "createTime",
                     str_event_content, "response Post ID", 10, location.getLatitude(), location.getLongitude(), 0,

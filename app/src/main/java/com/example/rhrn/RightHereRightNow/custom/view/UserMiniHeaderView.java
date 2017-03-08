@@ -8,6 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -40,6 +45,23 @@ public class UserMiniHeaderView extends FrameLayout {
     }
 
     public void getUser(String userID) {
-        // TODO use params to get user data and fill fields.
+        FirebaseDatabase.getInstance().getReference("User").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                displayNameView.setText(user.fullName);
+                userHandleView.setText(user.uid);
+
+
+
+                //miniProfilePicView.setImageBitmap(user.profile_picture);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
+        // TODO use params to get user data and fill fields.

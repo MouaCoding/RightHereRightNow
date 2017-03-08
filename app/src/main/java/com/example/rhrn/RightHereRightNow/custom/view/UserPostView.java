@@ -55,6 +55,7 @@ public class UserPostView extends FrameLayout {
                 Post p = dataSnapshot.getValue(Post.class);
                 postBodyTextView.setText(p.content);
 
+
                 // eventMiniImageView.setImageBitmap(ev.image);
             }
 
