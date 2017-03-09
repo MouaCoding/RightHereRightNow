@@ -62,9 +62,7 @@ public class CreateEventFragment extends Fragment {
         return r;
     }
 
-    public void getUserInfo(){
 
-    }
 
 
     public void createEvent() {
@@ -77,6 +75,7 @@ public class CreateEventFragment extends Fragment {
         String str_eventETime = endTime.getText().toString();
         String str_eventAddr  = address.getText().toString();
 
+        //TODO: NAT change types to date/time. get current date/type.
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         Location location;

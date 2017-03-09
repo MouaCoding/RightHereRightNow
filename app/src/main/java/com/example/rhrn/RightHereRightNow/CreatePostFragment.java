@@ -1,6 +1,8 @@
 package com.example.rhrn.RightHereRightNow;
 
 import android.app.ProgressDialog;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -55,13 +57,14 @@ public class CreatePostFragment extends Fragment {
 
        // String str_event_name = post_name.getText().toString().trim();
         String str_event_content = post_content.getText().toString().trim();
-        Toast.makeText(getActivity(), "got here", Toast.LENGTH_LONG);
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         Location location;
 
+
+
         try {
-            Toast.makeText(getActivity(), "in try", Toast.LENGTH_LONG);
+
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             ProgressDialog progressDialog = new ProgressDialog(getActivity());

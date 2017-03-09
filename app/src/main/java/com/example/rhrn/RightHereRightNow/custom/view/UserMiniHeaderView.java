@@ -9,10 +9,14 @@ import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.firebase.client.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -45,23 +49,29 @@ public class UserMiniHeaderView extends FrameLayout {
     }
 
     public void getUser(String userID) {
-        FirebaseDatabase.getInstance().getReference("User").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                displayNameView.setText(user.fullName);
-                userHandleView.setText(user.uid);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currUser = auth.getCurrentUser();
+        if (currUser != null){
+            String userId = currUser.getUid();
+            FirebaseDatabase.getInstance().getReference("User").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    displayNameView.setText(user.fullName);
+                    userHandleView.setText(user.City);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
 
 
 
-                //miniProfilePicView.setImageBitmap(user.profile_picture);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 }
         // TODO use params to get user data and fill fields.
