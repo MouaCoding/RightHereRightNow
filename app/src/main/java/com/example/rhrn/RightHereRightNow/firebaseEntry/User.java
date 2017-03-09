@@ -10,8 +10,8 @@ public class User {
     //User's information is public to be stored in the database
     public String   FirstName,
                     LastName,
-                    displayName,
-                    hashTag,
+                    DisplayName,
+                    handle,
                     Email,
                     Phone,
                     Address,
@@ -31,7 +31,7 @@ public class User {
 
     public User()
     {
-        FirstName = LastName = displayName = hashTag = Email = Phone = Address = City = State = id = uid = AboutMe = null;
+        FirstName = LastName = DisplayName = handle = Email = Phone = Address = City = State = id = uid = AboutMe = null;
         followers = new ArrayList<String>();
         ActivityPoints = 0;
         LikesReceived = 0;
@@ -47,8 +47,8 @@ public class User {
                 String aPhone,String aAddress,String aCity,String aState,String aId, String aUid) {
         FirstName   = aFirstName;
         LastName    = aLastName;
-        displayName = aDisplayName;
-        hashTag     = aHashTag;
+        DisplayName = aDisplayName;
+        handle      = aHashTag;
         Email       = aEmail;
         Password    = aPassword;
         Phone       = aPhone;
@@ -66,8 +66,8 @@ public class User {
                 String aAddress, String aCity, String aState, String aId, String aUid) {
         FirstName   = aFirstName;
         LastName    = aLastName;
-        displayName = adisplayName;
-        hashTag     = aHashTag;
+        DisplayName = adisplayName;
+        handle      = aHashTag;
         fullName    = FirstName + " " + String.valueOf(LastName);
         Email       = aEmail;
         Password    = aPassword;
