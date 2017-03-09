@@ -31,6 +31,7 @@ public class ProfilePageFragment extends Fragment {
                     numLikes;
     //TODO: Add an about me to the user class, I forgot to do it!
     public EditText editAboutMe;
+
     public User temp;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class ProfilePageFragment extends Fragment {
         editAboutMe = (EditText) r.findViewById(R.id.profile_about_text);
         String edit = editAboutMe.getText().toString(); //Update this string to Firebase
 
+
         queryFirebase();
         return r;
     }
@@ -62,8 +64,8 @@ public class ProfilePageFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             temp = userSnapshot.getValue(User.class);
-                            userName.setText(temp.displayName);
-                            hash_tag.setText(temp.hashTag);
+                            userName.setText(temp.DisplayName);
+                            hash_tag.setText(temp.handle);
                             numberFollowers.setText(Integer.toString(temp.followers.size()));
                             numActivityPoints.setText(Integer.toString(temp.ActivityPoints));
                             numLikes.setText(Integer.toString(temp.LikesReceived));
