@@ -75,12 +75,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        ImageButton backButton = (ImageButton)findViewById(R.id.profile_app_bar_back_button);
+        ImageButton backButton = (ImageButton)findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                //startActivity(intent);
+                //finish current activity when back button is pressed
                 finish();
             }
         });
@@ -94,10 +93,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         //but will continue if both users continue chatting, could use a smaller key though...
         //Maybe prefix the keys? -> append the first 10 letters of the uids
         //TODO: find a way to get the receiver's id so we can store their info..., restore the comments later
-        if(Objects.equals(mRecipient,"izkeNH4WZycI9OnkFqnTQLfirY93"))
-            mConvoId = mRecipient+"eWT87QuPHNVzgvBPgO2EBAaswqe2";
+        if(Objects.equals(mRecipient,"HALZm2q8cZdyfVsg9kWSkEvSYXg2"))
+            mConvoId = mRecipient+"0wOKUffpCuMZIf575Q3NaXjW8UD3";
         else
-            mConvoId = "izkeNH4WZycI9OnkFqnTQLfirY93"+mRecipient;
+            mConvoId = "HALZm2q8cZdyfVsg9kWSkEvSYXg2"+mRecipient;
         //String[] ids = {mRecipient, "lWu5KorihgeSSO21xWXMunq25Cl2"};
         //Arrays.sort(ids);
         //If there are Group chats, then add their uids together
@@ -115,6 +114,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         msg.setMessage(newMessage);
         //set the sender to the sender's id
         msg.setSender(mRecipient);
+        //TODO: once we can query receiver, then change this.
+        if(Objects.equals(mRecipient,"HALZm2q8cZdyfVsg9kWSkEvSYXg2"))
+            msg.setReceiver("0wOKUffpCuMZIf575Q3NaXjW8UD3");
+        else
+            msg.setReceiver("HALZm2q8cZdyfVsg9kWSkEvSYXg2");
+
         MessageSource.saveMessage(msg, mConvoId);
     }
 
@@ -167,6 +172,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    //TODO: Update this function, use same query as profile page...
                     //I queried correctly, but i cant seem to set it to some value and return it... - matt
                     sender = userSnapshot.getValue(User.class);
                     key = userSnapshot.getKey();

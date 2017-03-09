@@ -7,12 +7,13 @@ import java.util.Date;
  */
 public class Messages {
 
-    private String   message, //Content of message
-                    //receiver, //Receiver of Message
+    private String  message, //Content of message
+                    receiver, //Receiver of Message
                     sender; //Sender of Message
     //public Boolean  online; //If the user is online
     //TODO: add date, use class Calendar
     private Date     date; //Date of the message
+    private String stringDate;
 
     //public int      status; //status of the Message
     //public static final int STATUS_SENDING = 0;
@@ -25,17 +26,17 @@ public class Messages {
     public Messages()
     {
         message= null;
-        //receiver= null;
+        receiver= null;
         sender= null;
         //status=0;
-        //date=null;
+        date=null;
     }
     //constructor
     public Messages(String msg, Date date, String sender, String receiver) {
         this.message = msg;
         this.date = date;
         this.sender = sender;
-        //this.receiver = receiver;
+        this.receiver = receiver;
     }
 
 
@@ -43,8 +44,8 @@ public class Messages {
     public void setMessage(String message){this.message = message;}
     //public void setStatus(int status) {this.status = status;}
     //public int getStatus(){return status;}
-    //public String getReceiver() {//    return receiver;}
-    //public void setReceiver(String receiver){ this.receiver=receiver;}
+    public String getReceiver() {    return receiver;}
+    public void setReceiver(String receiver){ this.receiver=receiver;}
     public String getSender()
     {
         return sender;
@@ -52,6 +53,8 @@ public class Messages {
     public void setSender(String sender){ this.sender=sender;}
     public Date getDate() {return date;}
     public void setDate(Date date) {this.date = date;}
+    public void setStringDate(String date) {this.stringDate = date;}
+
 
 
 }

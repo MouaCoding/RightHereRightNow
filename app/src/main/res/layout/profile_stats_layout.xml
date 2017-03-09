@@ -71,10 +71,10 @@
         android:layout_weight="1">
 
         <TextView
-            android:text="Karma"
+            android:text="Likes Received"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profile_karma_label"
+            android:id="@+id/profile_likes_received_label"
             android:textAppearance="@android:style/TextAppearance.Material.Body2"
             android:textAlignment="center"
             android:gravity="center"

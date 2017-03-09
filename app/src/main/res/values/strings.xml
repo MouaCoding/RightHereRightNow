@@ -17,6 +17,8 @@
     <string name="prompt_password">Password</string>
     <string name="first_name">First Name*</string>
     <string name="last_name">Last Name*</string>
+    <string name="display_name">Display Name*</string>
+    <string name="hashtag">Hash Tag* (@hash)</string>
     <string name="prompt_phone">Phone (Optional)</string>
     <string name="prompt_address">Address*</string>
     <string name="prompt_city">City*</string>

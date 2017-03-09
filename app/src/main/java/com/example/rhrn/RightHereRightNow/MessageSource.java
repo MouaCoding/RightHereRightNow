@@ -18,10 +18,13 @@ import com.firebase.client.FirebaseError;
  */
 public class MessageSource {
     private static final Firebase sRef = new Firebase("https://righthererightnow-72e20.firebaseio.com/");
-    private static SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMddmmss");
+    private static SimpleDateFormat sDateFormat = new SimpleDateFormat("MM-dd-yyyy-hh:mm:ss aa");
     private static final String TAG = "MessageDataSource";
     private static final String COLUMN_TEXT = "Message";
-    private static final String COLUMN_SENDER = "Sender ID:";
+    private static final String COLUMN_SENDER = "Sender ID";
+    private static final String COLUMN_DATE = "Date";
+    private static final String COLUMN_RECEIVER = "Receiver ID";
+
 
     public static void saveMessage(Messages message, String conversationId) {
 
@@ -32,6 +35,9 @@ public class MessageSource {
         HashMap<String, String> msg = new HashMap<>();
         msg.put(COLUMN_TEXT, message.getMessage());
         msg.put(COLUMN_SENDER, message.getSender());
+        msg.put(COLUMN_RECEIVER, message.getReceiver());
+        msg.put(COLUMN_DATE, key);
+
         sRef.child("ChatActivity").child(conversationId).child(key).setValue(msg);
     }
 
@@ -61,6 +67,9 @@ public class MessageSource {
             Messages message = new Messages();
             message.setSender(msg.get(COLUMN_SENDER));
             message.setMessage(msg.get(COLUMN_TEXT));
+            message.setReceiver(msg.get(COLUMN_RECEIVER));
+            message.setStringDate(msg.get(COLUMN_DATE));
+
             try {
                 message.setDate(sDateFormat.parse(dataSnapshot.getKey()));
             } catch (ParseException e) {
