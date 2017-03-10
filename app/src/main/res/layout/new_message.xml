@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -9,15 +11,19 @@
         android:layout_height="wrap_content"
         android:id="@+id/newMessageHeader">
 
-        <Button
-            android:text="Back"
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:id="@+id/back"
-            android:layout_weight="1" />
-
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+            android:id="@+id/back_button1"
+            android:layout_weight="4.70"
+            android:background="@android:color/transparent"
+            android:layout_gravity="left|center_vertical"
+            android:padding="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp" />
         <TextView
-            android:text="New Message"
+            android:text="@string/new_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView13"
@@ -27,7 +33,7 @@
             android:textSize="30sp" />
 
         <Button
-            android:text="Send"
+            android:text="@string/send_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/send"
@@ -41,10 +47,10 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:text="To:"
+            android:text="@string/to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView14"
+            android:id="@+id/to_text"
             android:layout_weight="1"
             android:fontFamily="sans-serif"
             android:textSize="24sp" />
@@ -53,9 +59,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:hint="Name"
+            android:hint="@string/send_to"
             android:ems="10"
-            android:id="@+id/editText6"
+            android:id="@+id/send_to_handle"
             android:layout_weight="1" />
     </LinearLayout>
 
@@ -63,9 +69,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:inputType="textPersonName"
-        android:hint="Enter Message Here"
+        android:hint="@string/new_message_content"
         android:ems="10"
-        android:id="@+id/editText7"
+        android:id="@+id/new_message_content"
         android:gravity = "top" />
 
 </LinearLayout>

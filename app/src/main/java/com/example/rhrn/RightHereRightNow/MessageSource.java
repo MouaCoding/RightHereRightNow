@@ -38,12 +38,12 @@ public class MessageSource {
         msg.put(COLUMN_RECEIVER, message.getReceiver());
         msg.put(COLUMN_DATE, key);
 
-        sRef.child("ChatActivity").child(conversationId).child(key).setValue(msg);
+        sRef.child("Messages").child(conversationId).child(key).setValue(msg);
     }
 
     public static MessagesListener addMessagesListener(String convoId,  MessagesCallbacks messagesCallbacks) {
         MessagesListener listener = new MessagesListener(messagesCallbacks);
-        sRef.child("ChatActivity").child(convoId).addChildEventListener(listener);
+        sRef.child("Messages").child(convoId).addChildEventListener(listener);
         return listener;
     }
 

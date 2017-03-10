@@ -66,6 +66,12 @@
         <activity android:name=".ChatActivity">
 
         </activity>
+        <activity android:name=".MessageList">
+
+        </activity>
+        <activity android:name=".NewMessage">
+
+        </activity>
     </application>
 
 </manifest>

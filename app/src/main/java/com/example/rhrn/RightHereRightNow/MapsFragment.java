@@ -81,7 +81,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MessageList.class);
                 startActivity(intent);
             }
         });

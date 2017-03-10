@@ -1,5 +1,6 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,15 +18,18 @@ import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.firebaseEntry.Messages;
 import com.example.rhrn.RightHereRightNow.firebaseEntry.User;
+import com.google.android.gms.cast.Cast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
@@ -36,27 +40,29 @@ import java.util.Objects;
  * Created by Matt on 3/2/2017.
  */
 
-public class ChatActivity extends AppCompatActivity implements View.OnClickListener,
+public class ChatActivity extends MessageList implements View.OnClickListener,
         MessageSource.MessagesCallbacks{
 
     public static final String USER_EXTRA = "USER";
     public static final String TAG = "ChatActivity";
-    private ArrayList<Messages> mMessages;
-    private ArrayList<User> mUsers;
-    private MessagesAdapter mAdapter;
+    public static final String RECEIVER_ID = "RECEIVER_ID";
+    public ArrayList<Messages> mMessages;
+    public ArrayList<User> mUsers;
+    public MessagesAdapter mAdapter;
     public String mRecipient;
-    private ListView mListView;
-    private Date mLastMessageDate = new Date();
-    private String mConvoId;
-    private MessageSource.MessagesListener mListener;
+    public ListView mListView;
+    public Date mLastMessageDate = new Date();
+    public String mConvoId;
+    public MessageSource.MessagesListener mListener;
+    public Messages msg;
+    public TextView receiverName;
 
     private DatabaseReference users;
-    public String key;
+    public int listener = 0;
 
 
     //User (Sender)
     public User sender;
-    public User receiver;
     public FirebaseUser user;
 
     @Override
@@ -64,8 +70,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messages_thread);
 
-        sender = new User();
+        receiverName = (TextView) findViewById(R.id.profile_name_chat);
+        if(getIntent().getExtras()!=null)
+            receiverName.setText(getIntent().getExtras().getString("ReceiverName"));
         mListView = (ListView)findViewById(R.id.message_list);
+        sender = new User();
         mMessages = new ArrayList<>();
         mUsers = new ArrayList<>();
         mAdapter = new MessagesAdapter(mMessages);
@@ -80,28 +89,32 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 //finish current activity when back button is pressed
+                /*if(getIntent().getExtras() != null) {
+                    Intent intent = new Intent(getApplicationContext(), MessageList.class);
+                    intent.putExtra(ChatActivity.RECEIVER_ID, ChatActivity.RECEIVER_ID);
+                    intent.putExtra("ReceiverName", "ReceiverName");
+                    intent.putExtra("MessageContent", msg.getMessage());
+                */
                 finish();
+                //}
             }
         });
         Button sendMessage = (Button)findViewById(R.id.send_message);
         sendMessage.setOnClickListener(this);
 
-        mRecipient = getKeyFromFB();
-        getAllUsers();
+        FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+        mRecipient = fbuser.getUid();
+        //getKeyFromFB();
 
         //Establish a link between two ids, this link will not only be unique
-        //but will continue if both users continue chatting, could use a smaller key though...
-        //Maybe prefix the keys? -> append the first 10 letters of the uids
-        //TODO: find a way to get the receiver's id so we can store their info..., restore the comments later
-        if(Objects.equals(mRecipient,"HALZm2q8cZdyfVsg9kWSkEvSYXg2"))
-            mConvoId = mRecipient+"0wOKUffpCuMZIf575Q3NaXjW8UD3";
-        else
-            mConvoId = "HALZm2q8cZdyfVsg9kWSkEvSYXg2"+mRecipient;
-        //String[] ids = {mRecipient, "lWu5KorihgeSSO21xWXMunq25Cl2"};
-        //Arrays.sort(ids);
-        //If there are Group chats, then add their uids together
-        //mConvoId = ids[0]+ids[1];
-
+        String receiverKey="";
+        Bundle extras = getIntent().getExtras();
+        if(extras != null)
+            receiverKey = extras.getString(RECEIVER_ID); // get the extra (receiver id) from previous activity
+        //Log.d(receiverKey,"RKEY");
+        String[] ids = {mRecipient, receiverKey};
+        Arrays.sort(ids);
+        mConvoId = ids[0]+ids[1];
         mListener = MessageSource.addMessagesListener(mConvoId, this);
     }
 
@@ -109,18 +122,20 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         EditText newMessageView = (EditText)findViewById(R.id.new_message);
         String newMessage = newMessageView.getText().toString();
         newMessageView.setText("");
-        Messages msg = new Messages();
+        msg = new Messages();
         msg.setDate(new Date());
         msg.setMessage(newMessage);
         //set the sender to the sender's id
         msg.setSender(mRecipient);
-        //TODO: once we can query receiver, then change this.
+        msg.setReceiver(getIntent().getExtras().getString(RECEIVER_ID));
+
+        getKeyFromFB();
+        /*//TODO: once we can query receiver, then change this.
         if(Objects.equals(mRecipient,"HALZm2q8cZdyfVsg9kWSkEvSYXg2"))
             msg.setReceiver("0wOKUffpCuMZIf575Q3NaXjW8UD3");
         else
             msg.setReceiver("HALZm2q8cZdyfVsg9kWSkEvSYXg2");
-
-        MessageSource.saveMessage(msg, mConvoId);
+*/
     }
 
     @Override
@@ -162,23 +177,25 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public String getKeyFromFB()
+    public void getKeyFromFB()
     {
         user = FirebaseAuth.getInstance().getCurrentUser();
         users = FirebaseDatabase.getInstance().getReference("User");
-        //found user by user's unique id, can now link to the sender.
-        users.getRef().orderByChild("Email").equalTo(user.getEmail())
+        //found user and link the message to their sender id
+        users.getRef().getRef().orderByChild("Sender ID").equalTo(user.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    //TODO: Update this function, use same query as profile page...
-                    //I queried correctly, but i cant seem to set it to some value and return it... - matt
-                    sender = userSnapshot.getValue(User.class);
-                    key = userSnapshot.getKey();
+                    Messages m = userSnapshot.getValue(Messages.class);
+                    String[] ids = {mRecipient, m.getReceiver()};
+                    Arrays.sort(ids);
+                    mConvoId = ids[0]+ids[1];
                     //Log.d(sender.id,"SENDER ID!");
                     //Log.d(key,"key !");
                 }
+                    MessageSource.saveMessage(msg, mConvoId);
+
             }
 
             @Override
@@ -187,12 +204,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        return user.getUid();
     }
 
 
 
-    //This function is used to get all the list of users except the current user
+    /*//This function is used to get all the list of users except the current user
     public void getAllUsers()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -216,6 +232,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         // Unable to retrieve the users.
                     }
                 });
-    } //getAllUsers()
+    } //getAllUsers()*/
+
 
 }
