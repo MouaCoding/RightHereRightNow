@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -49,29 +50,29 @@ public class UserMiniHeaderView extends FrameLayout {
     }
 
     public void getUser(String userID) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser currUser = auth.getCurrentUser();
-        if (currUser != null){
-            String userId = currUser.getUid();
-            FirebaseDatabase.getInstance().getReference("User").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    User user = dataSnapshot.getValue(User.class);
-                    displayNameView.setText(user.fullName);
-                    userHandleView.setText(user.City);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
 
 
-        }
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        if (ref == null)
+            return;
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                displayNameView.setText(user.FirstName);
+                userHandleView.setText(user.LastName);
+                // eventMiniImageView.setImageBitmap(ev.image);
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
     }
+
+
 }
         // TODO use params to get user data and fill fields.
