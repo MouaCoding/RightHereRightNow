@@ -15,8 +15,12 @@ import android.app.ProgressDialog;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -32,6 +36,8 @@ public class CreateEventFragment extends Fragment {
 
 
     private FirebaseAuth    firebaseAuth;
+    public String key;
+    public FirebaseUser usr;
 
 
     @Override
@@ -96,7 +102,7 @@ public class CreateEventFragment extends Fragment {
 
 
             // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
-            createdEvent.setValue(new Event(str_event_name, "Fill in owner ID", str_eventSDate,
+            createdEvent.setValue(new Event(str_event_name, firebaseAuth.getCurrentUser().getUid(), str_eventSDate,
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
                     str_event_description, location.getLatitude(), location.getLongitude(), 10, 100,
                     0, 4));
@@ -110,5 +116,6 @@ public class CreateEventFragment extends Fragment {
         } catch (SecurityException e) {}
 
     }
+
 
 }

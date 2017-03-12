@@ -1,6 +1,7 @@
 package com.example.rhrn.RightHereRightNow;
 
 import android.content.Intent;
+import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.view.View;
@@ -89,6 +90,9 @@ public class RegisterActivity extends LoginActivity {
         FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
         id = user.getKey();
         uid = fbuser.getUid();
+        User usr = new User(firstName, lastName, email, password, phone, address, city, state, id, uid);
+        RootRef.child("User").child(fbuser.getUid()).setValue(usr);
+
 
 
         //Set the user reference to the user's name
