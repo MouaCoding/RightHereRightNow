@@ -3,6 +3,7 @@ package com.example.rhrn.RightHereRightNow;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,12 +24,16 @@ public class RegisterActivity extends LoginActivity {
 
     private EditText    first_name,
                         last_name,
+                        display_name,
+                        hashtag,
                         user_email,
                         user_password,
                         user_phone,
                         user_address,
                         user_city,
-                        user_state;
+                        user_state,
+                        activity_points,
+                        numLikes;
 
     //Button for when user fills in the texts and then clicks on button
     private Button button;
@@ -50,6 +56,8 @@ public class RegisterActivity extends LoginActivity {
         //Initializes each text view to the class's objects
         first_name = (EditText)findViewById(R.id.first_name);
         last_name = (EditText)findViewById(R.id.last_name);
+        display_name = (EditText)findViewById(R.id.display_name);
+        hashtag = (EditText)findViewById(R.id.hashtag);
         user_email = (EditText)findViewById(R.id.register_email);
         user_password = (EditText)findViewById(R.id.register_password);
         user_phone = (EditText)findViewById(R.id.register_phone);
@@ -66,6 +74,8 @@ public class RegisterActivity extends LoginActivity {
         //Convert all user inputs to string values
         String firstName = first_name.getText().toString().trim();
         String lastName = last_name.getText().toString().trim();
+        String displayName = display_name.getText().toString().trim();
+        String hashTag = hashtag.getText().toString().trim();
         String fullname = firstName + " " + String.valueOf(lastName);
         //fullname = firstName.concat(String.valueOf(lastName));
         String email = user_email.getText().toString().trim();
@@ -90,12 +100,12 @@ public class RegisterActivity extends LoginActivity {
         id = user.getKey();
         uid = fbuser.getUid();
 
-
         //Set the user reference to the user's name
         user.setValue(fullname);
 
         //store and set the values associated with the user
-        user.setValue(new User(firstName,lastName,email,password,phone,address,city,state,id,uid));//data);
+        user.setValue(new User(firstName,lastName,displayName,hashTag,email,password,phone,address,city,state,id,uid));//data);
+
     }
 
     //Added a register button function

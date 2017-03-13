@@ -38,6 +38,25 @@
             android:layout_alignEnd="@+id/first_name" />
 
         <EditText
+            android:id="@+id/display_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/display_name"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_below="@+id/last_name"
+            android:layout_alignParentStart="true" />
+        <EditText
+            android:id="@+id/hashtag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hashtag"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_below="@+id/display_name"
+            android:layout_alignParentStart="true" />
+
+        <EditText
             android:id="@+id/register_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,8 +64,8 @@
             android:maxLines="1"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/last_name"
+            android:layout_marginTop="48dp"
+            android:layout_below="@+id/display_name"
             android:layout_alignParentStart="true" />
 
         <EditText
