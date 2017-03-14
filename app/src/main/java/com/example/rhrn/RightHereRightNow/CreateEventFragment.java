@@ -60,7 +60,7 @@ public class CreateEventFragment extends Fragment {
         event_description = (EditText)r.findViewById(R.id.event_description);
         startDate = (EditText)r.findViewById(R.id.editStartDate);
         endDate = (EditText)r.findViewById(R.id.editEndDate);
-       // startTime = (EditText)r.findViewById(R.id.editStartTime);
+        startTime = (EditText)r.findViewById(R.id.editStartTime);
         endTime = (EditText)r.findViewById(R.id.editEndTime);
         address = (EditText)r.findViewById(R.id.editAddress);
 
