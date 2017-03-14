@@ -3,6 +3,7 @@ package com.example.rhrn.RightHereRightNow;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,8 @@ import android.app.ProgressDialog;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -99,9 +102,6 @@ public class CreateEventFragment extends Fragment {
         return r;
     }
 
-
-
-
     public void createEvent() {
 
         String str_event_name = event_name.getText().toString().trim();
@@ -115,38 +115,36 @@ public class CreateEventFragment extends Fragment {
         //TODO: NAT change types to date/time. get current date/type.
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        Location location;
 
         try {
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             ProgressDialog progressDialog = new ProgressDialog(getActivity());
-
-            //Once register button is clicked, will display a progress dialog
-            progressDialog.setMessage("Creating Event Please Wait...");
+            progressDialog.setMessage("Creating Event, Please Wait...");
             progressDialog.show();
 
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-            DatabaseReference createdEvent = RootRef.child("Event").push();
-            // Event.setValue(str_event_name);
-            // then, Event.child().setValue(...)
+            DatabaseReference gettingKey = RootRef.child("Event").push();
+            DatabaseReference createdEvent = RootRef.child("Event").child("Event_" + gettingKey.getKey());
+            gettingKey.setValue(null);
+
+            DatabaseReference eventLocation = RootRef.child("EventLocations");
+            GeoFire geoFireLocation = new GeoFire(eventLocation);
 
 
             // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
             createdEvent.setValue(new Event(str_event_name, firebaseAuth.getCurrentUser().getUid(), str_eventSDate,
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
-                    str_event_description, location.getLatitude(), location.getLongitude(), 10, 0,
-                    0, 0));
+                    str_event_description, 10, 100, 0, 4));
 
             // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
-            //              String aEndTime, String aAddress, String aDescription, double aLat, double aLong,
+            //              String aEndTime, String aAddress, String aDescription,
             //              double aViewRadius, int aLikes, int aComments, int aRSVPs)
+
+            geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
 
             progressDialog.dismiss();
 
         } catch (SecurityException e) {}
-
     }
-
-
 }

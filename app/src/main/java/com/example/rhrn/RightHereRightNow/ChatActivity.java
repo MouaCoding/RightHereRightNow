@@ -19,11 +19,7 @@ import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
-
-import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
-import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.android.gms.cast.Cast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -213,7 +209,8 @@ public class ChatActivity extends MessageList implements View.OnClickListener,
 
 
 
-    /*//This function is used to get all the list of users except the current user
+    /*
+    //This function is used to get all the list of users except the current user
     public void getAllUsers()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -237,7 +234,8 @@ public class ChatActivity extends MessageList implements View.OnClickListener,
                         // Unable to retrieve the users.
                     }
                 });
-    } //getAllUsers()*/
+    } //getAllUsers()
+    */
 
 
 }
