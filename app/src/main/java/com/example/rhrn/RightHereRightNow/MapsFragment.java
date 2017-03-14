@@ -66,19 +66,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private MapView mapView;
     public static final String TAG = MapsFragment.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
-    private double curLongitude;
-    private double curLatitude;
     private LocationRequest mLocationRequest;
     private int radius = 1000;
     private FloatingActionButton button;
 
     private double kmToMiles = 0.621371;
+    private double curLatitude;
+    private double curLongitude;
+
+    private GeoLocation curLocation;
 
     private DatabaseReference   eventsOnMap,
                                 postsOnMap;
 
+    GeoQuery eventQuery;
+    GeoQuery postQuery;
+
     private HashMap<Marker, String> eventMarkerKeys = new HashMap<Marker, String>();
+    private HashMap<String, Marker> eventKeyMarkers = new HashMap<String, Marker>();
     private HashMap<Marker, String> postMarkerKeys  = new HashMap<Marker, String>();
+    private HashMap<String, Marker> postKeyMarkers  = new HashMap<String, Marker>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,7 +96,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         mapView.getMapAsync(this);
         mapView.onCreate(savedInstanceState);
 
-
+        drawPointsWithinUserRadius();
         //mapView = new MapView(getActivity());
 
         button = (FloatingActionButton) r.findViewById(R.id.message_button);
@@ -189,8 +196,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        drawPointsWithinRadius();
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -260,12 +265,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private void handleNewLocation(Location location) {
         Log.d(TAG, location.toString());
 
-        curLatitude = location.getLatitude();
-        curLongitude = location.getLongitude();
+        eventQuery.setCenter(new GeoLocation(curLatitude = location.getLatitude(), curLongitude = location.getLongitude()));
+        postQuery.setCenter(new GeoLocation(curLatitude, curLongitude));
 
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        //        for (Marker m : eventMarkerKeys.keySet()) {
+        //            m.remove();
+        //            eventKeyMarkers.remove(eventMarkerKeys.remove(m));
+        //        }
+        //        for (Marker m : postMarkerKeys.keySet()) {
+        //            m.remove();
+        //            postKeyMarkers.remove(postMarkerKeys.remove(m));
+        //        }
+
+        LatLng latLng = new LatLng(curLatitude, curLongitude);
 
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
@@ -277,7 +289,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
 
         final Circle circle = mMap.addCircle(new CircleOptions()
-                .center(new LatLng(currentLatitude,currentLongitude))
+                .center(new LatLng(curLatitude,curLongitude))
                 .strokeColor(Color.CYAN)
                 .radius(radius));
 
@@ -303,117 +315,102 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void drawPointsWithinRadius() {
-        // double longDegree = get
-
+    private void drawPointsWithinUserRadius() {
         eventsOnMap = FirebaseDatabase.getInstance().getReference("EventLocations");
-
         GeoFire eventFire = new GeoFire(eventsOnMap);
-        postsOnMap = FirebaseDatabase.getInstance().getReference("Post/loc");
+
+        postsOnMap = FirebaseDatabase.getInstance().getReference("PostLocations");
         GeoFire postFire = new GeoFire(postsOnMap);
 
-        GeoQuery eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), 50000);
-               // (radius * 0.001) * kmToMiles * 70);
+        eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), 10); // 12800.0);
+                //(radius * 0.001) * kmToMiles * 70);
+        postQuery = postFire.queryAtLocation(eventQuery.getCenter(), //12800.0);
+                (radius * 0.001) * kmToMiles * 70);
 
+        // might be something to do with initialization
 
-
-//        eventsOnMap.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Log.d("DS NUM CHILDREN: <", Long.toString(dataSnapshot.getChildrenCount()));
-////
-////                LatLng location = new LatLng((double)dataSnapshot.child("latitude").getValue(), (double)dataSnapshot.child("longitude").getValue());
-////
-////                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
-////                eventMarkerKeys.put(m, "temp");
-//                for (final DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-//
-//                    Log.d("dataSnapshot: <", eventSnapshot.getKey());
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
-//            }
-//        });  // add listener for events
-
+        Log.d("CENTER", Double.toString(eventQuery.getCenter().latitude));
 
         eventQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String s, GeoLocation l) {
-                Log.d("KEY CLICKED <", s);
 
                 LatLng location = new LatLng(l.latitude, l.longitude);
-
                 Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
                 eventMarkerKeys.put(m, s);
-            }
+                eventKeyMarkers.put(s, m);
+            }  // have discovered an event, so put it in hashmap and put a marker for it
 
             @Override
             public void onKeyMoved(String s, GeoLocation l) {
+                Marker toRemove = eventKeyMarkers.get(s);
+                eventMarkerKeys.remove(eventKeyMarkers.remove(s));
+                toRemove.remove();
 
-            }
+                LatLng location = new LatLng(l.latitude, l.longitude);
+                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+
+                eventMarkerKeys.put(m, s);
+                eventKeyMarkers.put(s, m);
+            }  // event has been moved, so move marker
 
             @Override
             public void onKeyExited(String s) {
-
-            }
+                Marker m = eventKeyMarkers.get(s);
+                eventMarkerKeys.remove(eventKeyMarkers.remove(s));
+                m.remove();
+            }  // event no longer in range, so remove it from hashmaps and map
 
             @Override
             public void onGeoQueryError(DatabaseError e) {
-                Log.d("ERROR", "GEOQUERY ERROR");
+                Log.d("ERROR", "GEOQUERY EVENT ERROR");
             }
 
             @Override
             public void onGeoQueryReady() {
 
             }
-
-
         });
 
-//        eventsOnMap.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (final DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-//                    String key = eventSnapshot.getKey();
-//                    Double latitude = (Double)eventSnapshot.child("latitude").getValue();
-//                    Double longitude = (Double)eventSnapshot.child("longitude").getValue();
-//
-//                    LatLng location = new LatLng(latitude, longitude);
-//
-//                    Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
-//                    eventMarkerKeys.put(m, key);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
-//            }
-//        });  // add listener for events
+        postQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String s, GeoLocation l) {
+                LatLng location = new LatLng(l.latitude, l.longitude);
 
-//        postsOnMap.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                    String key = postSnapshot.getKey();
-//                    Double latitude = (Double)postSnapshot.child("latitude").getValue();
-//                    Double longitude = (Double)postSnapshot.child("longitude").getValue();
-//
-//                    LatLng location = new LatLng(latitude, longitude);
-//
-//                    Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
-//                    postMarkerKeys.put(m, key);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
-//            }
-//        });  // add listener for posts
+                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+                postMarkerKeys.put(m, s);
+                postKeyMarkers.put(s, m);
+            }
+
+            @Override
+            public void onKeyMoved(String s, GeoLocation l) {
+                Marker toRemove = postKeyMarkers.get(s);
+                postMarkerKeys.remove(postKeyMarkers.remove(s));
+                toRemove.remove();
+
+                LatLng location = new LatLng(l.latitude, l.longitude);
+                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+
+                postMarkerKeys.put(m, s);
+                postKeyMarkers.put(s, m);
+            }
+
+            @Override
+            public void onKeyExited(String s) {
+                Marker m = postKeyMarkers.get(s);
+                postMarkerKeys.remove(postKeyMarkers.remove(s));
+                m.remove();
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError e) {
+                Log.d("ERROR", "GEOQUERY POST ERROR");
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+        });
     }
 }

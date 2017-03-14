@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -65,7 +66,6 @@ public class CreatePostFragment extends Fragment {
         String str_event_content = post_content.getText().toString().trim();
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        Location location;
 
         Calendar c = Calendar.getInstance();
         String date = Integer.toString(c.get(Calendar.MONTH)) + "/" + Integer.toString(c.get(Calendar.DAY_OF_MONTH))
@@ -86,41 +86,34 @@ public class CreatePostFragment extends Fragment {
             time = Integer.toString(Hour) + ":" + Integer.toString(Minute) + "AM";
         }
 
-
-
-
-
-
-
         try {
 
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             ProgressDialog progressDialog = new ProgressDialog(getActivity());
-
-            //Once register button is clicked, will display a progress dialog
             progressDialog.setMessage("Creating Event Please Wait...");
             progressDialog.show();
 
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-            DatabaseReference createdPost = RootRef.child("Post").push();
-            // Event.setValue(str_event_name);
-            // then, Event.child().setValue(...)
+            DatabaseReference gettingKey = RootRef.child("Post").push();
+            DatabaseReference createdPost = RootRef.child("Post").child("Post_" + gettingKey.getKey());
+            gettingKey.setValue(null);
+
+            DatabaseReference postLocation = RootRef.child("PostLocations");
+            GeoFire geoFireLocation = new GeoFire(postLocation);
 
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
             createdPost.setValue(new Post(firebaseAuth.getCurrentUser().getUid(), createdPost.getKey(), date, time,
-                    str_event_content, "response Post ID", 10, location.getLatitude(), location.getLongitude(), 0,
-                    0, 0, new GeoLocation(location.getLatitude(), location.getLongitude())));
+                    str_event_content, "response Post ID", 10, 0, 0, 0));
 
             // Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
-            //        String aResponseID, double aViewRadius, double aLat, double aLong,
-            //        int aOrder, int aLikes, int aComments)
+            //        String aResponseID, double aViewRadius, int aOrder, int aLikes, int aComments)
 
+            geoFireLocation.setLocation(createdPost.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
 
             progressDialog.dismiss();
 
         } catch (SecurityException e) {}
-
     }
 }
