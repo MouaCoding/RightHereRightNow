@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.example.rhrn.RightHereRightNow.firebaseEntry.Messages;
-import com.example.rhrn.RightHereRightNow.firebaseEntry.User;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
+import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

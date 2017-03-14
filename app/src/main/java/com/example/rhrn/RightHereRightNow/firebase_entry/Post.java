@@ -1,5 +1,6 @@
 package com.example.rhrn.RightHereRightNow.firebase_entry;
 
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -19,6 +20,8 @@ public class Post {
                     latitude,
                     longitude;
 
+    public GeoLocation loc;
+
     public int      order,  // is it an original post (0), response (1), or response to a response (2)
                     likes,
                     comments;
@@ -27,7 +30,7 @@ public class Post {
 
     public Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
                 String aResponseID, double aViewRadius, double aLat, double aLong,
-                int aOrder, int aLikes, int aComments) {
+                int aOrder, int aLikes, int aComments, GeoLocation aLoc) {
 
         ownerID     = aOwner;
         postID      = aID;
@@ -46,6 +49,8 @@ public class Post {
         order       = aOrder;
         likes       = aLikes;
         comments    = aComments;
+
+        loc = aLoc;
     }
 
     public void setComments(int comments) {
@@ -72,9 +77,7 @@ public class Post {
         this.createTime = createTime;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+    public void setContent(String content) { this.content = content; }
 
     public void setResponseID(String responseID) {
         this.responseID = responseID;
@@ -95,4 +98,6 @@ public class Post {
     public void setOrder(int order) {
         this.order = order;
     }
+
+    public void setLoc(GeoLocation loc) { this.loc = loc; }
 }

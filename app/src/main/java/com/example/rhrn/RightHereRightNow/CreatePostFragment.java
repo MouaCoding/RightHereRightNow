@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -79,7 +80,7 @@ public class CreatePostFragment extends Fragment {
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
             createdPost.setValue(new Post("ownerID", "postID", "createDate", "createTime",
                     str_event_content, "response Post ID", 10, location.getLatitude(), location.getLongitude(), 0,
-                    0, 0));
+                    0, 0, new GeoLocation(location.getLatitude(), location.getLongitude())));
 
             // Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
             //        String aResponseID, double aViewRadius, double aLat, double aLong,

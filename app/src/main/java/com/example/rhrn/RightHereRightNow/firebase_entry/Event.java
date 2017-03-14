@@ -1,5 +1,7 @@
 package com.example.rhrn.RightHereRightNow.firebase_entry;
 
+import com.firebase.geofire.GeoLocation;
+
 /**
  * Created by Brian Becker on 2/20/2017.
  */
@@ -17,9 +19,7 @@ public class Event {
     //  TODO: BB: Change dates and times to type Date
     // BB: we also might need some sort of unique event ID
 
-    public double   latitude,
-                    longitude,
-                    viewRadius;
+    public double   viewRadius;
 
     public int      likes,
                     comments,
@@ -28,7 +28,7 @@ public class Event {
     public Event() {}
 
     public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
-                 String aEndTime, String aAddress, String aDescription, double aLat, double aLong,
+                 String aEndTime, String aAddress, String aDescription,
                  double aViewRadius, int aLikes, int aComments, int aRSVPs) {
         eventName   = aName;
         ownerID     = aOwner;
@@ -40,9 +40,6 @@ public class Event {
 
         address     = aAddress;
         description = aDescription;
-
-        latitude    = aLat;
-        longitude   = aLong;
 
         viewRadius  = aViewRadius;
 
@@ -81,14 +78,6 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     public void setViewRadius(double viewRadius) {

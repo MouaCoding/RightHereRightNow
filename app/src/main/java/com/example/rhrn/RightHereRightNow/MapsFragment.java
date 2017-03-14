@@ -23,6 +23,10 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -62,11 +66,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private MapView mapView;
     public static final String TAG = MapsFragment.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
-    private double longitude;
-    private double latitude;
+    private double curLongitude;
+    private double curLatitude;
     private LocationRequest mLocationRequest;
-    private int radius = 100;
+    private int radius = 1000;
     private FloatingActionButton button;
+
+    private double kmToMiles = 0.621371;
 
     private DatabaseReference   eventsOnMap,
                                 postsOnMap;
@@ -254,6 +260,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private void handleNewLocation(Location location) {
         Log.d(TAG, location.toString());
 
+        curLatitude = location.getLatitude();
+        curLongitude = location.getLongitude();
+
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
@@ -295,49 +304,117 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void drawPointsWithinRadius() {
-        eventsOnMap = FirebaseDatabase.getInstance().getReference("Event");
-        postsOnMap = FirebaseDatabase.getInstance().getReference("Post");
+        // double longDegree = get
 
-        eventsOnMap.addValueEventListener(new ValueEventListener() {
+        eventsOnMap = FirebaseDatabase.getInstance().getReference("EventLocations");
+
+        GeoFire eventFire = new GeoFire(eventsOnMap);
+        postsOnMap = FirebaseDatabase.getInstance().getReference("Post/loc");
+        GeoFire postFire = new GeoFire(postsOnMap);
+
+        GeoQuery eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), 50000);
+               // (radius * 0.001) * kmToMiles * 70);
+
+
+
+//        eventsOnMap.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.d("DS NUM CHILDREN: <", Long.toString(dataSnapshot.getChildrenCount()));
+////
+////                LatLng location = new LatLng((double)dataSnapshot.child("latitude").getValue(), (double)dataSnapshot.child("longitude").getValue());
+////
+////                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+////                eventMarkerKeys.put(m, "temp");
+//                for (final DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+//
+//                    Log.d("dataSnapshot: <", eventSnapshot.getKey());
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                System.out.println("The read failed: " + databaseError.getCode());
+//            }
+//        });  // add listener for events
+
+
+        eventQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (final DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-                    String key = eventSnapshot.getKey();
-                    Double latitude = (Double)eventSnapshot.child("latitude").getValue();
-                    Double longitude = (Double)eventSnapshot.child("longitude").getValue();
+            public void onKeyEntered(String s, GeoLocation l) {
+                Log.d("KEY CLICKED <", s);
 
-                    LatLng location = new LatLng(latitude, longitude);
+                LatLng location = new LatLng(l.latitude, l.longitude);
 
-                    Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
-                    eventMarkerKeys.put(m, key);
-                }
+                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+                eventMarkerKeys.put(m, s);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });  // add listener for events
+            public void onKeyMoved(String s, GeoLocation l) {
 
-        postsOnMap.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    String key = postSnapshot.getKey();
-                    Double latitude = (Double)postSnapshot.child("latitude").getValue();
-                    Double longitude = (Double)postSnapshot.child("longitude").getValue();
-
-                    LatLng location = new LatLng(latitude, longitude);
-
-                    Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
-                    postMarkerKeys.put(m, key);
-                }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
+            public void onKeyExited(String s) {
+
             }
-        });  // add listener for posts
+
+            @Override
+            public void onGeoQueryError(DatabaseError e) {
+                Log.d("ERROR", "GEOQUERY ERROR");
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+
+
+        });
+
+//        eventsOnMap.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (final DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+//                    String key = eventSnapshot.getKey();
+//                    Double latitude = (Double)eventSnapshot.child("latitude").getValue();
+//                    Double longitude = (Double)eventSnapshot.child("longitude").getValue();
+//
+//                    LatLng location = new LatLng(latitude, longitude);
+//
+//                    Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+//                    eventMarkerKeys.put(m, key);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                System.out.println("The read failed: " + databaseError.getCode());
+//            }
+//        });  // add listener for events
+
+//        postsOnMap.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                    String key = postSnapshot.getKey();
+//                    Double latitude = (Double)postSnapshot.child("latitude").getValue();
+//                    Double longitude = (Double)postSnapshot.child("longitude").getValue();
+//
+//                    LatLng location = new LatLng(latitude, longitude);
+//
+//                    Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+//                    postMarkerKeys.put(m, key);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                System.out.println("The read failed: " + databaseError.getCode());
+//            }
+//        });  // add listener for posts
     }
+
 }
