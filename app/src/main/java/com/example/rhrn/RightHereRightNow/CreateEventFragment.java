@@ -1,5 +1,7 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -23,6 +25,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
+import java.util.Date;
+
+
 import static android.content.Context.LOCATION_SERVICE;
 
 public class CreateEventFragment extends Fragment {
@@ -34,6 +40,12 @@ public class CreateEventFragment extends Fragment {
                             startTime,
                             endTime,
                             address;
+
+    private TimePickerDialog   sTime,
+                               eTime;
+
+    private DatePickerDialog   sDate,
+                               eDate;
 
 
     private FirebaseAuth    firebaseAuth;
@@ -54,11 +66,28 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        EditText startDate = (EditText) r.findViewById(R.id.editStartDate);
+        startDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar c = Calendar.getInstance();
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog sDate;
+                sDate(this,new DatePickerDialog.OnDateSetListener() )
+                
+
+
+            }
+        });
+
 
         //Initializes each text view to the class's objects
         event_name = (EditText)r.findViewById(R.id.event_name);
         event_description = (EditText)r.findViewById(R.id.event_description);
-        startDate = (EditText)r.findViewById(R.id.editStartDate);
+        //startDate = (EditText)r.findViewById(R.id.editStartDate);
         endDate = (EditText)r.findViewById(R.id.editEndDate);
         startTime = (EditText)r.findViewById(R.id.editStartTime);
         endTime = (EditText)r.findViewById(R.id.editEndTime);

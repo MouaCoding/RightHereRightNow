@@ -164,6 +164,7 @@
                 android:layout_alignStart="@+id/event_et"
                 android:layout_below="@+id/event_ed"
                 android:ems="10"
+                android:hint="@string/dateEvent"
                 android:inputType="text" />
 
             <EditText
@@ -175,6 +176,7 @@
                 android:layout_below="@+id/event_sd"
                 android:layout_toStartOf="@+id/event_et"
                 android:ems="10"
+                android:hint="@string/dateEvent"
                 android:inputType="text" />
 
             <EditText
@@ -185,6 +187,7 @@
                 android:layout_alignStart="@+id/event_st"
                 android:layout_below="@+id/event_st"
                 android:ems="10"
+                android:hint="@string/timeEvent"
                 android:inputType="text"
                 android:textAlignment="center" />
 
@@ -208,6 +211,7 @@
                 android:layout_alignStart="@+id/event_et"
                 android:layout_below="@+id/event_et"
                 android:ems="10"
+                android:hint="@string/timeEvent"
                 android:inputType="textPersonName"
                 android:textAlignment="center" />
 
