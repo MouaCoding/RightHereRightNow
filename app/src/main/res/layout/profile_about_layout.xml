@@ -15,8 +15,8 @@
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp" />
 
-    <TextView
-        android:text="Goal: GRE 320 in 2017!! Fighting!"
+    <EditText
+        android:hint="Edit About Me..."
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/profile_about_text"

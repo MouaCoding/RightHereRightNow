@@ -4,6 +4,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,12 +54,13 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+
         //Initializes each text view to the class's objects
         event_name = (EditText)r.findViewById(R.id.event_name);
         event_description = (EditText)r.findViewById(R.id.event_description);
         startDate = (EditText)r.findViewById(R.id.editStartDate);
         endDate = (EditText)r.findViewById(R.id.editEndDate);
-        startTime = (EditText)r.findViewById(R.id.editStartTime);
+       // startTime = (EditText)r.findViewById(R.id.editStartTime);
         endTime = (EditText)r.findViewById(R.id.editEndTime);
         address = (EditText)r.findViewById(R.id.editAddress);
 
@@ -104,8 +106,8 @@ public class CreateEventFragment extends Fragment {
             // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
             createdEvent.setValue(new Event(str_event_name, firebaseAuth.getCurrentUser().getUid(), str_eventSDate,
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
-                    str_event_description, location.getLatitude(), location.getLongitude(), 10, 100,
-                    0, 4));
+                    str_event_description, location.getLatitude(), location.getLongitude(), 10, 0,
+                    0, 0));
 
             // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
             //              String aEndTime, String aAddress, String aDescription, double aLat, double aLong,

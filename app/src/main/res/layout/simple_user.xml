@@ -23,12 +23,12 @@
         <TextView
             android:text="user name"
             android:layout_width="123dp"
-            android:layout_height="60dp"
+            android:layout_height="66dp"
             android:id="@+id/textView11"
-            android:layout_weight="0.28"
             android:textAlignment="center"
             android:textSize="30sp"
-            android:textStyle="normal|italic" />
+            android:textStyle="normal|italic"
+            android:layout_weight="0.25" />
 
     </LinearLayout>
 

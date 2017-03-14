@@ -3,6 +3,7 @@ package com.example.rhrn.RightHereRightNow;
 import android.Manifest;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -42,7 +44,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
 import java.util.HashMap;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -62,6 +68,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private double latitude;
     private LocationRequest mLocationRequest;
     private int radius = 100;
+    private FloatingActionButton button;
 
     private DatabaseReference   eventsOnMap,
                                 postsOnMap;
@@ -80,6 +87,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
 
         //mapView = new MapView(getActivity());
+
+        button = (FloatingActionButton) r.findViewById(R.id.message_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MessageList.class);
+                startActivity(intent);
+            }
+        });
+
 
         // restore any state here if necessary
 
@@ -103,7 +120,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
-
+        //button = (Button) findViewById(R.id.message_button);
     }
 
     @Override

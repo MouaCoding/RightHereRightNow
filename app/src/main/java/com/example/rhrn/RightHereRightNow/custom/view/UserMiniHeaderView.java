@@ -59,8 +59,8 @@ public class UserMiniHeaderView extends FrameLayout {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                displayNameView.setText(user.FirstName);
-                userHandleView.setText(user.LastName);
+                displayNameView.setText(user.DisplayName);
+                userHandleView.setText(user.handle);
                 // eventMiniImageView.setImageBitmap(ev.image);
             }
 
