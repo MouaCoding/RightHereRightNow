@@ -1,6 +1,7 @@
 package com.example.rhrn.RightHereRightNow;
 
 import android.app.ProgressDialog;
+import android.icu.text.SimpleDateFormat;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -12,11 +13,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+
+import java.util.Calendar;
+import java.util.Date;
+
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -56,13 +63,37 @@ public class CreatePostFragment extends Fragment {
 
        // String str_event_name = post_name.getText().toString().trim();
         String str_event_content = post_content.getText().toString().trim();
-        Toast.makeText(getActivity(), "got here", Toast.LENGTH_LONG);
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         Location location;
 
+        Calendar c = Calendar.getInstance();
+        String date = Integer.toString(c.get(Calendar.MONTH)) + "/" + Integer.toString(c.get(Calendar.DAY_OF_MONTH))
+                + "/" + Integer.toString(c.get(Calendar.YEAR));
+        String time = "";
+        int Minute = c.get(Calendar.MINUTE);
+        int Hour = c.get(Calendar.HOUR_OF_DAY);
+        if(Hour >= 12)
+        {
+            if(Hour == 12){
+                time = Integer.toString(Hour) + ":" + Integer.toString(Minute) + "PM";
+            }
+            else {
+                time = Integer.toString((Hour - 12)) + ":" + Integer.toString(Minute) + "PM";
+            }
+        }
+        else {
+            time = Integer.toString(Hour) + ":" + Integer.toString(Minute) + "AM";
+        }
+
+
+
+
+
+
+
         try {
-            Toast.makeText(getActivity(), "in try", Toast.LENGTH_LONG);
+
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             ProgressDialog progressDialog = new ProgressDialog(getActivity());
@@ -78,7 +109,7 @@ public class CreatePostFragment extends Fragment {
 
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
-            createdPost.setValue(new Post("ownerID", "postID", "createDate", "createTime",
+            createdPost.setValue(new Post(firebaseAuth.getCurrentUser().getUid(), createdPost.getKey(), date, time,
                     str_event_content, "response Post ID", 10, location.getLatitude(), location.getLongitude(), 0,
                     0, 0, new GeoLocation(location.getLatitude(), location.getLongitude())));
 

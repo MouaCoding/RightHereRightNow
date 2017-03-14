@@ -132,20 +132,20 @@
                 android:layout_below="@+id/event_des"
                 android:layout_marginTop="13dp"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="@string/event_description_box" />
+                android:hint="@string/event_description_box"
+                android:inputType="textPersonName" />
 
             <EditText
+                android:id="@+id/event_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:text="@string/event_name_box"
-                android:ems="10"
-                android:id="@+id/event_name"
-                android:layout_marginStart="18dp"
                 android:layout_alignBaseline="@+id/event_n"
                 android:layout_alignBottom="@+id/event_n"
-                android:layout_toEndOf="@+id/event_n" />
+                android:layout_marginStart="18dp"
+                android:layout_toEndOf="@+id/event_n"
+                android:ems="10"
+                android:hint="@string/event_name_box"
+                android:inputType="textPersonName" />
 
             <Button
                 android:text="@string/event_button"
@@ -164,8 +164,7 @@
                 android:layout_alignStart="@+id/event_et"
                 android:layout_below="@+id/event_ed"
                 android:ems="10"
-                android:inputType="text"
-                android:text="@string/dateEndEnvent" />
+                android:inputType="text" />
 
             <EditText
                 android:id="@+id/editStartDate"
@@ -176,8 +175,7 @@
                 android:layout_below="@+id/event_sd"
                 android:layout_toStartOf="@+id/event_et"
                 android:ems="10"
-                android:inputType="text"
-                android:text="@string/dateStartEvent" />
+                android:inputType="text" />
 
             <EditText
                 android:id="@+id/editStartTime"
@@ -188,32 +186,30 @@
                 android:layout_below="@+id/event_st"
                 android:ems="10"
                 android:inputType="text"
-                android:text="@string/timeStartEvent"
                 android:textAlignment="center" />
 
             <EditText
                 android:id="@+id/editAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="@string/addressEvent"
                 android:layout_alignBaseline="@+id/event_addr"
                 android:layout_alignBottom="@+id/event_addr"
-                android:layout_alignEnd="@+id/create_event_confirm" />
+                android:layout_alignEnd="@+id/create_event_confirm"
+                android:ems="10"
+                android:hint="@string/addressEvent"
+                android:inputType="textPersonName" />
 
             <EditText
                 android:id="@+id/editEndTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editStartTime"
+                android:layout_alignEnd="@+id/event_et"
                 android:layout_alignStart="@+id/event_et"
+                android:layout_below="@+id/event_et"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="@string/timeEndEvent"
-                android:textAlignment="center"
-                android:layout_alignEnd="@+id/event_et"
-                android:layout_below="@+id/event_et"
-                android:layout_alignBottom="@+id/editStartTime" />
+                android:textAlignment="center" />
 
             <!-- android:onClick="createEvent" -->
 

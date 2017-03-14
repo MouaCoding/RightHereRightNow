@@ -78,6 +78,8 @@ public class UserEventView extends FrameLayout {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Event ev = dataSnapshot.getValue(Event.class);
+
+                eventMakerHeader.getUser(ev.ownerID);
                 eventTitleView.setText(ev.eventName);
                 eventStartTimeView.setText(ev.startTime);
                 eventEndTimeView.setText(ev.endTime);

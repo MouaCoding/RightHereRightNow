@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -53,6 +54,7 @@ public class UserPostView extends FrameLayout {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Post p = dataSnapshot.getValue(Post.class);
+                postMakerHeader.getUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 postBodyTextView.setText(p.content);
 
 

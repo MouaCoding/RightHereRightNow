@@ -5,6 +5,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +19,12 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -35,6 +40,8 @@ public class CreateEventFragment extends Fragment {
 
 
     private FirebaseAuth    firebaseAuth;
+    public String key;
+    public FirebaseUser usr;
 
 
     @Override
@@ -49,6 +56,7 @@ public class CreateEventFragment extends Fragment {
                 createEvent();
             }
         });
+
 
         //Initializes each text view to the class's objects
         event_name = (EditText)r.findViewById(R.id.event_name);
@@ -65,11 +73,6 @@ public class CreateEventFragment extends Fragment {
         return r;
     }
 
-    public void getUserInfo(){
-
-    }
-
-
     public void createEvent() {
 
         String str_event_name = event_name.getText().toString().trim();
@@ -80,6 +83,7 @@ public class CreateEventFragment extends Fragment {
         String str_eventETime = endTime.getText().toString();
         String str_eventAddr  = address.getText().toString();
 
+        //TODO: NAT change types to date/time. get current date/type.
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
@@ -100,7 +104,7 @@ public class CreateEventFragment extends Fragment {
 
 
             // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
-            createdEvent.setValue(new Event(str_event_name, "Fill in owner ID", str_eventSDate,
+            createdEvent.setValue(new Event(str_event_name, firebaseAuth.getCurrentUser().getUid(), str_eventSDate,
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
                     str_event_description, 10, 100, 0, 4));
 
