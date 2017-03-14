@@ -160,24 +160,27 @@
                 android:id="@+id/editEndDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/event_et"
+                android:layout_alignEnd="@+id/event_isPrivate"
                 android:layout_alignStart="@+id/event_et"
                 android:layout_below="@+id/event_ed"
                 android:ems="10"
+                android:focusableInTouchMode="false"
                 android:hint="@string/dateEvent"
-                android:inputType="text" />
+                android:inputType="none"
+                android:textAlignment="viewStart" />
 
             <EditText
                 android:id="@+id/editStartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/event_st"
                 android:layout_alignStart="@+id/event_st"
                 android:layout_below="@+id/event_sd"
-                android:layout_toStartOf="@+id/event_et"
+                android:layout_toStartOf="@+id/editAddress"
                 android:ems="10"
+                android:focusableInTouchMode="false"
                 android:hint="@string/dateEvent"
-                android:inputType="text" />
+                android:inputType="none"
+                android:textAlignment="viewStart" />
 
             <EditText
                 android:id="@+id/editStartTime"
@@ -188,7 +191,8 @@
                 android:layout_below="@+id/event_st"
                 android:ems="10"
                 android:hint="@string/timeEvent"
-                android:inputType="text"
+                android:inputType="none"
+                android:focusableInTouchMode="false"
                 android:textAlignment="center" />
 
             <EditText
@@ -212,7 +216,8 @@
                 android:layout_below="@+id/event_et"
                 android:ems="10"
                 android:hint="@string/timeEvent"
-                android:inputType="textPersonName"
+                android:inputType="none"
+                android:focusableInTouchMode="false"
                 android:textAlignment="center" />
 
             <!-- android:onClick="createEvent" -->

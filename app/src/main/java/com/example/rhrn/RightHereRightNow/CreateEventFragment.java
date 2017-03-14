@@ -6,15 +6,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.app.ProgressDialog;
+import android.widget.TimePicker;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.Calendar;
 import java.util.Date;
@@ -48,8 +50,9 @@ public class CreateEventFragment extends Fragment {
                                eTime;
 
     private DatePickerDialog   sDate,
-                               eDate;
+                                 eDate;
 
+    int currDay, currMonth, currYear, currHour, currMinute;
 
     private FirebaseAuth    firebaseAuth;
     public String key;
@@ -57,7 +60,7 @@ public class CreateEventFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
 //        super.onCreateView(inflater, container, savedInstanceState);
         View r = inflater.inflate(R.layout.create_event_page_layout, container, false);
 
@@ -69,35 +72,121 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        EditText startDate = (EditText) r.findViewById(R.id.editStartDate);
-        startDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar c = Calendar.getInstance();
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog sDate;
-                sDate(this,new DatePickerDialog.OnDateSetListener() )
-                
-
-
-            }
-        });
 
 
         //Initializes each text view to the class's objects
         event_name = (EditText)r.findViewById(R.id.event_name);
         event_description = (EditText)r.findViewById(R.id.event_description);
-        //startDate = (EditText)r.findViewById(R.id.editStartDate);
+        startDate = (EditText)r.findViewById(R.id.editStartDate);
         endDate = (EditText)r.findViewById(R.id.editEndDate);
         startTime = (EditText)r.findViewById(R.id.editStartTime);
         endTime = (EditText)r.findViewById(R.id.editEndTime);
         address = (EditText)r.findViewById(R.id.editAddress);
 
+        Calendar c = Calendar.getInstance();
+        currDay = c.get(Calendar.DAY_OF_MONTH);
+        currMonth = c.get(Calendar.MONTH);
+        currYear = c.get(Calendar.YEAR);
+        currHour = c.get(Calendar.HOUR_OF_DAY);
+        currMinute = c.get(Calendar.MINUTE);
+
+
+
         firebaseAuth = FirebaseAuth.getInstance();
 
+        startTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               sTime = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                   @Override
+                   public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        String amPm;
+                        String min;
+                        if(hourOfDay >= 12 ){
+                            amPm = "PM";
+                        }
+                        else{
+                            amPm = "AM";
+                        }
+                        if(hourOfDay == 0) {
+                            hourOfDay = 12;
+                        }
+                        if(hourOfDay > 12){
+                            hourOfDay = hourOfDay - 12;
+                        }
+                       if(minute < 10){
+                           min = "0"+minute;
+                       }
+                       else
+                       {
+                           min = Integer.toString(minute);
+                       }
+                        startTime.setText(hourOfDay+":"+min+amPm);
+                   }
+               }, currHour, currMinute, DateFormat.is24HourFormat(getActivity()));
+                sTime.show();
+            }
+        });
+
+        endTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eTime = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        String amPm;
+                        String min;
+                        if(hourOfDay >= 12 ){
+                            amPm = "PM";
+                        }
+                        else{
+                            amPm = "AM";
+                        }
+                        if(hourOfDay == 0) {
+                            hourOfDay = 12;
+                        }
+                        if(hourOfDay > 12){
+                            hourOfDay = hourOfDay - 12;
+                        }
+                        if(minute < 10){
+                            min = "0"+minute;
+                        }
+                        else
+                        {
+                            min = Integer.toString(minute);
+                        }
+                        endTime.setText(hourOfDay+":"+min+amPm);
+                    }
+                }, currHour, currMinute, DateFormat.is24HourFormat(getActivity()));
+                eTime.show();
+            }
+        });
+
+        startDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sDate = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        startDate.setText((month+1)+"/"+dayOfMonth+"/"+year);
+                    }
+                }, currYear, currMonth, currDay);
+                sDate.show();
+            }
+        });
+
+        endDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eDate = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        endDate.setText((month+1)+"/"+dayOfMonth+"/"+year);
+                    }
+                }, currYear, currMonth, currDay);
+                eDate.show();
+            }
+        });
 
         return r;
     }
@@ -112,7 +201,9 @@ public class CreateEventFragment extends Fragment {
         String str_eventETime = endTime.getText().toString();
         String str_eventAddr  = address.getText().toString();
 
-        //TODO: NAT change types to date/time. get current date/type.
+
+
+
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
@@ -146,5 +237,9 @@ public class CreateEventFragment extends Fragment {
             progressDialog.dismiss();
 
         } catch (SecurityException e) {}
+
+
+
+
     }
 }
