@@ -86,20 +86,23 @@ public class RegisterActivity extends LoginActivity {
             // Will be able to search for post by userID :)
 
         //Create a user reference which is a child of the Root, also generates a unique id per user
-        DatabaseReference user = RootRef.child("User").push();
+       // DatabaseReference user = RootRef.child("User").push();
+
+
+        //Index by UID rather than auto key from push
         FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-        id = user.getKey();
+       // id = user.getKey();
         uid = fbuser.getUid();
-        User usr = new User(firstName, lastName, email, password, phone, address, city, state, id, uid);
+        User usr = new User(firstName, lastName, email, password, phone, address, city, state, "000", uid);
         RootRef.child("User").child(fbuser.getUid()).setValue(usr);
 
 
 
         //Set the user reference to the user's name
-        user.setValue(fullname);
+        //user.setValue(fullname);
 
         //store and set the values associated with the user
-        user.setValue(new User(firstName,lastName,email,password,phone,address,city,state,id,uid));//data);
+        //user.setValue(new User(firstName,lastName,email,password,phone,address,city,state,id,uid));//data);
     }
 
     //Added a register button function
