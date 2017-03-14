@@ -20,15 +20,15 @@
         android:layout_weight="1">
 
         <TextView
-            android:text="John Smith"
+            android:id="@+id/mini_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/mini_name"
-            android:layout_weight="1"
             android:layout_gravity="left|center_vertical"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
             android:gravity="bottom|left"
-            android:textAppearance="@android:style/TextAppearance.Material.Menu"
-            android:layout_margin="4dp" />
+            android:text="Display Name"
+            android:textAppearance="@android:style/TextAppearance.Material.Menu" />
 
         <TextView
             android:id="@+id/mini_user_handle"
@@ -41,7 +41,7 @@
             android:layout_marginTop="2dp"
             android:layout_weight="1"
             android:gravity="top|left"
-            android:text="\@jsmith1" />
+            android:text="Handle" />
 
     </LinearLayout>
 
