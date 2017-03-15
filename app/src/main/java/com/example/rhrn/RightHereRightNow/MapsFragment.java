@@ -8,6 +8,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,6 +81,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     private DatabaseReference   eventsOnMap,
                                 postsOnMap;
+
+    // eventually remove these
+    ValueAnimator temp;
+    Marker ourLoc;
+    Circle removeCircle;
 
     GeoQuery eventQuery;
     GeoQuery postQuery;
@@ -215,13 +221,38 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             }
         });  // add listeners for clicking markers
 
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                ourLoc.remove();
+                removeCircle.remove();
+                temp.removeAllListeners();
+                temp.end();
+                temp.cancel();
+
+                Location newPos = new Location(LocationManager.GPS_PROVIDER);
+                newPos.setLatitude(marker.getPosition().latitude);
+                newPos.setLongitude(marker.getPosition().longitude);
+                handleNewLocation(newPos);
+            }
+
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+        });
+
         // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);
         //mMap.addMarker(new MarkerOptions().position(sydney).draggable(true).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
 
     }
-
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -271,32 +302,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         eventQuery.setCenter(new GeoLocation(curLatitude = location.getLatitude(), curLongitude = location.getLongitude()));
         postQuery.setCenter(new GeoLocation(curLatitude, curLongitude));
 
-        //        for (Marker m : eventMarkerKeys.keySet()) {
-        //            m.remove();
-        //            eventKeyMarkers.remove(eventMarkerKeys.remove(m));
-        //        }
-        //        for (Marker m : postMarkerKeys.keySet()) {
-        //            m.remove();
-        //            postKeyMarkers.remove(postMarkerKeys.remove(m));
-        //        }
-
         LatLng latLng = new LatLng(curLatitude, curLongitude);
 
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
                 .draggable(true)
                 .title("My Location");
-        mMap.addMarker(options);
+        ourLoc = mMap.addMarker(options);
         //zoom in to 15, (10 is city view), but want user view.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
-
+        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
 
         final Circle circle = mMap.addCircle(new CircleOptions()
-                .center(new LatLng(curLatitude,curLongitude))
+                .center(new LatLng(curLatitude, curLongitude))
                 .strokeColor(Color.CYAN)
                 .radius(radius));
+        removeCircle = circle;
 
         ValueAnimator vAnimator = new ValueAnimator();
+        temp = vAnimator;
         vAnimator.setRepeatCount(ValueAnimator.INFINITE);
         vAnimator.setRepeatMode(ValueAnimator.RESTART);
         //TODO: Implement radius change where user wants to change radius.
@@ -316,6 +339,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         });
         vAnimator.start();
 
+
     }
 
     private void drawPointsWithinUserRadius() {
@@ -325,10 +349,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         postsOnMap = FirebaseDatabase.getInstance().getReference("PostLocations");
         GeoFire postFire = new GeoFire(postsOnMap);
 
-        eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), 100000); // 12800.0);
+        eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), radius / 1000); // 12800.0);
                 //(radius * 0.001) * kmToMiles * 70);
-        postQuery = postFire.queryAtLocation(eventQuery.getCenter(), //12800.0);
-                (radius * 0.001) * kmToMiles * 70);
+        postQuery = postFire.queryAtLocation(eventQuery.getCenter(), radius / 1000);//12800.0);
+                // (radius * 0.001) * kmToMiles * 70);
 
         // might be something to do with initialization
 
