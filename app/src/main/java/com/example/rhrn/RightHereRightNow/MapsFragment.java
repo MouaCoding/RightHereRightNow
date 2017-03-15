@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,6 +75,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private double curLatitude;
     private double curLongitude;
 
+    private String curUserID;
     private GeoLocation curLocation;
 
     private DatabaseReference   eventsOnMap,
@@ -195,6 +197,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -322,7 +325,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         postsOnMap = FirebaseDatabase.getInstance().getReference("PostLocations");
         GeoFire postFire = new GeoFire(postsOnMap);
 
-        eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), 10); // 12800.0);
+        eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), 100000); // 12800.0);
                 //(radius * 0.001) * kmToMiles * 70);
         postQuery = postFire.queryAtLocation(eventQuery.getCenter(), //12800.0);
                 (radius * 0.001) * kmToMiles * 70);

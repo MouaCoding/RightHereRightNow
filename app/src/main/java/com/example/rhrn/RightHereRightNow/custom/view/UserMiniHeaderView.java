@@ -6,8 +6,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.firebase_entry.FollowingUser;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +33,9 @@ public class UserMiniHeaderView extends FrameLayout {
     private ImageButton moreButton;
     private ImageButton addButton;
 
+    private String otherUserID;
+    private String curUserID;
+
     public UserMiniHeaderView(Context context) {
         super(context);
         createView();
@@ -46,12 +52,14 @@ public class UserMiniHeaderView extends FrameLayout {
         displayNameView = (TextView) findViewById(R.id.mini_name);
         userHandleView = (TextView) findViewById(R.id.mini_user_handle);
         moreButton = (ImageButton) findViewById(R.id.mini_profile_more_button);
-        addButton = (ImageButton) findViewById(R.id.mini_profile_add_button);
+
+        if (otherUserID != FirebaseAuth.getInstance().getCurrentUser().getUid()) {
+            addButton = (ImageButton) findViewById(R.id.mini_profile_add_button);
+            followButton();
+        }
     }
 
     public void getUser(String userID) {
-
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(userID);
         if (ref == null)
             return;
@@ -61,6 +69,8 @@ public class UserMiniHeaderView extends FrameLayout {
                 User user = dataSnapshot.getValue(User.class);
                 displayNameView.setText(user.DisplayName);
                 userHandleView.setText(user.handle);
+                otherUserID = user.uid;
+                curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 // eventMiniImageView.setImageBitmap(ev.image);
             }
 
@@ -69,10 +79,20 @@ public class UserMiniHeaderView extends FrameLayout {
 
             }
         });
-
-
     }
 
+    private void followButton() {
+        addButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (curUserID != null && curUserID != otherUserID) {
+                    FirebaseDatabase.getInstance().getReference("Following")
+                            .child(curUserID).child(otherUserID).setValue(new FollowingUser());
+                }
+
+            }
+        });
+    }
 
 }
-        // TODO use params to get user data and fill fields.
+// TODO use params to get user data and fill fields.
