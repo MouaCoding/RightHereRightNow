@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -44,6 +46,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,7 +55,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -111,8 +116,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MessageList.class);
-                startActivity(intent);
+                getCurrentUserInfo();
             }
         });
 
@@ -440,4 +444,36 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             }
         });
     }
+
+    public void getCurrentUserInfo()
+    {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final String userKey = user.getUid();
+            final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
+            rootRef.child(userKey).child("UsersMessaged").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ArrayList<String> keys = new ArrayList<String>();
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        String other = userSnapshot.getKey();
+                        keys.add(other);
+                    }
+
+                    Bundle extra = new Bundle();
+                    extra.putSerializable("objects", keys);
+
+                    Intent intent = new Intent(getApplicationContext(), MessageList.class);
+                    intent.putExtra("extra",extra);
+                    startActivity(intent);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+    }
+
+
 }
