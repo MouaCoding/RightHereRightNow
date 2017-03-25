@@ -21,12 +21,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Matt on 3/8/2017.
@@ -40,7 +43,7 @@ public class MessageList extends AppCompatActivity {
     private UserAdapter mAdapter;
     private ImageButton backButton;
     public App mApp;
-
+    Bundle extra;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,27 +81,37 @@ public class MessageList extends AppCompatActivity {
 
 
         //Should display all the messages the user has
-        getAllUsers();
+        extra = getIntent().getBundleExtra("extra");
+        if(extra != null)
+            getUsersMessaged();
+        //TODO: Refresh list after messaging someone
+        // else if(extra == null){
+            //getCurrentUserInfo();
     }
-    public void getAllUsers()
+    public void getUsersMessaged()
     {
+
+        final ArrayList<String> keys = (ArrayList<String>) extra.getSerializable("objects");
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userKey = user.getUid();
-        FirebaseDatabase.getInstance().getReference().child("User")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    //@Override
+        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
+                rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //Iterates through Firebase database
+                        //User currentUser = dataSnapshot.getValue(User.class);
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             User other = userSnapshot.getValue(User.class);
-                            //If the user is not themself, then add it to the list of other users
-                            if (!TextUtils.equals(other.uid, userKey)) {
-                                mUsers.add(other);
+                            //iterate through UsersMessaged list, if matched then add to list of users messaged
+                            for(int i = 0; i < keys.size();i++){
+                                if(TextUtils.equals(other.uid, keys.get(i))) {
+                                    mUsers.add(other);
+                                }
                             }
                         }
                         mAdapter = new UserAdapter(mUsers);
                         mListView.setAdapter(mAdapter);
-                        //Log.d(mApp.getHandle(),"HANDLE");
 
                         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -123,6 +136,37 @@ public class MessageList extends AppCompatActivity {
 
     } //getAllUsers()
 
+    public void getCurrentUserInfo()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userKey = user.getUid();
+        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
+        rootRef.child(userKey).child("UsersMessaged").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> keys = new ArrayList<String>();
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    String other = userSnapshot.getKey();
+                    keys.add(other);
+                }
+
+                Bundle extra = new Bundle();
+                extra.putSerializable("objects", keys);
+                Intent intent = new Intent(getApplicationContext(), MessageList.class);
+                intent.putExtra("extra",extra);
+
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }//getCurrentUserInfo()
+
+
     public class UserAdapter extends ArrayAdapter<User> {
         UserAdapter(ArrayList<User> users){
 
@@ -139,9 +183,6 @@ public class MessageList extends AppCompatActivity {
             //TODO: Populate the message preview with the most recent message
             messageView.setText(user.FirstName); // placeholder for now...
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)nameView.getLayoutParams();
-
-            //nameView.setBackground(getDrawable(R.drawable.bubble_left_gray));
-            //layoutParams.gravity = Gravity.LEFT;
 
             nameView.setLayoutParams(layoutParams);
             return convertView;

@@ -15,11 +15,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Matt on 3/8/2017.
@@ -31,7 +34,7 @@ public class NewMessage extends ChatActivity{
     public EditText sendTo,
                     messageContent;
     public Messages msg;
-    public String name;
+    public String name, receiverID;
     public App mApp;
 
     @Override
@@ -77,9 +80,9 @@ public class NewMessage extends ChatActivity{
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userKey = user.getUid();
-        FirebaseDatabase.getInstance().getReference().child("User")
+        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
                 //query based on the receiver's handle
-                .getRef().orderByChild("handle").equalTo(receiverHandle)
+                rootRef.getRef().orderByChild("handle").equalTo(receiverHandle)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     //@Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -88,6 +91,7 @@ public class NewMessage extends ChatActivity{
                             //found the receiver by their handle, now set it
                             User receiver = userSnapshot.getValue(User.class);
                             name = receiver.DisplayName;
+                            receiverID = receiver.uid;
                             //get the conversation id through here!
                             msg.setReceiver(receiver.uid);
                             mConvoId = userKey + receiver.uid;
@@ -96,7 +100,7 @@ public class NewMessage extends ChatActivity{
                             mConvoId = ids[0]+ids[1];
                             //mUsers.add(receiver);
                         }
-
+                        rootRef.child(userKey).child("UsersMessaged").child(receiverID).setValue(true);
                         MessageSource.saveMessage(msg, mConvoId);
                         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                         intent.putExtra(ChatActivity.RECEIVER_ID,msg.getReceiver());
