@@ -75,7 +75,7 @@
     <string name="Events">Events</string>
     <string name="Posts">Posts</string>
     <string name="Time">Time</string>
-
+    <string name= "Type">Event Type</string>
 
     <!-- Strings related to messaging-->
     <string name="new_message">New Message</string>
