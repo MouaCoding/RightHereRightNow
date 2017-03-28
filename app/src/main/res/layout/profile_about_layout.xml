@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp">
 
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
     <TextView
-        android:text="About"
+        android:text="About Me"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/profile_about_label"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp" />
+        />
+    <ImageView
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/ic_create_black_24dp"
+        android:id="@+id/edit_about_me"
+        android:layout_width="22dp"
+        android:layout_alignParentRight="true"/>
+    </RelativeLayout>
 
-    <EditText
-        android:hint="Edit About Me..."
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/profile_about_text"

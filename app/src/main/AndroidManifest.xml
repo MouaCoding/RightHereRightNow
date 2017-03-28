@@ -72,6 +72,10 @@
         <activity android:name=".NewMessage">
 
         </activity>
+        <activity android:name=".AboutMe">
+
+        </activity>
+
     </application>
 
 </manifest>

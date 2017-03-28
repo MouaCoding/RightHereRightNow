@@ -19,7 +19,8 @@ public class User {
                     State,
                     id,
                     uid, // added user id, easier to use with FirebaseUser instance
-                    AboutMe;
+                    AboutMe,
+                    ProfilePicture;
     public ArrayList<String> followers; //TODO: Decide what is best to store followers -> uid? name?
     //public ArrayList<String> UsersMessaged;
     public int  ActivityPoints,
