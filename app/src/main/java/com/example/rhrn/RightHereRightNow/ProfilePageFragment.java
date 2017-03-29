@@ -78,6 +78,8 @@ public class ProfilePageFragment extends Fragment {
     public User temp;
     ProgressDialog pd;
     private static final int SELECT_PICTURE = 100;
+    //request int for using camera
+    private static final int CAPTURE_PICTURE = 200;
     // creating an instance of Firebase Storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
     //creating a storage reference.
@@ -139,6 +141,8 @@ public class ProfilePageFragment extends Fragment {
                 dlgAlert.setNeutralButton("Capture", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getApplicationContext(), "Capture", Toast.LENGTH_LONG).show();
+                        Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(imageIntent, CAPTURE_PICTURE);
                     }
                 });
                 //if user cancels
@@ -178,10 +182,8 @@ public class ProfilePageFragment extends Fragment {
             final FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
             // Get the Image from data
             filePath = data.getData();
-
             //Upload to firebase
             uploadToFirebase();
-
             //Then set the photo from the chosen gallery
             try {
                 Bitmap bitmap = MediaStore.Images.Media
@@ -192,7 +194,16 @@ public class ProfilePageFragment extends Fragment {
                 e.printStackTrace();
             }
             //Else user did not pick an image
-        } else {
+        } else if (requestCode == CAPTURE_PICTURE && resultCode == RESULT_OK) {
+            // Get the Image from data
+            filePath = data.getData();
+            //Upload to firebase
+            uploadToFirebase();
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            profilePicture.setImageBitmap(imageBitmap);
+            //Else user did not pick an image
+        }else {
             Toast.makeText(getApplicationContext(), "You haven't picked Image",
                     Toast.LENGTH_LONG).show();
         }
