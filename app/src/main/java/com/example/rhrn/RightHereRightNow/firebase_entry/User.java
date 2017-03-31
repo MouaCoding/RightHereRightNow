@@ -1,6 +1,8 @@
 package com.example.rhrn.RightHereRightNow.firebase_entry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Matthew Moua on 2/17/2017.
@@ -23,6 +25,7 @@ public class User {
                     ProfilePicture;
     public ArrayList<String> followers; //TODO: Decide what is best to store followers -> uid? name?
     //public ArrayList<String> UsersMessaged;
+    //public ArrayList<Map<String,Object>> UsersMessaged = new ArrayList<Map<String,Object>>();
     public int  ActivityPoints,
                 LikesReceived;
 

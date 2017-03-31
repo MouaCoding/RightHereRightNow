@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -22,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.main_app_toolbar);
+        //toolbar.setLogo(R.drawable.ic_search_black_24dp);
+        //setSupportActionBar(toolbar);
 
         // populate fragments
         pagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
@@ -68,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            Fragment f = null;
             switch (position) {
                 case 0:
                     // return map fragment
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return 3;
-//            return NUM_PAGES;
+            //return NUM_PAGES;
             // TODO make it work for all 5
         }
     }

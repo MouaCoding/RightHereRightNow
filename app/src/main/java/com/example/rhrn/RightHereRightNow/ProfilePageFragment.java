@@ -1,41 +1,31 @@
 package com.example.rhrn.RightHereRightNow;
 
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
-import com.google.android.gms.fitness.data.Goal;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,26 +34,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 
 import static android.app.Activity.RESULT_OK;
-import static android.content.ContentValues.TAG;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Bradley Wang on 2/13/2017.
- * Edit by Matt on 3/8/2018 --> Queried displayName and updated the profile page name
+ * Edit by Matt on 3/8/201 --> Queried displayName and updated the profile page name
+ * Edit by Matt 3/28/2017-4/1/2017 --> Populate profile, change profile pic via upload/capture
  */
 public class ProfilePageFragment extends Fragment {
     public TextView userName,
@@ -72,14 +56,26 @@ public class ProfilePageFragment extends Fragment {
             numActivityPoints,
             numLikes,
             about;
-    //TODO: Add an about me to the user class, I forgot to do it!
     public ImageView profilePicture, edit;
     public ImageButton changeProfile;
+
+    //Posts
+    public ImageView miniProfilePicture;
+    public TextView miniUserName,
+                    miniHandle,
+                    body,
+                    postsNumLikes,
+                    postsNumShares;
+    public ListView listView;
+    //public ArrayList<Post> postArray;
+
     public User temp;
     ProgressDialog pd;
     private static final int SELECT_PICTURE = 100;
     //request int for using camera
     private static final int CAPTURE_PICTURE = 200;
+    public FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+
     // creating an instance of Firebase Storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
     //creating a storage reference.
@@ -168,7 +164,20 @@ public class ProfilePageFragment extends Fragment {
                 queryFirebase();
             }
         });
+
+        //Posts
+        miniProfilePicture = (ImageView) r.findViewById(R.id.mini_profile_picture);
+        miniUserName = (TextView) r.findViewById(R.id.mini_name);
+        miniHandle = (TextView) r.findViewById(R.id.mini_user_handle);
+        body = (TextView) r.findViewById(R.id.user_post_body);
+        postsNumLikes = (TextView) r.findViewById(R.id.number_likes);
+        postsNumShares = (TextView) r.findViewById(R.id.number_shares);
+        //listView = (ListView)r.findViewById(R.id.post_list);
+        //postArray = new ArrayList<>();
+
         queryFirebase();
+        populatePost();
+        populatePostHeader();
         return r;
     }
 
@@ -179,7 +188,6 @@ public class ProfilePageFragment extends Fragment {
         // When an Image is picked, the image is called back
         if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK
                 && null != data) {
-            final FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
             // Get the Image from data
             filePath = data.getData();
             //Upload to firebase
@@ -213,7 +221,6 @@ public class ProfilePageFragment extends Fragment {
 
     public void queryFirebase()
     {
-        final FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference users= FirebaseDatabase.getInstance().getReference("User");
         users.orderByChild("Email").equalTo(fbuser.getEmail())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -246,8 +253,6 @@ public class ProfilePageFragment extends Fragment {
 
     public void uploadToFirebase()
     {
-        //Log.d("FILEPATH", filePath.toString());
-        final FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
         //create the profile picture name using their uid + .jpg
         String childFile = String.valueOf(fbuser.getUid()) + ".jpg";
 
@@ -282,19 +287,87 @@ public class ProfilePageFragment extends Fragment {
     //stackoverflow function
     public static Bitmap getBitmapFromURL(String src) {
         try {
-            Log.e("src",src);
             URL url = new URL(src);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            Log.e("Bitmap","returned");
             return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("Exception",e.getMessage());
+        } catch (Exception e) {
             return null;
         }
     }
+
+    //populate posts from firebase
+    public void populatePost()
+    {
+        DatabaseReference users= FirebaseDatabase.getInstance().getReference("Post");
+        users.orderByChild("ownerID").equalTo(fbuser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            Post post = userSnapshot.getValue(Post.class);
+                            postsNumLikes.setText(Integer.toString(post.likes));
+                            postsNumShares.setText(Integer.toString(post.comments));
+                            body.setText(post.content);
+                            //postArray.add(post);
+                        }
+                        //PostAdapter adapter = new PostAdapter(postArray);
+                        //listView.setAdapter(adapter);
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        System.out.println("The read failed: " + databaseError.getCode());
+                    }
+                });
+    }
+    public void populatePostHeader()
+    {
+        DatabaseReference users= FirebaseDatabase.getInstance().getReference().child("User");
+        users.orderByChild("uid").equalTo(fbuser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            User temp = userSnapshot.getValue(User.class);
+                            miniHandle.setText(temp.handle);
+                            miniUserName.setText(temp.DisplayName);
+                            //TRY because user might not have profile picture yet
+                            try {
+                                //Convert the URL to a Bitmap using function, then set the profile picture
+                                miniProfilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        System.out.println("The read failed: " + databaseError.getCode());
+                    }
+                });
+    }
+/*
+    //Post List
+    public class PostAdapter extends ArrayAdapter<Post> {
+        PostAdapter(ArrayList<Post> postList){
+
+            super(getApplicationContext(), R.layout.user_post_framed_layout, R.id.mini_name, postList);
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+            convertView = super.getView(position, convertView, parent);
+            Post p = getItem(position);
+            try {
+                postsNumLikes.setText(p.likes);
+                postsNumShares.setText(p.comments);
+                body.setText(p.content);
+            } catch (Exception e){}
+            return convertView;
+        }
+    }
+    */
 }
