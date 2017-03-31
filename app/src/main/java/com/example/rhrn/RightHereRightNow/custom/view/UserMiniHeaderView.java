@@ -1,7 +1,10 @@
 package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -20,6 +23,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 /**
@@ -71,6 +79,12 @@ public class UserMiniHeaderView extends FrameLayout {
                 userHandleView.setText(user.handle);
                 otherUserID = user.uid;
                 curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                //Try if user has profile pic
+                try {
+                    //Convert the URL to aa Bitmap using function, then set the profile picture
+                    miniProfilePicView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                }catch (Exception e){}
                 // eventMiniImageView.setImageBitmap(ev.image);
             }
 
@@ -92,6 +106,21 @@ public class UserMiniHeaderView extends FrameLayout {
 
             }
         });
+    }
+
+    //stackoverflow function
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch( Exception e) {
+            return null;
+        }
     }
 
 }

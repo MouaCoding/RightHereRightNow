@@ -4,7 +4,7 @@
     <item
         android:id="@+id/search"
         android:enabled="true"
-        android:title="search"
+        android:title="Search"
         android:icon="@drawable/magnifier"
         app:showAsAction="always" />
     <item
@@ -15,9 +15,9 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/current_city"
-        android:enabled="false"
+        android:enabled="true"
         android:title="Current City"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="always" />
     <item
         android:id="@+id/favorite"

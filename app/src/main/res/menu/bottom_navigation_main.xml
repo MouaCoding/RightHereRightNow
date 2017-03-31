@@ -15,7 +15,6 @@
         android:id="@+id/menu"
         android:enabled="true"
         android:icon="@drawable/ic_menu_black_24dp"
-        app:menu="@menu/menu_click"
         app:showAsAction="always"/>
     <item
         android:id="@+id/music_social_group"

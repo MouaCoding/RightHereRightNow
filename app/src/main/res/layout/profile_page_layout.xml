@@ -18,6 +18,27 @@
 
             <include layout="@layout/profile_main_layout" />
 
+
+
+            <TextView
+                android:text="Posts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"
+                android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                android:layout_margin="8dp" />
+
+            <!-- TODO: Create a list of posts to display on user profile page
+            <ListView
+                android:id ="@+id/post_list"
+                android:layout_weight="100"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:divider="@null" />
+            -->
+
+            <include layout="@layout/user_post_framed_layout"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -32,21 +53,9 @@
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:layout_margin="8dp" />
 
+
             <include layout="@layout/create_event_page_layout"/>
 
-            <TextView
-                android:text="Posts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView3"
-                android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                android:layout_margin="8dp" />
-
-            <include layout="@layout/user_post_framed_layout"/>
-
-            <include layout="@layout/user_post_framed_layout"/>
-
-            <include layout="@layout/user_post_framed_layout"/>
 
             <ProgressBar
                 style="@android:style/Widget.Material.Light.ProgressBar.Large"
@@ -54,6 +63,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/progressBar2"
                 android:indeterminate="true" />
+
+
 
         </LinearLayout>
     </ScrollView>

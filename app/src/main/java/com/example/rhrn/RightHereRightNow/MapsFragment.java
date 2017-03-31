@@ -314,7 +314,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .title("My Location");
         ourLoc = mMap.addMarker(options);
         //zoom in to 15, (10 is city view), but want user view.
-        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
 
         final Circle circle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(curLatitude, curLongitude))
@@ -465,13 +465,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     Intent intent = new Intent(getApplicationContext(), MessageList.class);
                     intent.putExtra("extra",extra);
                     startActivity(intent);
-
                 }
-
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
+                public void onCancelled(DatabaseError databaseError) {}
             });
     }
 

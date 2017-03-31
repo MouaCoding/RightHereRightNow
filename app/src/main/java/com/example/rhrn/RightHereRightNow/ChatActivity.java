@@ -90,14 +90,7 @@ public class ChatActivity extends MessageList implements View.OnClickListener,
             @Override
             public void onClick(View v) {
                 //finish current activity when back button is pressed
-                /*if(getIntent().getExtras() != null) {
-                    Intent intent = new Intent(getApplicationContext(), MessageList.class);
-                    intent.putExtra(ChatActivity.RECEIVER_ID, ChatActivity.RECEIVER_ID);
-                    intent.putExtra("ReceiverName", "ReceiverName");
-                    intent.putExtra("MessageContent", msg.getMessage());
-                */
                 finish();
-                //}
             }
         });
         Button sendMessage = (Button)findViewById(R.id.send_message);
@@ -105,14 +98,12 @@ public class ChatActivity extends MessageList implements View.OnClickListener,
 
         FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
         mRecipient = fbuser.getUid();
-        //getKeyFromFB();
 
         //Establish a link between two ids, this link will not only be unique
         String receiverKey="";
         Bundle extras = getIntent().getExtras();
         if(extras != null)
             receiverKey = extras.getString(RECEIVER_ID); // get the extra (receiver id) from previous activity
-        //Log.d(receiverKey,"RKEY");
         String[] ids = {mRecipient, receiverKey};
         Arrays.sort(ids);
         mConvoId = ids[0]+ids[1];
@@ -131,12 +122,6 @@ public class ChatActivity extends MessageList implements View.OnClickListener,
         msg.setReceiver(getIntent().getExtras().getString(RECEIVER_ID));
 
         getKeyFromFB();
-        /*//TODO: once we can query receiver, then change this.
-        if(Objects.equals(mRecipient,"HALZm2q8cZdyfVsg9kWSkEvSYXg2"))
-            msg.setReceiver("0wOKUffpCuMZIf575Q3NaXjW8UD3");
-        else
-            msg.setReceiver("HALZm2q8cZdyfVsg9kWSkEvSYXg2");
-*/
     }
 
     @Override
@@ -206,36 +191,4 @@ public class ChatActivity extends MessageList implements View.OnClickListener,
         });
 
     }
-
-
-
-    /*
-    //This function is used to get all the list of users except the current user
-    public void getAllUsers()
-    {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String userKey = user.getUid();
-        FirebaseDatabase.getInstance().getReference().child("User")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            User other = userSnapshot.getValue(User.class);
-                            if (!TextUtils.equals(other.uid, userKey)) {
-                                mUsers.add(other);
-                                Log.d(other.id,"OTHER ID");
-                                //TODO: find the person the current user wants to talk to.
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Unable to retrieve the users.
-                    }
-                });
-    } //getAllUsers()
-    */
-
-
 }

@@ -34,9 +34,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 /**
  * Created by Matt on 3/8/2017.
  */
-
 public class MessageList extends AppCompatActivity {
-
     private ImageView addMessage; // treating this as a button
     private ListView mListView; //List of messages
     private ArrayList<User> mUsers;
@@ -70,15 +68,6 @@ public class MessageList extends AppCompatActivity {
                 finish();
             }
         });
-        /*mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: Check user id, then change activity and populate based on message between sender and rcver
-                Intent intent = new Intent(getApplicationContext(),ChatActivity.class);
-                startActivity(intent);
-            }
-        });*/
-
 
         //Should display all the messages the user has
         extra = getIntent().getBundleExtra("extra");
@@ -90,9 +79,7 @@ public class MessageList extends AppCompatActivity {
     }
     public void getUsersMessaged()
     {
-
         final ArrayList<String> keys = (ArrayList<String>) extra.getSerializable("objects");
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userKey = user.getUid();
         final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
@@ -100,7 +87,6 @@ public class MessageList extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //Iterates through Firebase database
-                        //User currentUser = dataSnapshot.getValue(User.class);
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             User other = userSnapshot.getValue(User.class);
                             //iterate through UsersMessaged list, if matched then add to list of users messaged
@@ -112,11 +98,9 @@ public class MessageList extends AppCompatActivity {
                         }
                         mAdapter = new UserAdapter(mUsers);
                         mListView.setAdapter(mAdapter);
-
                         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                //TODO: Check user id, then change activity and populate based on message between sender and rcver
                                 Intent intent = new Intent(getApplicationContext(),ChatActivity.class);
                                 intent.putExtra(ChatActivity.RECEIVER_ID,mUsers.get(position).uid);
                                 intent.putExtra("ReceiverName",mUsers.get(position).DisplayName);
@@ -127,7 +111,6 @@ public class MessageList extends AppCompatActivity {
                         });
 
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         // Unable to retrieve the users.
