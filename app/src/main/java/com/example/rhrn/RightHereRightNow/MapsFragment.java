@@ -6,7 +6,11 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -39,6 +43,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -312,9 +317,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .position(latLng)
                 .draggable(true)
                 .title("My Location");
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exc));
         ourLoc = mMap.addMarker(options);
-        //zoom in to 15, (10 is city view), but want user view.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
 
         final Circle circle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(curLatitude, curLongitude))
@@ -367,7 +372,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             public void onKeyEntered(String s, GeoLocation l) {
 
                 LatLng location = new LatLng(l.latitude, l.longitude);
-                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+                Marker m = mMap.addMarker(new MarkerOptions()
+                        .position(location).draggable(false)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 eventMarkerKeys.put(m, s);
                 eventKeyMarkers.put(s, m);
             }  // have discovered an event, so put it in hashmap and put a marker for it
@@ -407,8 +414,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onKeyEntered(String s, GeoLocation l) {
                 LatLng location = new LatLng(l.latitude, l.longitude);
-
-                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 postMarkerKeys.put(m, s);
                 postKeyMarkers.put(s, m);
             }

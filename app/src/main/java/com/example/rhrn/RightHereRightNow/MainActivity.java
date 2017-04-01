@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Fragment f = null;
             switch (position) {
                 case 0:
                     // return map fragment
@@ -81,15 +81,16 @@ public class MainActivity extends AppCompatActivity {
                     // break;
                 case 1:
                     // return posts and event fragment
-                    return new ProfilePageFragment();
-                    // break;
+                    return new CreatePostFragment();
+                    //break;
                 case 2:
                     // return middle button fragment?
                     return new CreatePostOrEventTempShimFragment();
                     // break;
                 case 3:
                     // return something?
-                    break;
+                    return new CreateEventFragment();
+                    //break;
                 case 4:
                     return new ProfilePageFragment();// return profile page fragment
             }
@@ -98,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
-            //return NUM_PAGES;
+            //return 3;
+            return NUM_PAGES;
             // TODO make it work for all 5
         }
     }
