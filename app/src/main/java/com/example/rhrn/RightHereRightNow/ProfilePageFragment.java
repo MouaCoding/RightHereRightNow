@@ -161,7 +161,7 @@ public class ProfilePageFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AboutMe.class);
                 startActivity(intent);
-                queryFirebase();
+                //queryFirebase();
             }
         });
 
