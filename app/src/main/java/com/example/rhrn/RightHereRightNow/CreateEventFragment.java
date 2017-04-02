@@ -106,7 +106,7 @@ public class CreateEventFragment extends Fragment {
             // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
             createdEvent.setValue(new Event(str_event_name, firebaseAuth.getCurrentUser().getUid(), str_eventSDate,
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
-                    str_event_description, 10, 100, 0, 4));
+                    str_event_description, 10, 0, 0, 0));
 
             // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
             //              String aEndTime, String aAddress, String aDescription,

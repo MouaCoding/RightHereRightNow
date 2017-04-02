@@ -15,7 +15,8 @@ public class Event {
                     startTime,
                     endTime,
                     address,
-                    description;
+                    description,
+                    ProfilePicture;
     //  TODO: BB: Change dates and times to type Date
     // BB: we also might need some sort of unique event ID
 

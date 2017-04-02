@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static android.R.attr.width;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 import java.util.ArrayList;
@@ -372,9 +374,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             public void onKeyEntered(String s, GeoLocation l) {
 
                 LatLng location = new LatLng(l.latitude, l.longitude);
+
                 Marker m = mMap.addMarker(new MarkerOptions()
                         .position(location).draggable(false)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
+                        //TODO: MM: Change marker size with our algorithm -> query likes and multiply
+                        .icon(BitmapDescriptorFactory.fromBitmap(drawMarkerWithSize(100,100))));
+                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 eventMarkerKeys.put(m, s);
                 eventKeyMarkers.put(s, m);
             }  // have discovered an event, so put it in hashmap and put a marker for it
@@ -477,6 +482,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 public void onCancelled(DatabaseError databaseError) {}
             });
     }
+
+    public Bitmap drawMarkerWithSize(int width, int height)
+    {
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources()
+                .getDrawable(R.drawable.exclamation_point,null);
+        Bitmap b=bitmapdraw.getBitmap();
+        Bitmap marker = Bitmap.createScaledBitmap(b, width, height, false);
+        return marker;
+    }
+
 
 
 }
