@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     // break;
                 case 1:
                     // return posts and event fragment
-                    return new CreatePostFragment();
+                    return new TrendingFragment();
                     //break;
                 case 2:
                     // return middle button fragment?
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     // break;
                 case 3:
                     // return something?
-                    return new CreateEventFragment();
+                    return new NotificationFragment();
                     //break;
                 case 4:
                     return new ProfilePageFragment();// return profile page fragment

@@ -1,8 +1,11 @@
 package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -17,6 +20,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -67,13 +74,31 @@ public class UserEventView extends FrameLayout {
         // TODO create callback for spinner here for updating RSVP state on server side
 
         likeButton = (ImageButton) findViewById(R.id.user_event_like_button);
+        likeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            //TODO: increment likes for event
+            }
+        });
+
         commentButton = (ImageButton) findViewById(R.id.user_event_comment_button);
+        commentButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: implement comment on click
+            }
+        });
         shareButton = (ImageButton) findViewById(R.id.user_event_share_button);
+        shareButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: increment shares, implement sharing
+            }
+        });
     }
 
     public void getEvent(String eventID) {
         // TODO fetch event information from params and fill fields
-
         FirebaseDatabase.getInstance().getReference("Event").child(eventID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -85,8 +110,9 @@ public class UserEventView extends FrameLayout {
                 eventEndTimeView.setText(ev.endTime);
                 eventLocationView.setText(ev.address);
 
-
-                // eventMiniImageView.setImageBitmap(ev.image);
+                try {
+                     eventMiniImageView.setImageBitmap(getBitmapFromURL(ev.ProfilePicture));
+                }catch (Exception e){}
             }
 
             @Override
@@ -94,5 +120,19 @@ public class UserEventView extends FrameLayout {
 
             }
         });
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
