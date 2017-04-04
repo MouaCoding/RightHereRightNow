@@ -22,7 +22,6 @@
             android:layout_margin="2dp" />
 
         <TextView
-            android:text="100"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/profile_followers_value"
@@ -52,7 +51,6 @@
             android:layout_margin="2dp" />
 
         <TextView
-            android:text="1964"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/profile_activitypoints_value"
@@ -82,7 +80,6 @@
             android:layout_margin="2dp" />
 
         <TextView
-            android:text="16201"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/profile_karma_value"

@@ -1,6 +1,7 @@
 package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.ViewUserActivity;
 import com.example.rhrn.RightHereRightNow.firebase_entry.FollowingUser;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.client.Firebase;
@@ -28,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -57,7 +61,24 @@ public class UserMiniHeaderView extends FrameLayout {
     public void createView() {
         inflate(getContext(), R.layout.user_mini_header_layout, this);
         miniProfilePicView = (ImageView) findViewById(R.id.mini_profile_picture);
+        //Clicking either user's profile picture or their name will start a view user activity
+        miniProfilePicView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
+                intent.putExtra("otherUserID",otherUserID);
+                getContext().startActivity(intent);
+            }
+        });
         displayNameView = (TextView) findViewById(R.id.mini_name);
+        displayNameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
+                intent.putExtra("otherUserID",otherUserID);
+                getContext().startActivity(intent);
+            }
+        });
         userHandleView = (TextView) findViewById(R.id.mini_user_handle);
         moreButton = (ImageButton) findViewById(R.id.mini_profile_more_button);
 
