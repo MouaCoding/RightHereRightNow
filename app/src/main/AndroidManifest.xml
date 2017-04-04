@@ -61,23 +61,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".RegisterActivity">
-
-        </activity>
-        <activity android:name=".ChatActivity">
-
-        </activity>
-        <activity android:name=".MessageList">
-
-        </activity>
-        <activity android:name=".NewMessage">
-
-        </activity>
-        <activity android:name=".AboutMe">
-
-        </activity>
+        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".MessageList"></activity>
+        <activity android:name=".NewMessage"></activity>
+        <activity android:name=".AboutMe"></activity>
+        <activity android:name=".ViewUserActivity"></activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -86,8 +75,9 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
 
     </application>
 
