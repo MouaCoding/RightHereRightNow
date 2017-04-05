@@ -68,14 +68,14 @@
             android:text="@string/distance"
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
-        <SeekBar
-            android:id="@+id/ev_dist_bar"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75"
-            android:max="100"
-            android:progress="30" />
+            android:layout_weight="0.04"
+            android:text="@string/distance"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
     </LinearLayout>
 
 </LinearLayout>
