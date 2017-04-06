@@ -13,17 +13,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.acl.Owner;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -40,6 +44,11 @@ public class UserEventView extends FrameLayout {
 
 
     private Spinner eventRSVPStateSpinner;
+    private int eventLikes;
+    private int usrLikes;
+    private String EventID;
+    private String OwnerID;
+
 
     private ImageButton likeButton;
     private ImageButton commentButton;
@@ -77,7 +86,13 @@ public class UserEventView extends FrameLayout {
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            //TODO: increment likes for event
+                getLikes(OwnerID, EventID);
+                int evValue = eventLikes + 1;
+                int usrValue = usrLikes + 1;
+                FirebaseDatabase.getInstance().getReference("Event").child(EventID).child("likes").setValue(evValue);
+                FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
+                Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -97,12 +112,15 @@ public class UserEventView extends FrameLayout {
         });
     }
 
-    public void getEvent(String eventID) {
+    public void getEvent(final String eventID) {
         // TODO fetch event information from params and fill fields
         FirebaseDatabase.getInstance().getReference("Event").child(eventID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Event ev = dataSnapshot.getValue(Event.class);
+                EventID = eventID;
+                OwnerID = ev.ownerID;
+                eventLikes = ev.likes;
 
                 eventMakerHeader.getUser(ev.ownerID);
                 eventTitleView.setText(ev.eventName);
@@ -135,4 +153,35 @@ public class UserEventView extends FrameLayout {
             return null;
         }
     }
+
+    public void getLikes(final String ownerID, final String eventID){
+        FirebaseDatabase.getInstance().getReference().child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User postOwner = dataSnapshot.getValue(User.class);
+                usrLikes = postOwner.LikesReceived;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+            // TODO fetch event information from params and fill fields
+            FirebaseDatabase.getInstance().getReference("Event").child(eventID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Event ev = dataSnapshot.getValue(Event.class);
+                    eventLikes = ev.likes;
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
 }
