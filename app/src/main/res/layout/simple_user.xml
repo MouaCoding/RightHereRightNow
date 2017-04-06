@@ -2,33 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <LinearLayout
+        android:id="@+id/Header_only"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_width="588dp"
-        android:layout_height="94dp"
-        android:weightSum="1"
-        android:id="@+id/Header_only">
+        android:weightSum="1">
 
         <ImageView
-            android:layout_width="112dp"
-            android:layout_height="85dp"
-            app:srcCompat="@mipmap/ic_launcher"
-            android:id="@+id/imageView3"
-            android:layout_weight="0.03" />
+            android:id="@+id/simp_user_image"
+            android:layout_width="91dp"
+            android:layout_height="65dp"
+            app:srcCompat="@mipmap/ic_launcher" />
 
-        <TextView
-            android:text="user name"
-            android:layout_width="123dp"
-            android:layout_height="66dp"
-            android:id="@+id/textView11"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:textStyle="normal|italic"
-            android:layout_weight="0.25" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.03"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/simp_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/display_name"
+                android:textAppearance="@android:style/TextAppearance.Material.Title" />
+
+            <TextView
+                android:id="@+id/simp_user_handle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hashtag"
+                android:textAppearance="@android:style/TextAppearance.Material.Title" />
+        </LinearLayout>
 
     </LinearLayout>
 
