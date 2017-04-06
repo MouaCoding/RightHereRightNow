@@ -30,7 +30,7 @@
     <string name="error_invalid_password">Incorrect Password. Please try again.</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
     <string name="facebook_app_id">1862159977386608</string>
     <string name="error_signin">Error logging in.</string>
     <string name="forgot_password">Forgot?</string>
