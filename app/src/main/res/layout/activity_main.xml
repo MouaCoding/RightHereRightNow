@@ -11,13 +11,13 @@
 
 
 
-    <com.example.rhrn.RightHereRightNow.NonScrollingViewPager
+    <com.example.rhrn.RightHereRightNow.custom.view.NonScrollingViewPager
         android:id="@+id/main_content_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-    </com.example.rhrn.RightHereRightNow.NonScrollingViewPager>
+    </com.example.rhrn.RightHereRightNow.custom.view.NonScrollingViewPager>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/main_bottom_navigation"

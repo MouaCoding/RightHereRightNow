@@ -20,7 +20,7 @@ public class WallActivity extends FragmentActivity {
         // get listview and set adapter
     }
 
-    private class WallAdapter extends BaseAdapter {
+    private static class WallAdapter extends BaseAdapter /*implements*/ {
         @Override
         public int getCount() {
             return 0;
@@ -38,6 +38,8 @@ public class WallActivity extends FragmentActivity {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
+            // TODO get what should go at position i
+            // TODO reuse View view if possible
             return null;
         }
         //

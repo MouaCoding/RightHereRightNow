@@ -7,10 +7,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -20,17 +17,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.Toast;
 
-import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
-import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
-import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -59,12 +51,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import static android.R.attr.width;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -474,7 +464,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     Bundle extra = new Bundle();
                     extra.putSerializable("objects", keys);
 
-                    Intent intent = new Intent(getApplicationContext(), MessageList.class);
+                    Intent intent = new Intent(getApplicationContext(), MessageListActivity.class);
                     intent.putExtra("extra",extra);
                     startActivity(intent);
                 }
