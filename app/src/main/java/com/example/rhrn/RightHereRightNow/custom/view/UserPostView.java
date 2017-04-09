@@ -1,6 +1,7 @@
 package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -66,8 +67,9 @@ public class UserPostView extends FrameLayout {
                 int usrValue = usrLikes + 1;
                 FirebaseDatabase.getInstance().getReference("Post").child(PostID).child("likes").setValue(pstValue);
                 FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
-                Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                //TODO: change button look instead of TOAST
+                //Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                //  likeButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.LightGrey));
+                likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
                 likeButton.setClickable(false);
             }
         });

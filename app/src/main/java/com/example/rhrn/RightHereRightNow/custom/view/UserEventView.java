@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -91,8 +92,9 @@ public class UserEventView extends FrameLayout {
                 int usrValue = usrLikes + 1;
                 FirebaseDatabase.getInstance().getReference("Event").child(EventID).child("likes").setValue(evValue);
                 FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
-                Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                // TODO: change button instead of a TOAST
+              //  Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
+              //  likeButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.LightGrey));
                 likeButton.setClickable(false);
 
             }
