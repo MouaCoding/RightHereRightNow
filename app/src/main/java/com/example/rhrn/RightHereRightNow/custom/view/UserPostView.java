@@ -61,12 +61,14 @@ public class UserPostView extends FrameLayout {
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLikes(OwnerID, PostID);
+
                 int pstValue = postLikes + 1;
                 int usrValue = usrLikes + 1;
                 FirebaseDatabase.getInstance().getReference("Post").child(PostID).child("likes").setValue(pstValue);
                 FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
                 Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                //TODO: change button look instead of TOAST
+                likeButton.setClickable(false);
             }
         });
     }
@@ -80,6 +82,9 @@ public class UserPostView extends FrameLayout {
                 postBodyTextView.setText(p.content);
                 OwnerID = p.ownerID;
                 PostID = postID;
+                postLikes = p.likes;
+                getOwnerLikes(OwnerID);
+
 
 
                 // eventMiniImageView.setImageBitmap(ev.image);
@@ -92,26 +97,14 @@ public class UserPostView extends FrameLayout {
         });
     }
 
-    public void getLikes(final String ownerID, final String postID){
+
+
+    public void getOwnerLikes(String ownerID){
         FirebaseDatabase.getInstance().getReference().child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User postOwner = dataSnapshot.getValue(User.class);
                 usrLikes = postOwner.LikesReceived;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        // TODO fetch event information from params and fill fields
-        FirebaseDatabase.getInstance().getReference("Post").child(postID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Post pst = dataSnapshot.getValue(Post.class);
-                postLikes = pst.likes;
             }
 
             @Override

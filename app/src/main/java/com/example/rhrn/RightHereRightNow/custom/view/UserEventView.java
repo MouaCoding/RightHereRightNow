@@ -86,12 +86,14 @@ public class UserEventView extends FrameLayout {
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLikes(OwnerID, EventID);
+
                 int evValue = eventLikes + 1;
                 int usrValue = usrLikes + 1;
                 FirebaseDatabase.getInstance().getReference("Event").child(EventID).child("likes").setValue(evValue);
                 FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
                 Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                // TODO: change button instead of a TOAST
+                likeButton.setClickable(false);
 
             }
         });
@@ -121,6 +123,7 @@ public class UserEventView extends FrameLayout {
                 EventID = eventID;
                 OwnerID = ev.ownerID;
                 eventLikes = ev.likes;
+                getOwnerLikes(OwnerID);
 
                 eventMakerHeader.getUser(ev.ownerID);
                 eventTitleView.setText(ev.eventName);
@@ -154,7 +157,7 @@ public class UserEventView extends FrameLayout {
         }
     }
 
-    public void getLikes(final String ownerID, final String eventID){
+    public void getOwnerLikes(String ownerID){
         FirebaseDatabase.getInstance().getReference().child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -167,21 +170,6 @@ public class UserEventView extends FrameLayout {
 
             }
         });
-
-            // TODO fetch event information from params and fill fields
-            FirebaseDatabase.getInstance().getReference("Event").child(eventID).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Event ev = dataSnapshot.getValue(Event.class);
-                    eventLikes = ev.likes;
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
+    }
 
 }
