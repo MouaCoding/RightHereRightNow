@@ -26,6 +26,8 @@ public class UserPostView extends FrameLayout {
     private UserMiniHeaderView postMakerHeader;
 
     private TextView postBodyTextView;
+    private TextView numLikes;
+    private TextView numComments;
 
     private ImageButton likeButton;
     private ImageButton commentButton;
@@ -54,6 +56,8 @@ public class UserPostView extends FrameLayout {
         postMakerHeader = (UserMiniHeaderView) findViewById(R.id.user_post_mini_head);
 
         postBodyTextView = (TextView) findViewById(R.id.user_post_body);
+        numLikes = (TextView) findViewById(R.id.number_likes);
+        numComments = (TextView) findViewById(R.id.number_comments);
 
         likeButton = (ImageButton) findViewById(R.id.user_post_like_button);
         commentButton = (ImageButton) findViewById(R.id.user_post_comment_button);
@@ -69,6 +73,7 @@ public class UserPostView extends FrameLayout {
                 FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
                 //Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
                 //  likeButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.LightGrey));
+                numLikes.setText(Integer.toString(pstValue));
                 likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
                 likeButton.setClickable(false);
             }
@@ -80,12 +85,20 @@ public class UserPostView extends FrameLayout {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Post p = dataSnapshot.getValue(Post.class);
-                postMakerHeader.getUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                if(p.isAnon == true){
+                    postMakerHeader.anonUser();
+                }
+                else {
+                    postMakerHeader.getUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                }
+
                 postBodyTextView.setText(p.content);
                 OwnerID = p.ownerID;
                 PostID = postID;
                 postLikes = p.likes;
                 getOwnerLikes(OwnerID);
+                numLikes.setText(Integer.toString(p.likes));
+                numComments.setText(Integer.toString(p.comments));
 
 
 

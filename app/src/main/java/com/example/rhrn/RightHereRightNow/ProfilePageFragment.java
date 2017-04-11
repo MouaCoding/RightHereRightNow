@@ -65,7 +65,7 @@ public class ProfilePageFragment extends Fragment {
                     miniHandle,
                     body,
                     postsNumLikes,
-                    postsNumShares;
+                    postsNumComments;
     public ListView listView;
     //public ArrayList<Post> postArray;
 
@@ -171,7 +171,7 @@ public class ProfilePageFragment extends Fragment {
         miniHandle = (TextView) r.findViewById(R.id.mini_user_handle);
         body = (TextView) r.findViewById(R.id.user_post_body);
         postsNumLikes = (TextView) r.findViewById(R.id.number_likes);
-        postsNumShares = (TextView) r.findViewById(R.id.number_shares);
+        postsNumComments = (TextView) r.findViewById(R.id.number_comments);
         //listView = (ListView)r.findViewById(R.id.post_list);
         //postArray = new ArrayList<>();
 
@@ -310,7 +310,7 @@ public class ProfilePageFragment extends Fragment {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             Post post = userSnapshot.getValue(Post.class);
                             postsNumLikes.setText(Integer.toString(post.likes));
-                            postsNumShares.setText(Integer.toString(post.comments));
+                            postsNumComments.setText(Integer.toString(post.comments));
                             body.setText(post.content);
                             //postArray.add(post);
                         }

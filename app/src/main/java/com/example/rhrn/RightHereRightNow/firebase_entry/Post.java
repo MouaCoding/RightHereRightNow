@@ -22,10 +22,12 @@ public class Post {
                     likes,
                     comments;
 
+    public boolean  isAnon;
+
     public Post() {}
 
     public Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
-                String aResponseID, double aViewRadius, int aOrder, int aLikes, int aComments) {
+                String aResponseID, double aViewRadius, int aOrder, int aLikes, int aComments, boolean Anon) {
 
         ownerID     = aOwner;
         postID      = aID;
@@ -42,6 +44,7 @@ public class Post {
         order       = aOrder;
         likes       = aLikes;
         comments    = aComments;
+        isAnon      = Anon;
     }
 
     public void setComments(int comments) {

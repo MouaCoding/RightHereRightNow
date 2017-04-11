@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +43,8 @@ public class UserEventView extends FrameLayout {
     private TextView eventStartTimeView;
     private TextView eventEndTimeView;
     private TextView eventLocationView;
+    private TextView numLikes;
+    private TextView numComments;
 
 
     private Spinner eventRSVPStateSpinner;
@@ -83,6 +86,9 @@ public class UserEventView extends FrameLayout {
         eventRSVPStateSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.spinner_entry_layout, rsvpStates));
         // TODO create callback for spinner here for updating RSVP state on server side
 
+        numLikes = (TextView) findViewById(R.id.number_likes);
+        numComments = (TextView) findViewById (R.id.number_comments);
+
         likeButton = (ImageButton) findViewById(R.id.user_event_like_button);
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -92,6 +98,7 @@ public class UserEventView extends FrameLayout {
                 int usrValue = usrLikes + 1;
                 FirebaseDatabase.getInstance().getReference("Event").child(EventID).child("likes").setValue(evValue);
                 FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
+                numLikes.setText(Integer.toString(evValue));
               //  Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
                 likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
               //  likeButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.LightGrey));
@@ -132,6 +139,8 @@ public class UserEventView extends FrameLayout {
                 eventStartTimeView.setText(ev.startTime);
                 eventEndTimeView.setText(ev.endTime);
                 eventLocationView.setText(ev.address);
+                numLikes.setText(Integer.toString(ev.likes));
+                numComments.setText(Integer.toString(ev.comments));
 
                 try {
                      eventMiniImageView.setImageBitmap(getBitmapFromURL(ev.ProfilePicture));

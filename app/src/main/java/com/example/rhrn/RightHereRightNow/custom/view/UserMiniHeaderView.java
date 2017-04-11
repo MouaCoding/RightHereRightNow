@@ -116,6 +116,13 @@ public class UserMiniHeaderView extends FrameLayout {
         });
     }
 
+    public void anonUser(){
+        displayNameView.setText("Anonymous");
+        userHandleView.setText("");
+        miniProfilePicView.setImageResource(R.drawable.happy);
+
+    }
+
     private void followButton() {
         addButton.setOnClickListener(new OnClickListener() {
             @Override
