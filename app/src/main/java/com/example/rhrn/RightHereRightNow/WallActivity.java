@@ -6,6 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+
 /**
  * Created by Bradley Wang on 4/6/2017.
  */
@@ -20,7 +29,33 @@ public class WallActivity extends FragmentActivity {
         // get listview and set adapter
     }
 
-    private static class WallAdapter extends BaseAdapter /*implements*/ {
+    private static class WallAdapter extends BaseAdapter {
+        ArrayList<Object[]> arr;
+
+        public void refresh() {
+//            FirebaseDatabase.getInstance().getReference().child("Post").order;
+            Post p = null; // TODO get most recent post
+            Event e = null; // TODO get most recent event
+
+//            if (p.createTimestamp > e.createTimestamp) {
+//                arr.add(new Object[] {e.createTimestamp, e});
+//            } else {
+//                arr.add(new Object[] {p.createTimestamp, p});
+//            }
+            //
+        }
+
+        public void fetch(int count) {
+            Post pp, ps; // most recent post posted, most recent post shared
+            Event ep, es; // most recent event posted, most recent event shared;
+
+            if (!arr.isEmpty()) {
+                //
+            }
+
+            //
+        }
+
         @Override
         public int getCount() {
             return 0;
@@ -28,7 +63,9 @@ public class WallActivity extends FragmentActivity {
 
         @Override
         public Object getItem(int i) {
-            return null;
+            if (i < 0 || i >= arr.size())
+                return null;
+            return arr.get(i)[1];
         }
 
         @Override
@@ -42,6 +79,5 @@ public class WallActivity extends FragmentActivity {
             // TODO reuse View view if possible
             return null;
         }
-        //
     }
 }

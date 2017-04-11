@@ -54,9 +54,8 @@ public class UserPostView extends FrameLayout {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Post p = dataSnapshot.getValue(Post.class);
-                postMakerHeader.getUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                postBodyTextView.setText(p.content);
 
+                setPost(p);
 
                 // eventMiniImageView.setImageBitmap(ev.image);
             }
@@ -66,5 +65,11 @@ public class UserPostView extends FrameLayout {
 
             }
         });
+    }
+
+    public void setPost(Post p) {
+        postMakerHeader.getUser(p.ownerID);
+        postBodyTextView.setText(p.content);
+        //
     }
 }
