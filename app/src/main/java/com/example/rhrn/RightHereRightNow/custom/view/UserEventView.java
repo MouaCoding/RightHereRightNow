@@ -54,6 +54,8 @@ public class UserEventView extends FrameLayout {
     private String OwnerID;
 
 
+    private Event ev2;
+
     private ImageButton likeButton;
     private ImageButton commentButton;
     private ImageButton shareButton;
@@ -93,6 +95,7 @@ public class UserEventView extends FrameLayout {
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+<<<<<<< Updated upstream
 
                 int evValue = eventLikes + 1;
                 int usrValue = usrLikes + 1;
@@ -104,6 +107,10 @@ public class UserEventView extends FrameLayout {
               //  likeButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.LightGrey));
                 likeButton.setClickable(false);
 
+=======
+                int value = ev2.likes;
+                ev2.setLikes(value++);
+>>>>>>> Stashed changes
             }
         });
 
@@ -129,10 +136,14 @@ public class UserEventView extends FrameLayout {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Event ev = dataSnapshot.getValue(Event.class);
+<<<<<<< Updated upstream
                 EventID = eventID;
                 OwnerID = ev.ownerID;
                 eventLikes = ev.likes;
                 getOwnerLikes(OwnerID);
+=======
+                ev2 = ev;
+>>>>>>> Stashed changes
 
                 eventMakerHeader.getUser(ev.ownerID);
                 eventTitleView.setText(ev.eventName);
