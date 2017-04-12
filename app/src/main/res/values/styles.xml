@@ -9,7 +9,34 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:dialogTheme">@style/AppDialogTheme</item>
+        <item name="android:datePickerStyle">@style/AppTheme.DatePicker</item>
+        <item name="android:timePickerStyle">@style/AppTheme.TimePicker</item>
+
     </style>
+
+    <style name="AppDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:datePickerStyle">@style/AppTheme.DatePicker</item>
+        <item name="android:timePickerStyle">@style/AppTheme.TimePicker</item>
+
+    </style>
+
+    <style name="AppTheme.DatePicker" parent="android:Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+
+    </style>
+
+
+    <style name="AppTheme.TimePicker" parent="android:Widget.Material.TimePicker">
+        <item name="android:timePickerMode">spinner</item>
+
+    </style>
+
+
+
+
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

@@ -66,6 +66,17 @@
     <string name="post_content_text">Enter Post Text Here</string>
     <string name="Anon_label">Anonymous</string>
 
+
+    <!--Strings Related to filters-->
+    <string name="invite_only">Invite Only</string>
+    <string name="following_only">Following Only</string>
+    <string name="distance">Distance</string>
+    <string name="Amount">Amount</string>
+    <string name="Events">Events</string>
+    <string name="Posts">Posts</string>
+    <string name="Time">Time</string>
+    <string name= "Type">Event Type</string>
+
     <!-- Strings related to messaging-->
     <string name="new_message">New Message</string>
     <string name="new_message_content">Enter Message Here</string>

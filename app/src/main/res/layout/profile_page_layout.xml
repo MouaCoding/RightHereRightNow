@@ -55,6 +55,18 @@
                 android:layout_margin="8dp" />
 
 
+            <include layout="@layout/user_event_framed_layout"/>
+
+
+            <ProgressBar
+                style="@android:style/Widget.Material.Light.ProgressBar.Large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBar2"
+                android:indeterminate="true" />
+
+
+
         </LinearLayout>
     </ScrollView>
 

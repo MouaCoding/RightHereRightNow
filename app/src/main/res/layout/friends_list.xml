@@ -5,38 +5,30 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:text="Friends"
-        android:layout_width="match_parent"
+    <ImageButton
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:id="@+id/textView16"
-        android:textSize="42sp"
-        android:textStyle="normal|bold"
-        android:textAlignment="center" />
+        app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+        android:id="@+id/back_button"
+        android:layout_weight="4.70"
+        android:background="@android:color/transparent"
+        android:layout_gravity="left|center_vertical"
+        android:padding="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp" />
 
-    <include
+    <ListView
+        android:id ="@+id/message_list_view"
+        android:layout_weight="100"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/simple_user" />
-
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/simple_user" />
-
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/simple_user" />
-
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/simple_user" />
+        android:layout_height="0dp"
+        android:divider="@null" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar3" />
+
+    <!-- Model friends list after message list -->
 </LinearLayout>
