@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -39,7 +40,11 @@ public class CreatePostFragment extends Fragment {
     private EditText    post_name,
                         post_content;
 
+    private boolean anon;
+
     private FirebaseAuth firebaseAuth;
+
+    //private CheckBox check;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +59,16 @@ public class CreatePostFragment extends Fragment {
                 createPost();
             }
         });
+
+        CheckBox check = (CheckBox) r.findViewById(R.id.AnonBox);
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                anon = true;
+            }
+        });
+
+
 
         //Initializes each text view to the class's objects
 
@@ -92,6 +107,7 @@ public class CreatePostFragment extends Fragment {
             time = Integer.toString(Hour) + ":" + Integer.toString(Minute) + "AM";
         }
 
+
         try {
 
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -111,7 +127,7 @@ public class CreatePostFragment extends Fragment {
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
             createdPost.setValue(new Post(firebaseAuth.getCurrentUser().getUid(), createdPost.getKey(), date, time,
-                    str_event_content, "response Post ID", 10, 0, 0, 0));
+                    str_event_content, "response Post ID", 10, 0, 0, 0, anon));
 
             // Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
             //        String aResponseID, double aViewRadius, int aOrder, int aLikes, int aComments)

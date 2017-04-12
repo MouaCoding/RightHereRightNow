@@ -38,8 +38,8 @@ public class User {
     {
         FirstName = LastName = DisplayName = handle = Email = Phone = Address = City = State = id = uid = AboutMe = null;
         followers = new ArrayList<String>();
-        ActivityPoints = 0;
-        LikesReceived = 0;
+        //ActivityPoints = 0;
+        //LikesReceived = 0;
     }
 
     //Copy constructor to assign email to a user's full name
@@ -49,7 +49,7 @@ public class User {
     }
 
     public User(String aFirstName,String aLastName, String aDisplayName, String aHashTag,String aEmail, String aPassword,
-                String aPhone,String aAddress,String aCity,String aState,String aId, String aUid) {
+                String aPhone,String aAddress,String aCity,String aState,String aId, String aUid, int activityPoints, int likesReceived) {
         FirstName   = aFirstName;
         LastName    = aLastName;
         DisplayName = aDisplayName;
@@ -62,13 +62,13 @@ public class User {
         State       = aState;
         id          = aId;
         uid         = aUid;
-   //     ActivityPoints = activityPoints;
-     //   LikesReceived = likesReceived;
+        ActivityPoints = activityPoints;
+        LikesReceived = likesReceived;
     }
 
     //Since phone is optional, need a constructor for one without phone
     public User(String aFirstName, String aLastName, String adisplayName, String aHashTag,String aEmail, String aPassword,
-                String aAddress, String aCity, String aState, String aId, String aUid) {
+                String aAddress, String aCity, String aState, String aId, String aUid, int activityPoints, int likesReceived) {
         FirstName   = aFirstName;
         LastName    = aLastName;
         DisplayName = adisplayName;
@@ -81,9 +81,10 @@ public class User {
         State       = aState;
         id          = aId;
         uid         = aUid;
-    //    ActivityPoints = activityPoints;
-      //  LikesReceived = likesReceived;
+        ActivityPoints = activityPoints;
+        LikesReceived = likesReceived;
     }
+
 
 
     /*public String getFirstName() {

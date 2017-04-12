@@ -105,7 +105,7 @@ public class RegisterActivity extends LoginActivity {
 
         //creating user and indexing by Firebase UID
 
-        User usr = new User(firstName, lastName, displayName, hashTag, email, password, phone, address, city, state, "000", uid);
+        User usr = new User(firstName, lastName, displayName, hashTag, email, password, phone, address, city, state, "000", uid, 0, 0);
         RootRef.child("User").child(fbuser.getUid()).setValue(usr);
 
 
