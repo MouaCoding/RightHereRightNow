@@ -120,6 +120,7 @@ public class UserMiniHeaderView extends FrameLayout {
         displayNameView.setText("Anonymous");
         userHandleView.setText("");
         miniProfilePicView.setImageResource(R.drawable.happy);
+        addButton.setVisibility(View.GONE);
 
     }
 
