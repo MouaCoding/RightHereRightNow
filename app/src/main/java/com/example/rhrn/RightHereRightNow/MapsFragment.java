@@ -102,6 +102,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     GeoQuery eventQuery;
     GeoQuery postQuery;
 
+    private Bitmap Marker;
+
     private HashMap<Marker, String> eventMarkerKeys = new HashMap<Marker, String>();
     private HashMap<String, Marker> eventKeyMarkers = new HashMap<String, Marker>();
     private HashMap<Marker, String> postMarkerKeys  = new HashMap<Marker, String>();
@@ -149,6 +151,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+
+        Marker = drawMarkerWithSize(100,100);
 
         //button = (Button) findViewById(R.id.message_button);
     }
@@ -378,7 +382,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 Marker m = mMap.addMarker(new MarkerOptions()
                         .position(location).draggable(false)
                         //TODO: MM: Change marker size with our algorithm -> query likes and multiply
-                        .icon(BitmapDescriptorFactory.fromBitmap(drawMarkerWithSize(100,100))));
+                        .icon(BitmapDescriptorFactory.fromBitmap(Marker)));
                         //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 eventMarkerKeys.put(m, s);
                 eventKeyMarkers.put(s, m);
