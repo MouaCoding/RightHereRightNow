@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Matt on 3/27/2017.
  */
 
-public class AboutMe extends AppCompatActivity{
+public class AboutMeActivity extends AppCompatActivity{
     public ImageButton back;
     public Button done;
     public EditText content;
@@ -61,7 +61,7 @@ public class AboutMe extends AppCompatActivity{
                 String edit = content.getText().toString(); //Update this string to Firebase
                 FirebaseDatabase.getInstance().getReference().child("User")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("AboutMe").setValue(edit);
+                        .child("AboutMeActivity").setValue(edit);
                 finish();
             }
         });

@@ -65,7 +65,7 @@
         <activity android:name=".ChatActivity"/>
         <activity android:name=".MessageListActivity"/>
         <activity android:name=".NewMessageActivity"/>
-        <activity android:name=".AboutMe"/>
+        <activity android:name=".AboutMeActivity"/>
         <activity android:name=".ViewUserActivity"/>
         <activity android:name=".WallActivity"/>
 

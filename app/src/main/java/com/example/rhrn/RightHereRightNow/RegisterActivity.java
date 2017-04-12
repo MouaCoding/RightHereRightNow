@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 
 public class RegisterActivity extends LoginActivity {
@@ -106,7 +107,9 @@ public class RegisterActivity extends LoginActivity {
         //creating user and indexing by Firebase UID
 
         User usr = new User(firstName, lastName, displayName, hashTag, email, password, phone, address, city, state, "000", uid);
-        RootRef.child("User").child(fbuser.getUid()).setValue(usr);
+        DatabaseReference userRef = RootRef.child("User").child(fbuser.getUid());
+        userRef.setValue(usr);
+        userRef.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
 
         //Set the user reference to the user's name

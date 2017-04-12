@@ -19,6 +19,8 @@ import android.widget.TimePicker;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.LocationUtils;
+import com.firebase.client.ServerValue;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
@@ -208,7 +210,7 @@ public class CreateEventFragment extends Fragment {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         try {
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location = LocationUtils.getBestAvailableLastKnownLocation(getContext());
 
             ProgressDialog progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Creating Event, Please Wait...");
@@ -227,6 +229,7 @@ public class CreateEventFragment extends Fragment {
             createdEvent.setValue(new Event(str_event_name, firebaseAuth.getCurrentUser().getUid(), str_eventSDate,
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
                     str_event_description, 10, 0, 0, 0));
+            createdEvent.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
             // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
             //              String aEndTime, String aAddress, String aDescription,

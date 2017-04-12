@@ -159,7 +159,7 @@ public class ProfilePageFragment extends Fragment {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AboutMe.class);
+                Intent intent = new Intent(getApplicationContext(), AboutMeActivity.class);
                 startActivity(intent);
                 //queryFirebase();
             }
