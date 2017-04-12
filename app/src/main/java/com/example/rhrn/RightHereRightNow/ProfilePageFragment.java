@@ -85,7 +85,7 @@ public class ProfilePageFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View r = inflater.inflate(R.layout.profile_page_layout, container, false);
-        FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+//        FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
         // restore any state here if necessary
 
         //The below code is for handling exception of querying the profile picture:
@@ -159,7 +159,7 @@ public class ProfilePageFragment extends Fragment {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AboutMe.class);
+                Intent intent = new Intent(getApplicationContext(), AboutMeActivity.class);
                 startActivity(intent);
                 //queryFirebase();
             }
@@ -219,8 +219,7 @@ public class ProfilePageFragment extends Fragment {
 
 
 
-    public void queryFirebase()
-    {
+    public void queryFirebase() {
         DatabaseReference users= FirebaseDatabase.getInstance().getReference("User");
         users.orderByChild("Email").equalTo(fbuser.getEmail())
                 .addListenerForSingleValueEvent(new ValueEventListener() {

@@ -1,4 +1,4 @@
-package com.example.rhrn.RightHereRightNow;
+package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

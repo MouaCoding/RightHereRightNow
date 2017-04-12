@@ -1,10 +1,6 @@
 package com.example.rhrn.RightHereRightNow;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +15,17 @@ import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
-import com.google.android.gms.cast.Cast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Objects;
 
 //import static com.example.rhrn.RightHereRightNow.firebaseEntry.Messages.STATUS_SENT;
 
@@ -41,7 +34,7 @@ import java.util.Objects;
  * Created by Matt on 3/2/2017.
  */
 
-public class ChatActivity extends MessageList implements View.OnClickListener,
+public class ChatActivity extends MessageListActivity implements View.OnClickListener,
         MessageSource.MessagesCallbacks{
 
     public static final String USER_EXTRA = "USER";

@@ -28,7 +28,7 @@ import java.util.Map;
  * Created by Matt on 3/8/2017.
  */
 
-public class NewMessage extends ChatActivity{
+public class NewMessageActivity extends ChatActivity{
     public Button send;
     public ImageButton backButton;
     public EditText sendTo,

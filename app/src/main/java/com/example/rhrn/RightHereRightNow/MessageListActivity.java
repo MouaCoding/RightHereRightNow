@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,15 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Matt on 3/8/2017.
  */
-public class MessageList extends AppCompatActivity {
+public class MessageListActivity extends AppCompatActivity {
     private ImageView addMessage; // treating this as a button
     private ListView mListView; //List of messages
     private ArrayList<User> mUsers;
@@ -56,7 +50,7 @@ public class MessageList extends AppCompatActivity {
         addMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), NewMessage.class);
+                Intent intent = new Intent(getApplicationContext(), NewMessageActivity.class);
                 startActivity(intent);
             }
         });
@@ -135,7 +129,7 @@ public class MessageList extends AppCompatActivity {
 
                 Bundle extra = new Bundle();
                 extra.putSerializable("objects", keys);
-                Intent intent = new Intent(getApplicationContext(), MessageList.class);
+                Intent intent = new Intent(getApplicationContext(), MessageListActivity.class);
                 intent.putExtra("extra",extra);
 
                 startActivity(intent);
@@ -153,7 +147,7 @@ public class MessageList extends AppCompatActivity {
     public class UserAdapter extends ArrayAdapter<User> {
         UserAdapter(ArrayList<User> users){
 
-            super(MessageList.this, R.layout.user_item, R.id.user, users);
+            super(MessageListActivity.this, R.layout.user_item, R.id.user, users);
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {

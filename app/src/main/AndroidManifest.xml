@@ -61,12 +61,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity"></activity>
-        <activity android:name=".ChatActivity"></activity>
-        <activity android:name=".MessageList"></activity>
-        <activity android:name=".NewMessage"></activity>
-        <activity android:name=".AboutMe"></activity>
-        <activity android:name=".ViewUserActivity"></activity>
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".ChatActivity"/>
+        <activity android:name=".MessageListActivity"/>
+        <activity android:name=".NewMessageActivity"/>
+        <activity android:name=".AboutMeActivity"/>
+        <activity android:name=".ViewUserActivity"/>
+        <activity android:name=".WallActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

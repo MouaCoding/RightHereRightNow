@@ -34,8 +34,7 @@ public class User {
     //Private password to not allow storage on Firebase database
     private String Password;
 
-    public User()
-    {
+    public User() {
         FirstName = LastName = DisplayName = handle = Email = Phone = Address = City = State = id = uid = AboutMe = null;
         followers = new ArrayList<String>();
         //ActivityPoints = 0;
