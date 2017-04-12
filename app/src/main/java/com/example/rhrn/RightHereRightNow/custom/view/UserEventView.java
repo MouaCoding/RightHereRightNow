@@ -54,8 +54,6 @@ public class UserEventView extends FrameLayout {
     private String OwnerID;
 
 
-    private Event ev2;
-
     private ImageButton likeButton;
     private ImageButton commentButton;
     private ImageButton shareButton;
@@ -96,23 +94,24 @@ public class UserEventView extends FrameLayout {
             @Override
             public void onClick(View v) {
 
-
                 int evValue = eventLikes + 1;
                 int usrValue = usrLikes + 1;
                 FirebaseDatabase.getInstance().getReference("Event").child(EventID).child("likes").setValue(evValue);
                 FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
                 numLikes.setText(Integer.toString(evValue));
-              //  Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
                 likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
-              //  likeButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.LightGrey));
+                //  likeButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.LightGrey));
                 likeButton.setClickable(false);
 
+            }
+        });
 
         commentButton = (ImageButton) findViewById(R.id.user_event_comment_button);
         commentButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: implement comment on click
+
             }
         });
         shareButton = (ImageButton) findViewById(R.id.user_event_share_button);
@@ -130,12 +129,10 @@ public class UserEventView extends FrameLayout {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Event ev = dataSnapshot.getValue(Event.class);
-
                 EventID = eventID;
                 OwnerID = ev.ownerID;
                 eventLikes = ev.likes;
                 getOwnerLikes(OwnerID);
-
 
                 eventMakerHeader.getUser(ev.ownerID);
                 eventTitleView.setText(ev.eventName);
@@ -146,7 +143,7 @@ public class UserEventView extends FrameLayout {
                 numComments.setText(Integer.toString(ev.comments));
 
                 try {
-                     eventMiniImageView.setImageBitmap(getBitmapFromURL(ev.ProfilePicture));
+                    eventMiniImageView.setImageBitmap(getBitmapFromURL(ev.ProfilePicture));
                 }catch (Exception e){}
             }
 

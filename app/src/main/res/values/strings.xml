@@ -75,7 +75,7 @@
     <string name="Events">Events</string>
     <string name="Posts">Posts</string>
     <string name="Time">Time</string>
-    <string name= "Type">Event Type</string>
+    <string name="Type">Event Type</string>
 
     <!-- Strings related to messaging-->
     <string name="new_message">New Message</string>
@@ -105,4 +105,5 @@
     <!--Strings related to comments-->
     <string name="enter_comment">Enter comment here</string>
     <string name="new_comment">New Comment</string>
+    <string name="reply">reply</string>
 </resources>

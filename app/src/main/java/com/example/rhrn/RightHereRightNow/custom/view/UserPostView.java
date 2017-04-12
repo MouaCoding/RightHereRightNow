@@ -8,7 +8,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View.OnClickListener;
 
+import com.example.rhrn.RightHereRightNow.CreateCommentFragment;
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
@@ -40,6 +42,8 @@ public class UserPostView extends FrameLayout {
     private int usrLikes;
 
 
+
+
     public UserPostView(Context context) {
         super(context);
         createView();
@@ -62,6 +66,8 @@ public class UserPostView extends FrameLayout {
         likeButton = (ImageButton) findViewById(R.id.user_post_like_button);
         commentButton = (ImageButton) findViewById(R.id.user_post_comment_button);
         shareButton = (ImageButton) findViewById(R.id.user_post_share_button);
+        commentButton.setClickable(true);
+
 
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -76,6 +82,13 @@ public class UserPostView extends FrameLayout {
                 numLikes.setText(Integer.toString(pstValue));
                 likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
                 likeButton.setClickable(false);
+            }
+        });
+
+        commentButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "comment clicked", Toast.LENGTH_LONG);
             }
         });
     }
