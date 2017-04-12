@@ -20,6 +20,8 @@ import java.util.ArrayList;
  */
 
 public class WallActivity extends FragmentActivity {
+    private static int PAGE_SIZE = 12;
+
     String targetUserID;
 
     @Override
@@ -34,9 +36,11 @@ public class WallActivity extends FragmentActivity {
 
         public void refresh() {
 //            FirebaseDatabase.getInstance().getReference().child("Post").order;
-            Post p = null; // TODO get most recent post
-            Event e = null; // TODO get most recent event
+//            Post p = null; // TODO get most recent post
+//            Event e = null; // TODO get most recent event
 
+            arr.clear();
+            fetch(PAGE_SIZE);
 //            if (p.createTimestamp > e.createTimestamp) {
 //                arr.add(new Object[] {e.createTimestamp, e});
 //            } else {
