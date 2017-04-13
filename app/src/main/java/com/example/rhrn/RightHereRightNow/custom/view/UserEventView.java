@@ -119,7 +119,7 @@ public class UserEventView extends FrameLayout {
 
     public void getEvent(final String eventID) {
         // TODO fetch event information from params and fill fields
-        Event.requestEvent(eventID, FirebaseAuth.getInstance().getCurrentUser().toString(), new Event.EventReceivedListener() {
+        Event.requestEvent(eventID, "AuthToken", new Event.EventReceivedListener() {
             @Override
             public void onEventReceived(Event... events) {
                 Event ev = events[0];

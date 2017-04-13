@@ -1,5 +1,10 @@
 package com.example.rhrn.RightHereRightNow.firebase_entry;
 
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,6 +89,26 @@ public class User {
         LikesReceived = likesReceived;
     }
 
+    public static void requestUser(String UserID, String authToken, final User.UserReceivedListener listener) {
+        if (listener == null) return;
+        FirebaseDatabase.getInstance().getReference("User").child(UserID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User usr  = dataSnapshot.getValue(User.class);
+                        listener.onUserReceived(usr);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listener.onUserReceived();
+                    }
+                });
+    }
+
+    public static interface UserReceivedListener {
+        public void onUserReceived(User... users);
+    }
 
 
     /*public String getFirstName() {

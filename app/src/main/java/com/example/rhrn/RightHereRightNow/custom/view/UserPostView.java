@@ -53,8 +53,8 @@ public class UserPostView extends FrameLayout {
         postMakerHeader = (UserMiniHeaderView) findViewById(R.id.user_post_mini_head);
 
         postBodyTextView = (TextView) findViewById(R.id.user_post_body);
-        likesCount = (TextView) findViewById(R.id.user_event_like_count);
-        commentsCount = (TextView) findViewById(R.id.user_event_comment_count);
+        likesCount = (TextView) findViewById(R.id.user_post_like_count);
+        commentsCount = (TextView) findViewById(R.id.user_post_comment_count);
         sharesCount = (TextView) findViewById(R.id.user_post_share_count);
 
         likeButton = (ImageButton) findViewById(R.id.user_post_like_button);
@@ -68,7 +68,7 @@ public class UserPostView extends FrameLayout {
     }
 
     public void getPost(final String postID) {
-      Post.requestPost(postID, FirebaseAuth.getInstance().getCurrentUser().toString(), new Post.PostReceivedListener() {
+      Post.requestPost(postID, "authToken", new Post.PostReceivedListener() {
           @Override
           public void onPostReceived(Post... posts) {
               Post pst = posts[0];
@@ -80,9 +80,9 @@ public class UserPostView extends FrameLayout {
     public void setPost(Post p) {
         postMakerHeader.getUser(p.ownerID);
         postBodyTextView.setText(p.content);
-        likesCount.setText(String.valueOf(p.likes));
-        commentsCount.setText(String.valueOf(p.comments));
-        sharesCount.setText(String.valueOf(p.shares));
+        likesCount.setText(Integer.toString(p.likes));
+        commentsCount.setText(Integer.toString(p.comments));
+        sharesCount.setText(Integer.toString(p.shares));
         //
     }
 }
