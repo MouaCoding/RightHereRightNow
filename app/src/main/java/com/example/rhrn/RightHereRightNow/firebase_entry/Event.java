@@ -28,6 +28,7 @@ public class Event {
 
     public int      likes,
                     comments,
+                    shares,
                     rsvp;
 
     public Event() {}

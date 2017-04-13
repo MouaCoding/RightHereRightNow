@@ -106,7 +106,7 @@
             android:layout_weight="1">
 
             <ImageButton
-                android:id="@+id/user_post_like_button"
+                android:id="@+id/user_event_like_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -119,7 +119,7 @@
                 app:srcCompat="@drawable/ic_heart" />
 
             <TextView
-                android:id="@+id/user_post_like_count"
+                android:id="@+id/user_event_like_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -141,7 +141,7 @@
             android:layout_weight="1">
 
             <ImageButton
-                android:id="@+id/user_post_comment_button"
+                android:id="@+id/user_event_comment_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -154,7 +154,7 @@
                 app:srcCompat="@drawable/ic_comment_black_24dp" />
 
             <TextView
-                android:id="@+id/user_post_comment_count"
+                android:id="@+id/user_event_comment_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -174,7 +174,7 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/user_post_share_button"
+                android:id="@+id/user_event_share_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -187,7 +187,7 @@
                 app:srcCompat="@drawable/ic_share_black_24dp" />
 
             <TextView
-                android:id="@+id/user_post_share_count"
+                android:id="@+id/user_event_share_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

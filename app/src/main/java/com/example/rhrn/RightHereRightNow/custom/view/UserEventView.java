@@ -20,6 +20,7 @@ import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.android.gms.vision.text.Text;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,15 +44,15 @@ public class UserEventView extends FrameLayout {
     private TextView eventStartTimeView;
     private TextView eventEndTimeView;
     private TextView eventLocationView;
-    private TextView numLikes;
-    private TextView numComments;
+    private TextView likesCount;
+    private TextView commentsCount;
+    private TextView sharesCount;
 
 
     private Spinner eventRSVPStateSpinner;
-    private int eventLikes;
-    private int usrLikes;
-    private String EventID;
-    private String OwnerID;
+
+
+
 
 
     private ImageButton likeButton;
@@ -86,23 +87,16 @@ public class UserEventView extends FrameLayout {
         eventRSVPStateSpinner.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.spinner_entry_layout, rsvpStates));
         // TODO create callback for spinner here for updating RSVP state on server side
 
-        numLikes = (TextView) findViewById(R.id.number_likes);
-        numComments = (TextView) findViewById (R.id.number_comments);
+        likesCount = (TextView) findViewById(R.id.user_event_like_count);
+        commentsCount = (TextView) findViewById (R.id.user_event_comment_count);
+        sharesCount = (TextView) findViewById(R.id.user_event_share_count);
 
         likeButton = (ImageButton) findViewById(R.id.user_event_like_button);
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                int evValue = eventLikes + 1;
-                int usrValue = usrLikes + 1;
-                FirebaseDatabase.getInstance().getReference("Event").child(EventID).child("likes").setValue(evValue);
-                FirebaseDatabase.getInstance().getReference("User").child(OwnerID).child("LikesReceived").setValue(usrValue);
-                numLikes.setText(Integer.toString(evValue));
-                //  Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
-                //  likeButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.LightGrey));
-                likeButton.setClickable(false);
+
 
             }
         });
@@ -125,28 +119,30 @@ public class UserEventView extends FrameLayout {
 
     public void getEvent(final String eventID) {
         // TODO fetch event information from params and fill fields
-        Event.requestEvent(eventID, null, new Event.EventReceivedListener() {
+        Event.requestEvent(eventID, FirebaseAuth.getInstance().getCurrentUser().toString(), new Event.EventReceivedListener() {
             @Override
             public void onEventReceived(Event... events) {
                 Event ev = events[0];
-                EventID = eventID;
-                OwnerID = ev.ownerID;OwnerID = ev.ownerID;
-                eventLikes = ev.likes;
-                getOwnerLikes(OwnerID);
+                setEvent(ev);
 
-                eventMakerHeader.getUser(ev.ownerID);
-                eventTitleView.setText(ev.eventName);
-                eventStartTimeView.setText(ev.startTime);
-                eventEndTimeView.setText(ev.endTime);
-                eventLocationView.setText(ev.address);
-                numLikes.setText(Integer.toString(ev.likes));
-                numComments.setText(Integer.toString(ev.comments));
 
-                try {
-                    eventMiniImageView.setImageBitmap(getBitmapFromURL(ev.ProfilePicture));
-                }catch (Exception e){}
             }
         });
+    }
+
+    public void setEvent(Event ev){
+        eventMakerHeader.getUser(ev.ownerID);
+        eventTitleView.setText(ev.eventName);
+        eventStartTimeView.setText(ev.startTime);
+        eventEndTimeView.setText(ev.endTime);
+        eventLocationView.setText(ev.address);
+        likesCount.setText(Integer.toString(ev.likes));
+        commentsCount.setText(Integer.toString(ev.comments));
+        sharesCount.setText(String.valueOf(ev.shares));
+        try {
+            eventMiniImageView.setImageBitmap(getBitmapFromURL(ev.ProfilePicture));
+        }catch (Exception e){}
+
     }
 
     public static Bitmap getBitmapFromURL(String src) {
@@ -163,19 +159,6 @@ public class UserEventView extends FrameLayout {
         }
     }
 
-    public void getOwnerLikes(String ownerID){
-        FirebaseDatabase.getInstance().getReference().child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User postOwner = dataSnapshot.getValue(User.class);
-                usrLikes = postOwner.LikesReceived;
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
 }
