@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.ViewUserActivity;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.FollowingUser;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.client.Firebase;
@@ -88,33 +89,7 @@ public class UserMiniHeaderView extends FrameLayout {
         }
     }
 
-    public void getUser(String userID) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(userID);
-        if (ref == null)
-            return;
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                displayNameView.setText(user.DisplayName);
-                userHandleView.setText(user.handle);
-                otherUserID = user.uid;
-                curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                //Try if user has profile pic
-                try {
-                    //Convert the URL to aa Bitmap using function, then set the profile picture
-                    miniProfilePicView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
-                }catch (Exception e){}
-                // eventMiniImageView.setImageBitmap(ev.image);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     public void anonUser(){
         displayNameView.setText("Anonymous");
@@ -135,6 +110,36 @@ public class UserMiniHeaderView extends FrameLayout {
 
             }
         });
+    }
+
+    public void getUser(final String userID) {
+        // TODO fetch event information from params and fill fields
+        User.requestUser(userID, "AuthToken", new User.UserReceivedListener() {
+            @Override
+            public void onUserReceived(User...users) {
+                User usr = users[0];
+                setUser(usr);
+
+
+            }
+        });
+    }
+
+
+    public void setUser(User user){
+        displayNameView.setText(user.DisplayName);
+        userHandleView.setText(user.handle);
+        otherUserID = user.uid;
+        curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        //Try if user has profile pic
+        try {
+    //Convert the URL to aa Bitmap using function, then set the profile picture
+            miniProfilePicView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+        }catch (Exception e){}
+    // eventMiniImageView.setImageBitmap(ev.image);
+
+
+
     }
 
     //stackoverflow function

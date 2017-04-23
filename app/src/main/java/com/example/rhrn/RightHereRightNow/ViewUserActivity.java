@@ -50,7 +50,8 @@ public class ViewUserActivity extends AppCompatActivity {
             miniHandle,
             body,
             postsNumLikes,
-            postsNumComments;
+            postsNumComments,
+            postNumShares;
 
     public FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -85,8 +86,9 @@ public class ViewUserActivity extends AppCompatActivity {
         miniUserName = (TextView) findViewById(R.id.mini_name);
         miniHandle = (TextView) findViewById(R.id.mini_user_handle);
         body = (TextView) findViewById(R.id.user_post_body);
-        postsNumLikes = (TextView) findViewById(R.id.number_likes);
-        postsNumComments = (TextView) findViewById(R.id.number_comments);
+        postsNumLikes = (TextView) findViewById(R.id.user_post_like_count);
+        postsNumComments = (TextView) findViewById(R.id.user_post_comment_count);
+        postNumShares = (TextView) findViewById(R.id.user_post_share_count);
 
         Intent intent = getIntent();
         String otherUserID = intent.getStringExtra("otherUserID");
