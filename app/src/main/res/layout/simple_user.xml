@@ -36,7 +36,7 @@
                 android:id="@+id/simp_user_handle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/hashtag"
+                android:text="@string/handle"
                 android:textAppearance="@android:style/TextAppearance.Material.Title" />
         </LinearLayout>
 

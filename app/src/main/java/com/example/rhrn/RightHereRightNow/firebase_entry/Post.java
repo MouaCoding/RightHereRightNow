@@ -27,12 +27,12 @@ public class Post {
                     shares,
                     comments;
 
-    //public boolean  isAnon;
+    public boolean  isAnon;
 
     public Post() {}
 
     public Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
-                String aResponseID, double aViewRadius, int aShares, int aLikes, int aComments) {
+                String aResponseID, double aViewRadius, int aShares, int aLikes, int aComments, boolean aAnon) {
 
         ownerID     = aOwner;
         postID      = aID;
@@ -49,7 +49,7 @@ public class Post {
         shares       = aShares;
         likes       = aLikes;
         comments    = aComments;
-       // isAnon      = Anon;
+        isAnon      = aAnon;
     }
 
     public static void requestPost(String PostID, String authToken, final Post.PostReceivedListener listener) {

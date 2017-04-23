@@ -113,11 +113,11 @@ public class CreatePostFragment extends Fragment {
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
             createdPost.setValue(new Post(firebaseAuth.getCurrentUser().getUid(), createdPost.getKey(), date, time,
-                    str_event_content, "response Post ID", 10, 0, 0, 0));
+                    str_event_content, "response Post ID", 10, 0, 0, 0,false));
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
-            // Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
-            //        String aResponseID, double aViewRadius, int aOrder, int aLikes, int aComments)
+//             public Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
+//                    String aResponseID, double aViewRadius, int aShares, int aLikes, int aComments, boolean aAnon) {
 
             geoFireLocation.setLocation(createdPost.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
 
