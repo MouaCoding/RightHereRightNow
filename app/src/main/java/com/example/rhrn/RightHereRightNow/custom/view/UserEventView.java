@@ -1,36 +1,27 @@
 package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.content.ContextCompat;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+
+import com.example.rhrn.RightHereRightNow.CommentsListActivity;
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
-import com.example.rhrn.RightHereRightNow.firebase_entry.User;
-import com.google.android.gms.vision.text.Text;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.acl.Owner;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -50,6 +41,9 @@ public class UserEventView extends FrameLayout {
 
 
     private Spinner eventRSVPStateSpinner;
+
+    private String EventID;
+    private int CommentCount;
 
 
 
@@ -105,6 +99,11 @@ public class UserEventView extends FrameLayout {
         commentButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Context context = getContext();
+                Bundle params = new Bundle();
+                Intent intent = new Intent(context, CommentsListActivity.class);
+                intent.putExtra("postID", EventID.toString());
+                context.startActivity(intent);
 
             }
         });
@@ -124,6 +123,8 @@ public class UserEventView extends FrameLayout {
             public void onEventReceived(Event... events) {
                 Event ev = events[0];
                 setEvent(ev);
+                EventID = eventID;
+                CommentCount = ev.comments;
 
 
             }

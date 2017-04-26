@@ -68,6 +68,7 @@
         <activity android:name=".AboutMeActivity"/>
         <activity android:name=".ViewUserActivity"/>
         <activity android:name=".WallActivity"/>
+        <activity android:name=".CommentsListActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

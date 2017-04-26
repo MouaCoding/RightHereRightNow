@@ -24,14 +24,11 @@ public class Comments {
 
     public Comments() {}
 
-    public Comments(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
+    public Comments(String aOwner, String aID, String aContent,
                 String aResponseID, int aOrder, int aLikes, boolean Anon) {
 
         ownerID     = aOwner;
         commentID      = aID;
-
-        createDate  = aCreateDate;
-        createTime  = aCreateTime;
 
         content     = aContent;
 

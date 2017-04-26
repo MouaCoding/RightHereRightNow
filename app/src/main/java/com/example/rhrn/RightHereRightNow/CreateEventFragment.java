@@ -235,6 +235,10 @@ public class CreateEventFragment extends Fragment {
             //              String aEndTime, String aAddress, String aDescription,
             //              double aViewRadius, int aLikes, int aComments, int aRSVPs)
 
+
+
+
+
             geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
 
             progressDialog.dismiss();
