@@ -190,15 +190,17 @@ public class RegisterActivity extends LoginActivity {
         if(!firstname.matches(".*[a-zA-Z]+.*")) {first_name.setError("Invalid First Name"); return false;}
         if(!lastname.matches(".*[a-zA-Z]+.*")) { last_name.setError("Invalid Last Name"); return false;}
         if(!displayname.matches(".*[a-zA-Z0-9]+.*")) {display_name.setError("Letters and Numbers only"); return false;}
-        //TODO: if already exists, then invalid
+        //TODO: if handle already exists, then invalid
         if(!handle1.matches(".*[a-zA-Z]+.*") || handle1.charAt(0) != '@') {handle.setError("Invalid Handle"); return false;}
         if(email1.contains("@")) {user_email.setError("Invalid Email"); return false;}
         //TODO: Password Check
         //if(password1.length() <= 5) {user_password.setError("At least 6 characters"); return false;}
-        //TODO: Verify State, city, and address
+        //TODO: Address should be confidential? confirm this.
+        /*
         if(!address.matches(".*[a-zA-Z]+.*")) {user_address.setError("Invalid Address"); return false;}
         if(!city.matches(".*[a-zA-Z]+.*")) {user_city.setError("Invalid City"); return false;}
         if(!state.matches(".*[a-zA-Z]+.*") ) {user_state.setError("Invalid State"); return false;}
+        */
 
         return true;
     }

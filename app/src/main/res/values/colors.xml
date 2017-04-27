@@ -9,4 +9,7 @@
     <color name="darkred">#8B0000</color>
     <color name="colorTextDark">#000000</color>
     <color name="crimson">#DC143C</color>
+
+    <color name="MainRed">#FA7174</color>
+    <color name="MainBlue">#8bc6f3</color>
 </resources>

@@ -67,7 +67,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private GoogleMap mMap;
-    private MapView mapView;
+    public MapView mapView;
     public static final String TAG = MapsFragment.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -347,7 +347,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
-    private void drawPointsWithinUserRadius() {
+    public void drawPointsWithinUserRadius() {
         eventsOnMap = FirebaseDatabase.getInstance().getReference("EventLocations");
         GeoFire eventFire = new GeoFire(eventsOnMap);
 
