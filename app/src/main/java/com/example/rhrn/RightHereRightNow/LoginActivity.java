@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +26,9 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -36,6 +40,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.plus.model.people.Person;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,6 +49,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnClickListener {
@@ -66,6 +84,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     //Google sign in
     private GoogleApiClient mGoogleApiClient;
+
+    //Twitter Login
+    private TwitterLoginButton twitterLoginButton;
 
     private ProgressDialog pd;
 
@@ -133,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .requestEmail()
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -141,6 +162,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
         facebookRegister();
+
+        twitterLoginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
+        twitterLoginButton.setCallback(new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                //TODO: pull information from Twitter and push it to the new database... waiting on the new database
+                twitterSignIn(result.data);
+            }
+            @Override
+            public void failure(TwitterException exception) {
+                Toast.makeText(getApplicationContext(), "Failed to Log In!", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     @Override
@@ -169,6 +204,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // Pass the activity result back to the Facebook SDK
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
+        twitterLoginButton.onActivityResult(requestCode, resultCode, data);
     }
 
     //Facebook register user
@@ -176,11 +212,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     {
         callbackManager=CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton)findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.setReadPermissions("public_profile", "email", "user_birthday", "user_about_me","user_photos");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                facebookSignIn(loginResult.getAccessToken());
+            facebookSignIn(loginResult.getAccessToken());
             }
 
             @Override
@@ -202,9 +238,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             //updateUI(user);
+                            String msg = "Successfully logged in as " + Profile.getCurrentProfile().getFirstName() ;
+                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
-                            //TODO: pull information from facebook and push it to the new database... waiting on the new database
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -244,9 +281,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         pd.setMessage("Loading...");
         pd.show();
     }
-    private void googleRegister(GoogleSignInAccount acct) {
+    private void googleRegister(final GoogleSignInAccount acct) {
         showProgressDialog();
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        final AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -255,7 +292,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             //updateUI(user);
-                            Toast.makeText(LoginActivity.this, "Successfully Logged in!", Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(LoginActivity.this, "Successfully Logged in as " + acct.getDisplayName(), Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                         } else {
@@ -268,6 +306,38 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
 
+    }
+    private void twitterSignIn(final TwitterSession session)
+    {
+        showProgressDialog();
+
+        final AuthCredential credential = TwitterAuthProvider.getCredential(
+                session.getAuthToken().token,
+                session.getAuthToken().secret);
+
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            //updateUI(user);
+
+                            String msg = "Successfully logged in as @" + session.getUserName() + " (#" + session.getUserId() + ")";
+                            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        pd.dismiss();
+                    }
+                });
     }
 
     //added a sign in function

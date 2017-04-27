@@ -14,15 +14,15 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email*</string>
-    <string name="prompt_password">Password</string>
+    <string name="prompt_password">Password*</string>
     <string name="first_name">First Name*</string>
     <string name="last_name">Last Name*</string>
     <string name="display_name">Display Name*</string>
     <string name="handle">Handle* (@handle)</string>
     <string name="prompt_phone">Phone (Optional)</string>
-    <string name="prompt_address">Address*</string>
-    <string name="prompt_city">City*</string>
-    <string name="prompt_state">State*</string>
+    <string name="prompt_address">Address (Optional)</string>
+    <string name="prompt_city">City (Optional)</string>
+    <string name="prompt_state">State (Optional)</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_register">Register</string>
