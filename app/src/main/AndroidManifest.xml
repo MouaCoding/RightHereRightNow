@@ -27,7 +27,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -74,7 +74,8 @@
             android:name="io.fabric.ApiKey"
             android:value="134cf1747263e127c412def9f67626d8c3389c82" />
 
-        <activity android:name=".ForgotPasswordActivity"></activity>
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".AlmostDoneActivity"></activity>
     </application>
 
 </manifest>

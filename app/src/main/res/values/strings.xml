@@ -109,4 +109,5 @@
     <string name="forgot_password_description">Forgot your password? Don\'t worry, we can help.</string>
     <string name="enter_password">Enter Email</string>
     <string name="cancel">Cancel</string>
+    <string name="almost_done">You are almost done! Add the following to complete your profile.</string>
 </resources>
