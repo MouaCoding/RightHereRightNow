@@ -1,9 +1,14 @@
 package com.example.rhrn.RightHereRightNow.firebase_entry;
 
+import android.widget.Toast;
+
+import com.firebase.client.Firebase;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 /**
@@ -122,4 +127,34 @@ public class Event {
     public static interface EventReceivedListener {
         public void onEventReceived(Event... events);
     }
+
+    public static void increment(String type, String eventID) {
+
+        FirebaseDatabase.getInstance().getReference("Event").child(eventID).child(type).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+               if(mutableData.getValue() == null){
+                   mutableData.setValue(1);
+
+               }
+               else {
+                   int count = mutableData.getValue(Integer.class);
+                   mutableData.setValue(count + 1);
+
+
+               }
+               return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+
+        });
+
+    }
+
+
+    public static int incComments(String eventID ){int commentsCount = 0; return commentsCount;}
 }

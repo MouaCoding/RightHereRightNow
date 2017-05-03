@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -41,6 +42,8 @@ public class CreatePostFragment extends Fragment {
     private EditText    post_name,
                         post_content;
 
+    private CheckBox    anon;
+
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -56,6 +59,10 @@ public class CreatePostFragment extends Fragment {
                 createPost();
             }
         });
+
+        anon  = (CheckBox) r.findViewById(R.id.AnonBox);
+
+
 
         //Initializes each text view to the class's objects
 
@@ -113,7 +120,7 @@ public class CreatePostFragment extends Fragment {
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
             createdPost.setValue(new Post(firebaseAuth.getCurrentUser().getUid(), createdPost.getKey(), date, time,
-                    str_event_content, "response Post ID", 10, 0, 0, 0));
+                    str_event_content, "response Post ID", 10, 0, 0, 0, anon.isChecked()));
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
             // Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,

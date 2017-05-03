@@ -68,7 +68,12 @@ public class UserPostView extends FrameLayout {
     }
 
     public void setPost(Post p) {
-        postMakerHeader.getUser(p.ownerID);
+        if(p.isAnon == true){
+            postMakerHeader.anonUser();
+        }
+        else {
+            postMakerHeader.getUser(p.ownerID);
+        }
         postBodyTextView.setText(p.content);
         likesCount.setText(Integer.toString(p.likes));
         commentsCount.setText(Integer.toString(p.comments));

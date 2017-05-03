@@ -105,5 +105,6 @@
     <!--Strings related to comments-->
     <string name="enter_comment">Enter comment here</string>
     <string name="new_comment">New Comment</string>
-    <string name="reply">reply</string>
+    <string name="reply">Reply</string>
+    <string name="like">Like</string>
 </resources>

@@ -17,6 +17,7 @@ import android.support.v4.app.DialogFragment;
 
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.firebase.client.Firebase;
 import com.firebase.client.ServerValue;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
 
     private EditText commentContent;
     FirebaseAuth firebaseAuth;
+    int Order;
     String User;
     String PostID;
 
@@ -48,7 +50,8 @@ public class CreateCommentDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String temp = commentContent.getText().toString();
-                createComment(firebaseAuth.getCurrentUser().getUid(), PostID,  temp);
+                createComment(firebaseAuth.getCurrentUser().getUid(), PostID,  temp, Order);
+                Event.increment("comments", PostID);
             }
         });
 
@@ -59,7 +62,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
 
     }
 
-    public void createComment(String userID, String postID, String Content) {
+    public void createComment(String userID, String postID, String Content, int Order) {
 
         //DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference rootreference = FirebaseDatabase.getInstance().getReference("Comments").child(postID);
@@ -67,7 +70,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
         String key = reference.getKey();
 
         DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child(key);
-        createdComment.setValue(new Comments(userID, key, Content, postID, 0, 0, false));
+        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, false));
         createdComment.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
 
@@ -76,5 +79,5 @@ public class CreateCommentDialogFragment extends DialogFragment {
     public void getPostID(String postID) {
         PostID = postID;
     }
-
+    public void getOrder(int order){Order = order;}
 }

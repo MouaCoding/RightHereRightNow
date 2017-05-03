@@ -26,29 +26,19 @@
         android:layout_weight="100"
         android:divider="@null" />
 
-    <LinearLayout
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <Button
+        android:id="@+id/new_comment"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:layout_weight="4.70"
+        android:text="@string/new_comment" />
 
-
-        <!-- Clickable imageview = imagebutton (: -->
-        <ImageView
-            android:id="@+id/create_new_message"
-            android:layout_width="38dp"
-            android:layout_height="36dp"
-            android:layout_marginRight="10dp"
-            app:srcCompat="@drawable/add_filled_cross_sign" />
-
-        <TextView
-            android:id="@+id/add_new_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:text="@string/new_comment"
-            android:textSize="20dp" />
-
-    </LinearLayout>
 
 </LinearLayout>

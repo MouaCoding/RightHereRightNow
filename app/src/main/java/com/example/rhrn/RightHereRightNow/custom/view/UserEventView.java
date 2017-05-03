@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.rhrn.RightHereRightNow.CommentsListActivity;
@@ -89,9 +90,8 @@ public class UserEventView extends FrameLayout {
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
+                Event.increment("likes", EventID);
+                getEvent(EventID);
             }
         });
 
@@ -103,6 +103,7 @@ public class UserEventView extends FrameLayout {
                 Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", EventID.toString());
+                intent.putExtra("numComments", CommentCount);
                 context.startActivity(intent);
 
             }
