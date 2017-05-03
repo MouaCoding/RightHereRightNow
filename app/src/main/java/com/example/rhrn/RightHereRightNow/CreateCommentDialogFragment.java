@@ -34,6 +34,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
     int Order;
     String User;
     String PostID;
+    String ResponseID;
 
 
     @Override
@@ -50,7 +51,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String temp = commentContent.getText().toString();
-                createComment(firebaseAuth.getCurrentUser().getUid(), PostID,  temp, Order);
+                createComment(firebaseAuth.getCurrentUser().getUid(), PostID,  temp, Order, ResponseID);
                 Event.increment("comments", PostID);
                 dismiss();
             }
@@ -63,17 +64,22 @@ public class CreateCommentDialogFragment extends DialogFragment {
 
     }
 
-    public void createComment(String userID, String postID, String Content, int Order) {
+    public void createComment(String userID, String postID, String Content, int Order, String responseID) {
 
-        //DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference rootreference = FirebaseDatabase.getInstance().getReference("Comments").child(postID);
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child("comment").push();
+        DatabaseReference reference;
+        if(Order == 0){
+            reference = rootRef.child("comment").push();
+        }
+        else{
+            reference = rootRef.child("comment").child(postID).child(responseID).push();
+        }
         String key = reference.getKey();
 
         DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child(key);
-        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, false));
+        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, false, ServerValue.TIMESTAMP));
         createdComment.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
-
 
     }
 
@@ -81,4 +87,5 @@ public class CreateCommentDialogFragment extends DialogFragment {
         PostID = postID;
     }
     public void getOrder(int order){Order = order;}
+    public void getResponseID(String respid){ResponseID = respid;}
 }

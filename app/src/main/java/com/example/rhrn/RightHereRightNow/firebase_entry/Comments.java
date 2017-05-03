@@ -4,6 +4,8 @@ package com.example.rhrn.RightHereRightNow.firebase_entry;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 /**
@@ -17,6 +19,8 @@ public class Comments {
             createTime,
             content,
             responseID;
+
+    public Object timestamp_create;
     //  TODO: NS: Change dates and times to type Date
 
 
@@ -29,7 +33,7 @@ public class Comments {
     public Comments() {}
 
     public Comments(String aOwner, String aID, String aContent,
-                String aResponseID, int aOrder, int aLikes, int aReplies, boolean Anon) {
+                String aResponseID, int aOrder, int aLikes, int aReplies, boolean Anon, Object timeStamp) {
 
         ownerID     = aOwner;
         commentID      = aID;
@@ -44,6 +48,8 @@ public class Comments {
         replies     = aReplies;
 
         isAnon      = Anon;
+
+        timestamp_create = timeStamp;
     }
 
     public static void requestComment(String commentID, final CommentReceivedListener listener){
@@ -95,5 +101,32 @@ public class Comments {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public static void increment(String type, String commentID, String PostID) {
+
+        FirebaseDatabase.getInstance().getReference("Comments").child(PostID).child(commentID).child(type).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(1);
+
+                }
+                else {
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count + 1);
+
+
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+
+        });
+
     }
 }

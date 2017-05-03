@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
-import com.google.android.gms.vision.text.Text;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -46,10 +45,10 @@ public class UserCommentView extends FrameLayout {
     }
 
     public void createView(){
-        inflate(getContext(), R.layout.comment_post_display, this);
-        miniProfilePicture = (ImageView) findViewById(R.id.simp_user_image);
-        displayName = (TextView) findViewById(R.id.simp_user_name);
-        handle = (TextView) findViewById(R.id.simp_user_handle);
+        inflate(getContext(), R.layout.comment_post_display2, this);
+        miniProfilePicture = (ImageView) findViewById(R.id.comment_simp_user_image);
+        displayName = (TextView) findViewById(R.id.comment_simp_user_name);
+        handle = (TextView) findViewById(R.id.comment_simp_user_handle);
         commentText = (TextView) findViewById(R.id.comment_text);
         likeTextButton = (TextView) findViewById(R.id.like_text_button);
         likeCount = (TextView) findViewById(R.id.comment_like_count);
