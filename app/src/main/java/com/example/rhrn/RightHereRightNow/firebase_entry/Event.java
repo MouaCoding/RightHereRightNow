@@ -155,6 +155,4 @@ public class Event {
 
     }
 
-
-    public static int incComments(String eventID ){int commentsCount = 0; return commentsCount;}
 }

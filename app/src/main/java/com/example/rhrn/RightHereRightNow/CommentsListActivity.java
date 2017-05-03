@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class CommentsListActivity extends FragmentActivity {
 
-    private ImageView newComment;
+    private TextView newComment;
     private ListView commentList;
     private ArrayList<Comments> mComments;
 

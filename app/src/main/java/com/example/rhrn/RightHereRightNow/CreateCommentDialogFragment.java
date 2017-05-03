@@ -52,6 +52,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
                 String temp = commentContent.getText().toString();
                 createComment(firebaseAuth.getCurrentUser().getUid(), PostID,  temp, Order);
                 Event.increment("comments", PostID);
+                dismiss();
             }
         });
 
@@ -70,7 +71,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
         String key = reference.getKey();
 
         DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child(key);
-        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, false));
+        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, false));
         createdComment.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
 

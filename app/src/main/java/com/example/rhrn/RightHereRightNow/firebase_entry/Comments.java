@@ -1,6 +1,10 @@
 package com.example.rhrn.RightHereRightNow.firebase_entry;
 
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Natsand on 4/11/2017.
@@ -17,15 +21,15 @@ public class Comments {
 
 
     public int      order,  // is it an original post (0), response (1), or response to a response (2)
-                    likes;
-
+                    likes,
+                    replies;
 
     public boolean  isAnon;
 
     public Comments() {}
 
     public Comments(String aOwner, String aID, String aContent,
-                String aResponseID, int aOrder, int aLikes, boolean Anon) {
+                String aResponseID, int aOrder, int aLikes, int aReplies, boolean Anon) {
 
         ownerID     = aOwner;
         commentID      = aID;
@@ -37,10 +41,32 @@ public class Comments {
 
         order       = aOrder;
         likes       = aLikes;
+        replies     = aReplies;
 
         isAnon      = Anon;
     }
 
+    public static void requestComment(String commentID, final CommentReceivedListener listener){
+        if(listener == null)
+            return;
+        FirebaseDatabase.getInstance().getReference("Comments").child(commentID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Comments comment = dataSnapshot.getValue(Comments.class);
+                        listener.onCommentReceived(comment);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listener.onCommentReceived(null);
+                    }
+                });
+    }
+
+    public static interface CommentReceivedListener {
+        public void onCommentReceived(Comments...commentses);
+    }
     public void setLikes(int likes) {
         this.likes = likes;
     }
