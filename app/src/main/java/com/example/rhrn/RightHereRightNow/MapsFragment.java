@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -49,12 +50,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -77,6 +82,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private double kmToMiles = 0.621371;
     private double curLatitude;
     private double curLongitude;
+    boolean locationChanged = false;
 
     private String curUserID;
     private GeoLocation curLocation;
@@ -159,7 +165,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         mapView.onResume();
         mGoogleApiClient.connect();
     }
-
+/*
     @Override
     public void onPause() {
         super.onPause();
@@ -168,7 +174,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             mGoogleApiClient.disconnect();
         }
         mapView.onPause();
-    }
+    }*/
 
     @Override
     public void onStop() {
@@ -298,6 +304,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
+        locationChanged = true;
         handleNewLocation(location);
     }
 
@@ -342,8 +349,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 circle.setRadius(animatedFraction * radius);
             }
         });
-        vAnimator.start();
 
+        vAnimator.start();
 
     }
 

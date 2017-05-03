@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -56,7 +57,8 @@ public class ProfilePageFragment extends Fragment {
             numActivityPoints,
             numLikes,
             about;
-    public ImageView profilePicture, edit;
+    public EditText profileMain;
+    public ImageView profilePicture, edit,editDisplay;
     public ImageButton changeProfile;
 
     //Posts
@@ -161,7 +163,17 @@ public class ProfilePageFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AboutMeActivity.class);
                 startActivity(intent);
-                //queryFirebase();
+            }
+        });
+
+        profileMain = (EditText) r.findViewById(R.id.profile_name_main);
+        editDisplay = (ImageView) r.findViewById(R.id.edit_display); //clicked pencil edit
+        editDisplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newDisplayName = profileMain.getText().toString().trim();
+                FirebaseDatabase.getInstance().getReference().child("User")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DisplayName").setValue(newDisplayName);
             }
         });
 
@@ -221,7 +233,7 @@ public class ProfilePageFragment extends Fragment {
 
     public void queryFirebase() {
         DatabaseReference users= FirebaseDatabase.getInstance().getReference("User");
-        users.orderByChild("Email").equalTo(fbuser.getEmail())
+        users.orderByChild("uid").equalTo(fbuser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
