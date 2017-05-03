@@ -55,7 +55,7 @@ public class CommentsListActivity extends FragmentActivity {
         CommentCount = getIntent().getIntExtra("numComments", 0);
 
         if (CommentCount == 0) {
-            newComment(postID, false, null);
+            newComment(postID);
         }
 
         else {
@@ -67,7 +67,7 @@ public class CommentsListActivity extends FragmentActivity {
             newComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    newComment(postID, false, null);
+                    newComment(postID);
 
                 }
             });
@@ -117,19 +117,12 @@ public class CommentsListActivity extends FragmentActivity {
 
     }
 
-    public void newComment(String postID, Boolean isReply, String responseID){
+    public void newComment(String postID){
         FragmentManager manager = this.getSupportFragmentManager();
         CreateCommentDialogFragment createComment = new CreateCommentDialogFragment();
         Toast.makeText(getApplicationContext(), postID, Toast.LENGTH_LONG).show();
         createComment.getPostID(postID);
-        createComment.getResponseID(responseID);
-
-        if(isReply == true){
-            createComment.getOrder(1);
-        }
-        else {
-            createComment.getOrder(0);
-        }
+        createComment.getOrder(0);
         createComment.show(manager, "comment");
     }
 
@@ -187,7 +180,6 @@ public class CommentsListActivity extends FragmentActivity {
             replyTextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    newComment(postID, true, responseID);
 
                 }
             });
