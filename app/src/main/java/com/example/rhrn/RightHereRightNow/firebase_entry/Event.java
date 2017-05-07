@@ -128,18 +128,24 @@ public class Event {
         public void onEventReceived(Event... events);
     }
 
-    public static void increment(String type, String eventID) {
+    public static void changeCount(String type, String eventID, final boolean inc) {
 
         FirebaseDatabase.getInstance().getReference("Event").child(eventID).child(type).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                if(mutableData.getValue() == null){
-                   mutableData.setValue(1);
+                   mutableData.setValue(0);
 
                }
                else {
+
                    int count = mutableData.getValue(Integer.class);
-                   mutableData.setValue(count + 1);
+                   if(inc){
+                       mutableData.setValue(count + 1);
+                   }
+                   else{
+                       mutableData.setValue(count - 1);
+                   }
 
 
                }

@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.example.rhrn.RightHereRightNow.CommentsListActivity;
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -45,7 +47,7 @@ public class UserEventView extends FrameLayout {
 
     private String EventID;
     private int CommentCount;
-
+    private String currUsr = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
 
 
 
@@ -90,8 +92,16 @@ public class UserEventView extends FrameLayout {
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Event.increment("likes", EventID);
-                getEvent(EventID);
+                if(Likes.hasLiked(2, EventID, currUsr )){
+
+                    Toast.makeText(getContext(), "Already Liked", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Likes.Like(2, EventID, currUsr);
+                    Event.changeCount("likes", EventID, true);
+                    Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                    getEvent(EventID);
+                }
             }
         });
 
@@ -127,12 +137,12 @@ public class UserEventView extends FrameLayout {
                 EventID = eventID;
                 CommentCount = ev.comments;
 
-
             }
         });
     }
 
     public void setEvent(Event ev){
+
         eventMakerHeader.getUser(ev.ownerID);
         eventTitleView.setText(ev.eventName);
         eventStartTimeView.setText(ev.startTime);

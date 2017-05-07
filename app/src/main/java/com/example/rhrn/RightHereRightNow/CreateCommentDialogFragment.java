@@ -52,7 +52,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 String temp = commentContent.getText().toString();
                 createComment(firebaseAuth.getCurrentUser().getUid(), PostID,  temp, Order, ResponseID);
-                Event.increment("comments", PostID);
+                Event.changeCount("comments", PostID, true);
                 dismiss();
             }
         });
