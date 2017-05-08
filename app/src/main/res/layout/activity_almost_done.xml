@@ -14,7 +14,7 @@
         android:layout_height="130dp"
         android:layout_gravity="center"
         android:layout_margin="20dp"
-        app:srcCompat="@drawable/rhrnlogo1" />
+        app:srcCompat="@drawable/rhrnlogo" />
     <TextView
         android:id="@+id/profile_name_main"
         android:layout_width="266dp"

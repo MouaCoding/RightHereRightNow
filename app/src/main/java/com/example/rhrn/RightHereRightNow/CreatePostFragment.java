@@ -98,10 +98,12 @@ public class CreatePostFragment extends Fragment {
 
             Location location = LocationUtils.getBestAvailableLastKnownLocation(getContext());
 
-            ProgressDialog progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Creating Event Please Wait...");
-            progressDialog.show();
+            //ProgressDialog progressDialog = new ProgressDialog(getActivity());
+            //progressDialog.setMessage("Creating Event Please Wait...");
+            //progressDialog.show();
 
+
+            Toast.makeText(getContext(), "Creating Post...", Toast.LENGTH_SHORT).show();
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference gettingKey = RootRef.child("Post").push();
             DatabaseReference createdPost = RootRef.child("Post").child("Post_" + gettingKey.getKey());
@@ -121,7 +123,9 @@ public class CreatePostFragment extends Fragment {
 
             geoFireLocation.setLocation(createdPost.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
 
-            progressDialog.dismiss();
+
+            Toast.makeText(getContext(), "Post Created!", Toast.LENGTH_SHORT).show();
+            //progressDialog.dismiss();
 
         } catch (SecurityException e) {}
     }

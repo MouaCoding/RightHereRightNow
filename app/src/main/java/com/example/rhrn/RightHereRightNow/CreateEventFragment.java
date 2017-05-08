@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.app.ProgressDialog;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
@@ -59,6 +60,7 @@ public class CreateEventFragment extends Fragment {
     private FirebaseAuth    firebaseAuth;
     public String key;
     public FirebaseUser usr;
+    ProgressDialog pd;
 
 
     @Override
@@ -212,10 +214,11 @@ public class CreateEventFragment extends Fragment {
         try {
             Location location = LocationUtils.getBestAvailableLastKnownLocation(getContext());
 
-            ProgressDialog progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Creating Event, Please Wait...");
-            progressDialog.show();
+            //ProgressDialog progressDialog = new ProgressDialog(getActivity());
+            //progressDialog.setMessage("Creating Event, Please Wait...");
+            //progressDialog.show();
 
+            Toast.makeText(getContext(), "Creating Event...", Toast.LENGTH_SHORT).show();
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference gettingKey = RootRef.child("Event").push();
             DatabaseReference createdEvent = RootRef.child("Event").child("Event_" + gettingKey.getKey());
@@ -237,12 +240,13 @@ public class CreateEventFragment extends Fragment {
 
             geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
 
-            progressDialog.dismiss();
-
+            //progressDialog.dismiss();
+            Toast.makeText(getContext(), "Event Created!", Toast.LENGTH_SHORT).show();
         } catch (SecurityException e) {}
 
 
 
 
     }
+
 }

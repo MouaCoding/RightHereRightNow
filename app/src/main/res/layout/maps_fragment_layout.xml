@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <android.support.design.widget.BottomNavigationView
-        android:id="@+id/main_bottom_navigation"
+        android:id="@+id/top_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
@@ -15,15 +15,6 @@
         app:menu="@menu/top_navigation_menu"
         />
 
-    <!-- Serves as container for MapView -->
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/message_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/message_closed_envelope"
-        app:backgroundTint="@color/colorPrimary"/>
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/primary_map"

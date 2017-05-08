@@ -110,4 +110,13 @@
     <string name="enter_password">Enter Email</string>
     <string name="cancel">Cancel</string>
     <string name="almost_done">You are almost done! Add the following to complete your profile.</string>
+    <string name="logout">Logout</string>
+
+    <!--Strings related to filtering-->
+    <string name="filter1">Education</string>
+    <string name="filter2">Sports</string>
+    <string name="filter3">Party</string>
+    <string name="filter4">Club Event</string>
+    <string name="filter5">Other</string>
+    <string name="done_filter">Done</string>
 </resources>
