@@ -81,6 +81,12 @@
                     android:inputType="textPassword"
                     android:maxLines="1" />
 
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/keep_logged_in"
+                    android:id="@+id/keeplog"/>
+
                 <TextView
                     android:id="@+id/forgot_password"
                     android:layout_width="wrap_content"

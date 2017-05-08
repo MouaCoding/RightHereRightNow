@@ -102,7 +102,6 @@ public class TrendingFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot1) {
                 for (DataSnapshot dataSnapshot : dataSnapshot1.getChildren()) {
-                    Log.d("HEREHEREHEREHEREHAHA", "The " + dataSnapshot.getKey() + " value is " + dataSnapshot.getValue());
                     Event ev = dataSnapshot.getValue(Event.class);
 
                     eventTitle.setText(ev.eventName);
