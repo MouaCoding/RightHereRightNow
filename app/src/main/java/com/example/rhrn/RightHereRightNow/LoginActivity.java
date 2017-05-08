@@ -2,6 +2,7 @@
 package com.example.rhrn.RightHereRightNow;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +17,8 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -101,6 +104,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private ProgressDialog pd;
 
+    CheckBox keeplog;
+    boolean isChecked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,6 +191,34 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Toast.makeText(getApplicationContext(), "Failed to Log In!", Toast.LENGTH_LONG).show();
             }
         });
+
+        //Checkbox of keep me logged in
+        keeplog = (CheckBox) findViewById(R.id.keeplog);
+        keeplog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //if clicked, then draws a check and set PREFS_NAME
+                SharedPreferences settings = getSharedPreferences("PREFS_NAME", 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean("isChecked", isChecked);
+                editor.commit();
+            }
+        });
+
+        //Sets settings1 to PREFS_NAME and set it to the boolean isChecked
+        SharedPreferences settings1 = getSharedPreferences("PREFS_NAME", 0);
+        isChecked = settings1.getBoolean("isChecked", false);
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (isChecked && firebaseUser != null) {
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        } else {
+            //Intent i = new Intent(MainActivity.this, SecondActivity.class);
+            //startActivity(i);
+        }
+
     }
 
     @Override

@@ -119,4 +119,5 @@
     <string name="filter4">Club Event</string>
     <string name="filter5">Other</string>
     <string name="done_filter">Done</string>
+    <string name="keep_logged_in">Keep me logged in</string>
 </resources>
