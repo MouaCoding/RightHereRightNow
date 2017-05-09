@@ -27,8 +27,7 @@ public class Likes {
         rootref.setValue(new Likes());
 
     }
-    public static void unlike(int type, String id, String user){
-
+    public static void unlike(int type, String id, String user) {
     }
     public static boolean hasLiked(int type, String id, final String user){
         DatabaseReference rootref = FirebaseDatabase.getInstance().getReference("Likes").child(id);

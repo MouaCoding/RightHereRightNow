@@ -21,6 +21,7 @@ import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -94,7 +95,11 @@ public class UserEventView extends FrameLayout {
             public void onClick(View v) {
                 if(Likes.hasLiked(2, EventID, currUsr )){
 
-                    Toast.makeText(getContext(), "Already Liked", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                    FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
+                    Event.changeCount("likes", EventID, false);
+                    getEvent(EventID);
+
                 }
                 else{
                     Likes.Like(2, EventID, currUsr);

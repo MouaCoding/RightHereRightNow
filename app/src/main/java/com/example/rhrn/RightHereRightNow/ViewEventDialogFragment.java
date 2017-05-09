@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.custom.view.UserEventView;
 import com.example.rhrn.RightHereRightNow.custom.view.UserPostView;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
 /**
