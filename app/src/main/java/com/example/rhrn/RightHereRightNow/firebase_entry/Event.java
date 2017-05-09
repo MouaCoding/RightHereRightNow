@@ -16,7 +16,11 @@ public class Event {
                     endTime,
                     address,
                     description,
-                    ProfilePicture;
+                    ProfilePicture,
+                    DisplayName,
+                    handle,
+                    userProfilePicture,
+                    eventID;
     //  TODO: BB: Change dates and times to type Date
     // BB: we also might need some sort of unique event ID
 

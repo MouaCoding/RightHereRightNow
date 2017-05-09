@@ -31,6 +31,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.acl.Owner;
 
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
+
 /**
  * Created by Bradley Wang on 3/6/2017.
  */
@@ -152,20 +154,6 @@ public class UserEventView extends FrameLayout {
 
             }
         });
-    }
-
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     public void getOwnerLikes(String ownerID){

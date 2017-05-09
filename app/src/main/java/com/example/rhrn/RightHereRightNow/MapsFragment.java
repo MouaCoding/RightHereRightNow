@@ -43,6 +43,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.City;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -75,6 +76,9 @@ import com.google.firebase.database.ValueEventListener;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -367,13 +371,33 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         LatLng latLng = new LatLng(curLatitude, curLongitude);
         Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
-            List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            final List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
             if (addresses.size() > 0 & addresses != null) {
-                //Toast.makeText(getApplicationContext(),addresses.get(0).getLocality(),Toast.LENGTH_LONG).show();
                 MenuItem cityMenuItem = topNavigationView.getMenu().findItem(R.id.current_city);
-
                 cityMenuItem.setTitle(addresses.get(0).getLocality());
+                final DatabaseReference cityRef = FirebaseDatabase.getInstance().getReference().child("City").child(addresses.get(0).getLocality());
+                cityRef.child(addresses.get(0).getLocality()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists())
+                            ;
+                        else {
+                            //city does not exist, so create new
+                            City city = new City(addresses.get(0).getLocality(),
+                                    addresses.get(0).getAdminArea(),
+                                    addresses.get(0).getCountryName(), null, "0", "0");
+                            cityRef.setValue(city);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
             }
         }catch (IOException e) {
             e.printStackTrace();
@@ -681,6 +705,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         editor.commit();
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         item.setActionView(new View(getApplicationContext()));
+    }
+
+    //stackoverflow function
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

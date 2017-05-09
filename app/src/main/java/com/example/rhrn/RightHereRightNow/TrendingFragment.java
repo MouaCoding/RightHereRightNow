@@ -28,7 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -38,9 +38,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class TrendingFragment extends Fragment {
 
     public Button global, city;
-    public ImageView profilePicture;
     public TextView eventTitle, eventName, startTime, endTime, numLikes, numComments;
-    public TextView displayNameView, userHandleView;
     String otherUserID;
 
     public ListView trendingList;
@@ -51,49 +49,24 @@ public class TrendingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View r = (View) inflater.inflate(R.layout.trending_posts, container, false);
 
-        profilePicture = (ImageView) r.findViewById(R.id.user_event_mini_image);
-        eventTitle = (TextView) r.findViewById(R.id.user_event_title);
-        startTime = (TextView) r.findViewById(R.id.user_event_start_time);
-        endTime = (TextView) r.findViewById(R.id.user_event_end_time);
-        eventName = (TextView) r.findViewById(R.id.user_event_location);
-        numLikes = (TextView) r.findViewById(R.id.number_likes);
-        numComments = (TextView) r.findViewById (R.id.number_comments);
-
-        /*
-        profilePicture = (ImageView) r.findViewById(R.id.mini_profile_picture);
-        //Clicking either user's profile picture or their name will start a view user activity
-        profilePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
-                intent.putExtra("otherUserID",otherUserID);
-                getContext().startActivity(intent);
-            }
-        });
-        displayNameView = (TextView) r.findViewById(R.id.mini_name);
-        displayNameView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
-                intent.putExtra("otherUserID",otherUserID);
-                getContext().startActivity(intent);
-            }
-        });
-        userHandleView = (TextView) r.findViewById(R.id.mini_user_handle);
-*/
-
         global = (Button) r.findViewById(R.id.global_button);
         global.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Display global list of events/posts
+                eventList = new ArrayList<>();
+                eventAdapter = new EventAdapter(getContext(), eventList);
+                trendingList.setAdapter(eventAdapter);
+                queryAllEvents();
             }
         });
         city = (Button) r.findViewById(R.id.city_button);
         city.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Display city list of events/posts
+                eventList = new ArrayList<>();
+                eventAdapter = new EventAdapter(getContext(), eventList);
+                trendingList.setAdapter(eventAdapter);
+                queryCityEvents();
             }
         });
 
@@ -118,18 +91,11 @@ public class TrendingFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot1) {
                 for (DataSnapshot dataSnapshot : dataSnapshot1.getChildren()) {
                     Event ev = dataSnapshot.getValue(Event.class);
-/*
-                    eventTitle.setText(ev.eventName);
-                    startTime.setText(ev.startTime);
-                    endTime.setText(ev.endTime);
-                    eventName.setText(ev.address);
-                    numLikes.setText(Integer.toString(ev.likes));
-                    numComments.setText(Integer.toString(ev.comments));*/
 
                     eventList.add(0,ev);
                     eventAdapter = new EventAdapter(getContext(), eventList);
                     trendingList.setAdapter(eventAdapter);
-                    populateEventHeader(ev.ownerID);
+                    //populateEventHeader(ev.ownerID);
                 }
             }
 
@@ -139,33 +105,6 @@ public class TrendingFragment extends Fragment {
             }
         });
     }
-
-    public void populateEventHeader(String uid)
-    {
-        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("User");
-        user.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User usr = dataSnapshot.getValue(User.class);
-/*
-                displayNameView.setText(usr.DisplayName);
-                userHandleView.setText(usr.handle);
-                otherUserID = usr.uid;
-*/
-                try {
-                    profilePicture.setImageBitmap(getBitmapFromURL(usr.ProfilePicture));
-                }catch (Exception e){}
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-
 
     public class EventAdapter extends ArrayAdapter<Event> {
         EventAdapter(Context context, ArrayList<Event> users){
@@ -177,13 +116,16 @@ public class TrendingFragment extends Fragment {
             convertView = super.getView(position, convertView, parent);
             Event event = getItem(position);
             TextView eventTitle = (TextView)convertView.findViewById(R.id.user_event_title);
-            //TextView eventContent = (TextView)convertView.findViewById(R.id.message_preview);
             ImageView eventImage = (ImageView) convertView.findViewById(R.id.user_event_mini_image);
             TextView startTime = (TextView)convertView.findViewById(R.id.user_event_start_time);
             TextView endTime = (TextView)convertView.findViewById(R.id.user_event_end_time);
             TextView eventLoc = (TextView)convertView.findViewById(R.id.user_event_location);
             TextView numLikes = (TextView)convertView.findViewById(R.id.number_likes);
             TextView numComments = (TextView)convertView.findViewById(R.id.number_comments);
+
+            TextView displayNameView = (TextView) convertView.findViewById(R.id.mini_name);
+            ImageView profilePicture = (ImageView) convertView.findViewById(R.id.mini_profile_picture);
+            TextView userHandleView = (TextView) convertView.findViewById(R.id.mini_user_handle);
 
             eventTitle.setText(event.eventName);
             startTime.setText(event.startTime);
@@ -192,16 +134,48 @@ public class TrendingFragment extends Fragment {
             numLikes.setText(Integer.toString(event.likes));
             numComments.setText(Integer.toString(event.comments));
 
-            //eventImage.setText(event);
-
+            displayNameView.setText(event.DisplayName);
+            userHandleView.setText(event.handle);
 
             try {
-                if (event.ProfilePicture != null)
+                if (event.userProfilePicture != null)
+                    profilePicture.setImageBitmap(getBitmapFromURL(event.userProfilePicture));
+                else
+                    profilePicture.setImageResource(R.mipmap.ic_launcher);
+            }catch (Exception e){}
+            try{
+                if (event.userProfilePicture != null)
                     eventImage.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
                 else
-                    eventImage.setImageResource(R.drawable.ic_group_black_24dp);
-            }catch (Exception e){}
+                    profilePicture.setImageResource(R.drawable.ic_group_black_24dp);
+            } catch (Exception e){}
             return convertView;
         }
     }
+
+
+    public void queryCityEvents()
+    {
+        DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.child("Event").orderByChild("City").startAt("A").endAt("Z").limitToLast(3).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot1) {
+                for (DataSnapshot dataSnapshot : dataSnapshot1.getChildren()) {
+                    Event ev = dataSnapshot.getValue(Event.class);
+
+                    eventList.add(0,ev);
+                    eventAdapter = new EventAdapter(getContext(), eventList);
+                    trendingList.setAdapter(eventAdapter);
+                    //populateEventHeader(ev.ownerID);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

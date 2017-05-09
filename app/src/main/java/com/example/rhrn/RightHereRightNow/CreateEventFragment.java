@@ -212,40 +212,42 @@ public class CreateEventFragment extends Fragment {
         String str_eventETime = endTime.getText().toString();
         String str_eventAddr  = address.getText().toString();
 
-
-
-
-
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         try {
             Location location = LocationUtils.getBestAvailableLastKnownLocation(getContext());
 
-            //ProgressDialog progressDialog = new ProgressDialog(getActivity());
-            //progressDialog.setMessage("Creating Event, Please Wait...");
-            //progressDialog.show();
-
             Toast.makeText(getContext(), "Creating Event...", Toast.LENGTH_SHORT).show();
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference gettingKey = RootRef.child("Event").push();
             DatabaseReference createdEvent = RootRef.child("Event").child("Event_" + gettingKey.getKey());
+            String eventKey = "Event_"+gettingKey.getKey();
             gettingKey.setValue(null);
 
             DatabaseReference eventLocation = RootRef.child("EventLocations");
             GeoFire geoFireLocation = new GeoFire(eventLocation);
 
-
-            // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
             createdEvent.setValue(new Event(str_event_name, firebaseAuth.getCurrentUser().getUid(), str_eventSDate,
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
                     str_event_description, 10, 0, 0, 0));
             createdEvent.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
+            createdEvent.child("eventID").setValue(gettingKey.getKey());
 
-            // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
-            //              String aEndTime, String aAddress, String aDescription,
-            //              double aViewRadius, int aLikes, int aComments, int aRSVPs)
-
+            setExtraValues(eventKey,firebaseAuth.getCurrentUser().getUid());
             geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
+
+            //Saves the city of created event
+            Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+            try {
+                List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                if (addresses.size() > 0 & addresses != null) {
+                    RootRef.child("Event").child("Event_" + gettingKey.getKey()).child("City")
+                            .setValue(addresses.get(0).getLocality());
+                }
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
 
             //progressDialog.dismiss();
             Toast.makeText(getContext(), "Event Created!", Toast.LENGTH_SHORT).show();
@@ -254,6 +256,27 @@ public class CreateEventFragment extends Fragment {
 
 
 
+    }
+
+    public void setExtraValues(final String eventID, final String ownerID)
+    {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User owner = dataSnapshot.getValue(User.class);
+                ref.child("Event").child(eventID).child("DisplayName").setValue(owner.DisplayName);
+                ref.child("Event").child(eventID).child("handle").setValue(owner.handle);
+                try{
+                    ref.child("Event").child(eventID).child("userProfilePicture").setValue(owner.ProfilePicture);
+                }catch (Exception e){}
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

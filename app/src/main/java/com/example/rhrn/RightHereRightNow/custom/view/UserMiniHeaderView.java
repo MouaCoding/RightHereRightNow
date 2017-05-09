@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
@@ -138,20 +139,6 @@ public class UserMiniHeaderView extends FrameLayout {
         });
     }
 
-    //stackoverflow function
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch( Exception e) {
-            return null;
-        }
-    }
 
 }
 // TODO use params to get user data and fill fields.

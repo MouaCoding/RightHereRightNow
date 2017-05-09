@@ -2,6 +2,8 @@ package com.example.rhrn.RightHereRightNow;
 
 import android.app.ProgressDialog;
 import android.icu.text.SimpleDateFormat;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -31,12 +33,16 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 import static android.content.Context.LOCATION_SERVICE;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class CreatePostFragment extends Fragment {
 
@@ -125,6 +131,19 @@ public class CreatePostFragment extends Fragment {
             //        String aResponseID, double aViewRadius, int aOrder, int aLikes, int aComments)
 
             geoFireLocation.setLocation(createdPost.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
+            //Saves the city of created event
+            Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+            try {
+                List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                if (addresses.size() > 0 & addresses != null) {
+                    RootRef.child("Post").child("Post_" + gettingKey.getKey()).child("City")
+                            .setValue(addresses.get(0).getLocality());
+                }
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
             setExtraValues(createdPost.getKey(), firebaseAuth.getCurrentUser().getUid());
 
 

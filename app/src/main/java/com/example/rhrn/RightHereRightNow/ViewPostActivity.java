@@ -14,7 +14,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
+
 
 public class ViewPostActivity extends AppCompatActivity {
     TextView content, likes, comments;

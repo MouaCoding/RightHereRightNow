@@ -25,7 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
+
 
 /**
  * Created by Matt on 3/8/2017.

@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -58,6 +58,9 @@ public class NotificationFragment extends Fragment {
         following.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mPosts = new ArrayList<>();
+                mAdapter = new PostAdapter(getContext(), mPosts);
+                list.setAdapter(mAdapter);
                 getUsers();
             }
         });
@@ -65,6 +68,9 @@ public class NotificationFragment extends Fragment {
         you.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mPosts = new ArrayList<>();
+                mAdapter = new PostAdapter(getContext(), mPosts);
+                list.setAdapter(mAdapter);
                 userNotification();
             }
         });
@@ -73,6 +79,7 @@ public class NotificationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //Search friends
+
             }
         });
 

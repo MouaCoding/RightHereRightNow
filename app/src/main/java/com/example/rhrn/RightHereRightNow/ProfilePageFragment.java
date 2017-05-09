@@ -43,7 +43,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -243,7 +243,6 @@ public class ProfilePageFragment extends Fragment {
                             temp = userSnapshot.getValue(User.class);
                             userName.setText(temp.DisplayName);
                             hash_tag.setText(temp.handle);
-                            numberFollowers.setText(Integer.toString(temp.followers.size()));
                             numActivityPoints.setText(Integer.toString(temp.ActivityPoints));
                             numLikes.setText(Integer.toString(temp.LikesReceived));
                             about.setText(temp.AboutMe);
