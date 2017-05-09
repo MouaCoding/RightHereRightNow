@@ -21,6 +21,8 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.LocationUtils;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,17 +41,14 @@ import java.util.Date;
 import static android.content.Context.LOCATION_SERVICE;
 
 public class CreatePostFragment extends Fragment {
+    private MapView post_location;
+    private GoogleMap mMap;
 
-    private EditText    post_name,
-                        post_content;
-
-    private FirebaseAuth firebaseAuth;
+    private EditText post_content;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        super.onCreateView(inflater, container, savedInstanceState);
         View r = inflater.inflate(R.layout.create_post_page_layout, container, false);
-            // TODO: set this page layout to post creation instead of event creation
 
         Button b = (Button) r.findViewById(R.id.confirm_post_button);
         b.setOnClickListener(new View.OnClickListener() {
@@ -60,22 +59,13 @@ public class CreatePostFragment extends Fragment {
         });
 
         //Initializes each text view to the class's objects
-
-        // TODO: change these to post values instead of event values
         post_content = (EditText)r.findViewById(R.id.content_post);
-      ///  post_name = (EditText)r.findViewById(R.id.event_description);
-
-        firebaseAuth = FirebaseAuth.getInstance();
 
         return r;
     }
 
     public void createPost() {
-
-       // String str_event_name = post_name.getText().toString().trim();
-        String str_event_content = post_content.getText().toString().trim();
-
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        String postContent = post_content.getText().toString().trim();
 
         Calendar c = Calendar.getInstance();
         String date = Integer.toString(c.get(Calendar.MONTH)) + "/" + Integer.toString(c.get(Calendar.DAY_OF_MONTH))
@@ -106,26 +96,22 @@ public class CreatePostFragment extends Fragment {
 
 
             Toast.makeText(getContext(), "Creating Post...", Toast.LENGTH_SHORT).show();
-            DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-            DatabaseReference gettingKey = RootRef.child("Post").push();
-            DatabaseReference createdPost = RootRef.child("Post").child("Post_" + gettingKey.getKey());
+            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference gettingKey = rootRef.child("Post").push();
+            DatabaseReference createdPost = rootRef.child("Post").child("Post_" + gettingKey.getKey());
             gettingKey.setValue(null);
 
-            DatabaseReference postLocation = RootRef.child("PostLocations");
+            DatabaseReference postLocation = rootRef.child("PostLocations");
             GeoFire geoFireLocation = new GeoFire(postLocation);
 
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
-            createdPost.setValue(new Post(firebaseAuth.getCurrentUser().getUid(), createdPost.getKey(), date, time,
-                    str_event_content, "response Post ID", 10, 0, 0, 0,false));
+            createdPost.setValue(new Post( FirebaseAuth.getInstance().getCurrentUser().getUid(), createdPost.getKey(), date, time,
+                    postContent, "response Post ID", 10, 0, 0, 0,false));
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
-
-            // Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
-            //        String aResponseID, double aViewRadius, int aOrder, int aLikes, int aComments)
-
             geoFireLocation.setLocation(createdPost.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
-            setExtraValues(createdPost.getKey(), firebaseAuth.getCurrentUser().getUid());
+            setExtraValues(createdPost.getKey(),  FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
             Toast.makeText(getContext(), "Post Created!", Toast.LENGTH_SHORT).show();
