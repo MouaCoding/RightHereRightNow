@@ -13,7 +13,9 @@ public class Post {
                     createDate,
                     createTime,
                     content,
-                    responseID;
+                    responseID,
+                    DisplayName,
+                    ProfilePicture;
     //  TODO: BB: Change dates and times to type Date
 
     public double   viewRadius;
