@@ -24,7 +24,7 @@
     <item
         android:id="@+id/favorite"
         android:enabled="true"
-        android:icon="@drawable/favourite_star"
+        android:icon="@drawable/refresh_button"
         android:title="Favorite"
         app:showAsAction="ifRoom" />
     <item
