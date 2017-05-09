@@ -2,12 +2,14 @@ package com.example.rhrn.RightHereRightNow;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.example.rhrn.RightHereRightNow.ProfilePageFragment.getBitmapFromURL;
+import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Matt on 4/2/2017.
@@ -40,8 +43,9 @@ public class NotificationFragment extends Fragment {
     public Button following, you;
     public EditText search;
     private ArrayList<Post> mPosts;
+    private ArrayList<Object> mUserNotifications;
     private PostAdapter mAdapter;
-    private ListView list;
+    private ListView list, userList;
     TextView messageView;
     TextView nameView;
     ImageView profilePic;
@@ -54,14 +58,14 @@ public class NotificationFragment extends Fragment {
         following.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Display following notification
+                getUsers();
             }
         });
         you = (Button) r.findViewById(R.id.you_button);
         you.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Display You notification
+                userNotification();
             }
         });
         search = (EditText) r.findViewById(R.id.search_friends);
@@ -74,7 +78,9 @@ public class NotificationFragment extends Fragment {
 
         mAdapter = new PostAdapter(getContext(),mPosts);
         mPosts = new ArrayList<Post>();
+        mUserNotifications = new ArrayList<>();
         list = (ListView) r.findViewById(R.id.global_list);
+        userList = (ListView) r.findViewById(R.id.global_list);
         messageView = (TextView)r.findViewById(R.id.message_preview);
 
         //getPosts();
@@ -110,7 +116,6 @@ public class NotificationFragment extends Fragment {
                 nameView.setLayoutParams(layoutParams);
                 if (post.ProfilePicture != null)
                     profilePic.setImageBitmap(getBitmapFromURL(post.ProfilePicture));
-
                 else
                     profilePic.setImageResource(R.mipmap.ic_launcher);
             }catch (Exception e){}
@@ -172,6 +177,17 @@ public class NotificationFragment extends Fragment {
                     mAdapter = new PostAdapter(getContext(), mPosts);
                     list.setAdapter(mAdapter);
                 }catch (Exception e){}
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(getApplicationContext(),ViewPostActivity.class);
+                        intent.putExtra("postid",mPosts.get(position).postID);
+                        //intent.putExtra("ReceiverName",mPosts.get(position).DisplayName);
+                        //TODO: Add message preview
+                        //intent.putExtra("MessageContent", messageContentHere);
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
@@ -230,6 +246,12 @@ public class NotificationFragment extends Fragment {
 
             }
         });
+    }
+
+
+    public void userNotification()
+    {
+
     }
 
 }

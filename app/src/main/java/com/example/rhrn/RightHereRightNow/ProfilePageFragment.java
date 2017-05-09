@@ -43,6 +43,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -172,6 +173,7 @@ public class ProfilePageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String newDisplayName = profileMain.getText().toString().trim();
+                Toast.makeText(getApplicationContext(),"Display Name Changed to " + newDisplayName, Toast.LENGTH_SHORT).show();
                 FirebaseDatabase.getInstance().getReference().child("User")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DisplayName").setValue(newDisplayName);
             }
@@ -295,20 +297,6 @@ public class ProfilePageFragment extends Fragment {
         }
     }
 
-    //stackoverflow function
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     //populate posts from firebase
     public void populatePost()

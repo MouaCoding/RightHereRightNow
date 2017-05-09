@@ -169,8 +169,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                                 break;
                             case R.id.current_city:
                                 break;
-                            case R.id.favorite:
-                                promptFavorite();
+                            case R.id.favorite: //TODO: Refresh or favorite?
+                                Toast.makeText(getApplicationContext(),"Refreshing...", Toast.LENGTH_SHORT).show();
+                                onResume();
+                                Toast.makeText(getApplicationContext(),"Refreshed!", Toast.LENGTH_SHORT).show();
+                                //promptFavorite();
                                 break;
                             case R.id.refresh:
                                 optionsMenu(options);

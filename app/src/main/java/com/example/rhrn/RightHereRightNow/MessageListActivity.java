@@ -25,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
+
 /**
  * Created by Matt on 3/8/2017.
  */
@@ -156,11 +158,16 @@ public class MessageListActivity extends AppCompatActivity {
             User user = getItem(position);
             TextView nameView = (TextView)convertView.findViewById(R.id.user);
             TextView messageView = (TextView)convertView.findViewById(R.id.message_preview);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
             nameView.setText(user.DisplayName);
             //TODO: Populate the message preview with the most recent message
             messageView.setText(user.FirstName); // placeholder for now...
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)nameView.getLayoutParams();
 
+            try{
+                imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+
+            } catch (Exception e){}
             nameView.setLayoutParams(layoutParams);
             return convertView;
         }

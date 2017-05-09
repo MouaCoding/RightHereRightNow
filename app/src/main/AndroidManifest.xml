@@ -75,7 +75,8 @@
             android:value="134cf1747263e127c412def9f67626d8c3389c82" />
 
         <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".AlmostDoneActivity"></activity>
+        <activity android:name=".AlmostDoneActivity" />
+        <activity android:name=".ViewPostActivity"></activity>
     </application>
 
 </manifest>
