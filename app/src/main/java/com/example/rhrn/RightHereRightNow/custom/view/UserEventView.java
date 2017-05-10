@@ -94,7 +94,7 @@ public class UserEventView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if(Likes.hasLiked(2, EventID, currUsr )){
-
+                    likeButton.setColorFilter(R.color.colorTextDark);
                     Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
                     FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
                     Event.changeCount("likes", EventID, false);
@@ -102,6 +102,7 @@ public class UserEventView extends FrameLayout {
 
                 }
                 else{
+                    likeButton.setColorFilter(R.color.crimson);
                     Likes.Like(2, EventID, currUsr);
                     Event.changeCount("likes", EventID, true);
                     Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
