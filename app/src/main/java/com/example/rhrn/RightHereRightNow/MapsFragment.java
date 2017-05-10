@@ -380,24 +380,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 cityRef.child(addresses.get(0).getLocality()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists())
-                            ;
+                        if(dataSnapshot.exists()) //if city is already in the database
+                            ;//do nothing
                         else {
                             //city does not exist, so create new
                             City city = new City(addresses.get(0).getLocality(),
                                     addresses.get(0).getAdminArea(),
-                                    addresses.get(0).getCountryName(), null, "0", "0");
+                                    addresses.get(0).getCountryName(), null, "0");
                             cityRef.setValue(city);
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
-
-
             }
         }catch (IOException e) {
             e.printStackTrace();

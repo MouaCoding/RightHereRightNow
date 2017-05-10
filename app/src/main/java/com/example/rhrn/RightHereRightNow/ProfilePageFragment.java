@@ -250,7 +250,10 @@ public class ProfilePageFragment extends Fragment {
                             //TRY because user might not have profile picture yet
                             try {
                                 //Convert the URL to aa Bitmap using function, then set the profile picture
-                                profilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
+                                if(temp.ProfilePicture != null)
+                                    profilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
+                                else
+                                    profilePicture.setImageResource(R.mipmap.ic_launcher);
                             }catch (Exception e){
                                 e.printStackTrace();
                             }

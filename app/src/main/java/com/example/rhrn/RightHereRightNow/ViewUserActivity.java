@@ -105,7 +105,7 @@ public class ViewUserActivity extends AppCompatActivity {
                         User temp = dataSnapshot.getValue(User.class);
                         userName.setText(temp.DisplayName);
                         hash_tag.setText(temp.handle);
-                        numberFollowers.setText(Integer.toString(temp.followers.size()));
+//                        numberFollowers.setText(Integer.toString(temp.followers.size()));
                         numActivityPoints.setText(Integer.toString(temp.ActivityPoints));
                         numLikes.setText(Integer.toString(temp.LikesReceived));
                         about.setText(temp.AboutMe);

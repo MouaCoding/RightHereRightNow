@@ -9,21 +9,19 @@ public class City {
                     Country,
                     State,
                     Picture,
-                    NumPosts,
-                    NumEvents;
+                    NumFavorites;
 
     public City()
     {
-         CityName = Picture = NumPosts = NumEvents = Country = State =  null;
+         CityName = Picture = NumFavorites = Country = State =  null;
     }
 
-    public City(String aCityName, String aState, String aCountry, String aPicture, String aNumPosts, String aNumEvents)
+    public City(String aCityName, String aState, String aCountry, String aPicture, String aNumFavorites)
     {
         CityName = aCityName;
         State = aState;
         Country = aCountry;
         Picture = aPicture;
-        NumPosts = aNumPosts;
-        NumEvents = aNumEvents;
+        NumFavorites = aNumFavorites;
     }
 }

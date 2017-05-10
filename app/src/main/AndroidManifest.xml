@@ -76,7 +76,8 @@
 
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".AlmostDoneActivity" />
-        <activity android:name=".ViewPostActivity"></activity>
+        <activity android:name=".ViewPostActivity" />
+        <activity android:name=".CityEventsActivity"></activity>
     </application>
 
 </manifest>
