@@ -119,7 +119,7 @@ public class Event {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listener.onEventReceived();
+                        listener.onEventReceived(null);
                     }
                 });
     }

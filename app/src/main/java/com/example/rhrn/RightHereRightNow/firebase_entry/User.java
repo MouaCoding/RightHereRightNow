@@ -24,7 +24,6 @@ public class User {
                     Address,
                     City,
                     State,
-                    zip,
                     id,
                     uid, // added user id, easier to use with FirebaseUser instance
                     AboutMe,

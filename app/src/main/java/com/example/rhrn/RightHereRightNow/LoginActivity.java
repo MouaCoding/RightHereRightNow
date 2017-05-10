@@ -31,7 +31,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -54,7 +53,7 @@ public class LoginActivity extends AppCompatActivity   {
     //Signup button
     private Button buttonSignup;
     private CallbackManager callbackManager;
-    private TextView forgotPassword;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,16 +107,6 @@ public class LoginActivity extends AppCompatActivity   {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},LOCATIONS_PERMISSION);
         }
-        forgotPassword = (TextView) findViewById(R.id.forgot_password);
-        forgotPassword.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ForgotPasswordActivity.class);
-                startActivity(intent);
-
-            }
-        });
-
     }
 
     //Facebook register user
@@ -173,7 +162,7 @@ public class LoginActivity extends AppCompatActivity   {
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful() && emailVerified()) {
+                        if (task.isSuccessful()) {
                             //if successfully logs in, displays success,
                             Toast.makeText(LoginActivity.this,"Successfully Logged In",Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -188,30 +177,14 @@ public class LoginActivity extends AppCompatActivity   {
                 });
     }
 
-    public boolean emailVerified()
-    {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user.isEmailVerified())
-        {
-            return true;
-        }
-        else
-        {
-            //logout user and return false
-            FirebaseAuth.getInstance().signOut();
-            Toast.makeText(LoginActivity.this,"Email not Verified!",Toast.LENGTH_LONG).show();
-            return false;
-        }
-    }
-
     private boolean isEmailValid(String email) {
-        //TODO: MM: send email verfication?
-        return (email.contains("@"));
+        //TODO: Replace this with your own logic
+        return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: MM: Password implementation? Right Now->If not empty (No restriction on password)
-        return (password.length() > 0);
+        //TODO: Replace this with your own logic
+        return password.length() > 4;
     }
 
 }
