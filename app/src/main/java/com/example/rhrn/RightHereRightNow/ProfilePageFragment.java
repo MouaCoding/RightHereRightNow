@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +42,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
@@ -69,8 +71,14 @@ public class ProfilePageFragment extends Fragment {
                     body,
                     postsNumLikes,
                     postsNumComments;
-    public ListView listView;
-    //public ArrayList<Post> postArray;
+
+    //Populating list of posts and events
+    public ListView postList, eventList;
+    public ArrayList<Post> postArray;
+    public ArrayList<Event> eventArray;
+    public NotificationFragment.PostAdapter postAdapter;
+    public TrendingFragment.EventAdapter eventAdapter;
+
 
     public User temp;
     ProgressDialog pd;
@@ -186,12 +194,14 @@ public class ProfilePageFragment extends Fragment {
         body = (TextView) r.findViewById(R.id.user_post_body);
         postsNumLikes = (TextView) r.findViewById(R.id.number_likes);
         postsNumComments = (TextView) r.findViewById(R.id.number_comments);
-        //listView = (ListView)r.findViewById(R.id.post_list);
-        //postArray = new ArrayList<>();
+        postList = (ListView)r.findViewById(R.id.post_list);
+        eventList = (ListView) r.findViewById(R.id.event_list);
+        postArray = new ArrayList<>();
+        eventArray = new ArrayList<>();
 
         queryFirebase();
         populatePost();
-        populatePostHeader();
+        populateEvent();
         return r;
     }
 
@@ -304,19 +314,17 @@ public class ProfilePageFragment extends Fragment {
     public void populatePost()
     {
         DatabaseReference users= FirebaseDatabase.getInstance().getReference("Post");
-        users.orderByChild("ownerID").equalTo(fbuser.getUid())
+        users.orderByChild("ownerID").limitToLast(3).equalTo(fbuser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             Post post = userSnapshot.getValue(Post.class);
-                            postsNumLikes.setText(Integer.toString(post.likes));
-                            postsNumComments.setText(Integer.toString(post.comments));
-                            body.setText(post.content);
-                            //postArray.add(post);
+                            //Most recent first
+                            postArray.add(0,post);
                         }
-                        //PostAdapter adapter = new PostAdapter(postArray);
-                        //listView.setAdapter(adapter);
+                        postAdapter = new NotificationFragment.PostAdapter(getContext(),postArray);
+                        postList.setAdapter(postAdapter);
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -324,25 +332,22 @@ public class ProfilePageFragment extends Fragment {
                     }
                 });
     }
-    public void populatePostHeader()
+
+    public void populateEvent()
     {
-        DatabaseReference users= FirebaseDatabase.getInstance().getReference().child("User");
-        users.orderByChild("uid").equalTo(fbuser.getUid())
+        DatabaseReference users= FirebaseDatabase.getInstance().getReference("Event");
+        //two events since events views are big
+        users.orderByChild("ownerID").limitToLast(2).equalTo(fbuser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            User temp = userSnapshot.getValue(User.class);
-                            miniHandle.setText(temp.handle);
-                            miniUserName.setText(temp.DisplayName);
-                            //TRY because user might not have profile picture yet
-                            try {
-                                //Convert the URL to a Bitmap using function, then set the profile picture
-                                miniProfilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
+                            Event event = userSnapshot.getValue(Event.class);
+                            //Most recent first
+                            eventArray.add(0,event);
                         }
+                        eventAdapter = new TrendingFragment.EventAdapter(getContext(),eventArray);
+                        eventList.setAdapter(eventAdapter);
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -350,25 +355,4 @@ public class ProfilePageFragment extends Fragment {
                     }
                 });
     }
-/*
-    //Post List
-    public class PostAdapter extends ArrayAdapter<Post> {
-        PostAdapter(ArrayList<Post> postList){
-
-            super(getApplicationContext(), R.layout.user_post_framed_layout, R.id.mini_name, postList);
-        }
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-            convertView = super.getView(position, convertView, parent);
-            Post p = getItem(position);
-            try {
-                postsNumLikes.setText(p.likes);
-                postsNumShares.setText(p.comments);
-                body.setText(p.content);
-            } catch (Exception e){}
-            return convertView;
-        }
-    }
-    */
 }

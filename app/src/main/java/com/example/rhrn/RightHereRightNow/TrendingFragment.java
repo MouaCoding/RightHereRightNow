@@ -160,6 +160,7 @@ public class TrendingFragment extends Fragment {
                     eventImage.setImageResource(R.drawable.ic_group_black_24dp);
             } catch (Exception e){}
 
+            //On clicks to navigate to view user or event
             displayNameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -174,6 +175,24 @@ public class TrendingFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
                     intent.putExtra("otherUserID",event.ownerID);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
+                }
+            });
+            eventTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), ViewEventActivity.class);
+                    intent.putExtra("eventid",event.eventID);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
+                }
+            });
+            eventImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), ViewEventActivity.class);
+                    intent.putExtra("eventid",event.eventID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
                 }

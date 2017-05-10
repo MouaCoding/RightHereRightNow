@@ -231,7 +231,7 @@ public class CreateEventFragment extends Fragment {
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
                     str_event_description, 10, 0, 0, 0));
             createdEvent.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
-            createdEvent.child("eventID").setValue(gettingKey.getKey());
+            createdEvent.child("eventID").setValue("Event_"+gettingKey.getKey());
 
             setExtraValues(eventKey,firebaseAuth.getCurrentUser().getUid());
             geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));

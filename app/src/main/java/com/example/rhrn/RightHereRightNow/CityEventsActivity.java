@@ -57,23 +57,26 @@ public class CityEventsActivity extends AppCompatActivity {
         queryCityEvents(city);
     }
 
-    public void queryCityEvents(String city_name)
+    public void queryCityEvents(final String city_name)
     {
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         RootRef.child("Event").orderByChild("City").equalTo(city_name).limitToLast(5).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot1) {
+                int favoriteCount = 0;
                 for (DataSnapshot dataSnapshot : dataSnapshot1.getChildren()) {
                     Event ev = dataSnapshot.getValue(Event.class);
                     eventArray.add(ev);
+                    favoriteCount++;
                 }
+                //FirebaseDatabase.getInstance().getReference().child("City").child(city_name).child("NumFavorites").setValue(Integer.toString(favoriteCount));
                 eventAdapter = new TrendingFragment.EventAdapter(getBaseContext(),eventArray);
                 eventList.setAdapter(eventAdapter);
                 eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getApplicationContext(),ViewUserActivity.class);
+                        Intent intent = new Intent(CityEventsActivity.this,ViewEventActivity.class);
                         intent.putExtra("otherUserID",eventArray.get(position).ownerID);
                         startActivity(intent);
                     }

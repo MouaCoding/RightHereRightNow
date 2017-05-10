@@ -46,9 +46,9 @@ public class NotificationFragment extends Fragment {
     private ArrayList<Object> mUserNotifications;
     private PostAdapter mAdapter;
     private ListView list, userList;
-    TextView messageView;
-    TextView nameView;
-    ImageView profilePic;
+    //TextView messageView;
+    //TextView nameView;
+    //ImageView profilePic;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,7 +88,6 @@ public class NotificationFragment extends Fragment {
         mUserNotifications = new ArrayList<>();
         list = (ListView) r.findViewById(R.id.global_list);
         userList = (ListView) r.findViewById(R.id.global_list);
-        messageView = (TextView)r.findViewById(R.id.message_preview);
 
         //getPosts();
         getUsers();
@@ -102,7 +101,7 @@ public class NotificationFragment extends Fragment {
 
     }
 
-    public class PostAdapter extends ArrayAdapter<Post> {
+    public static class PostAdapter extends ArrayAdapter<Post> {
         PostAdapter(Context context, ArrayList<Post> users){
             super(context, R.layout.user_item, R.id.user, users);
         }
@@ -111,9 +110,9 @@ public class NotificationFragment extends Fragment {
             FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
             convertView = super.getView(position, convertView, parent);
             Post post = getItem(position);
-            nameView = (TextView)convertView.findViewById(R.id.user);
-            messageView = (TextView)convertView.findViewById(R.id.message_preview);
-            profilePic = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
+            TextView nameView = (TextView)convertView.findViewById(R.id.user);
+            TextView messageView = (TextView)convertView.findViewById(R.id.message_preview);
+            ImageView profilePic = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
 
             messageView.setText(post.content);
 
