@@ -265,6 +265,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMap.setMyLocationEnabled(true);
+
         curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -284,6 +287,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         });  // add listeners for clicking markers
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+
             @Override
             public void onMarkerDragEnd(Marker marker) {
                 ourLoc.remove();

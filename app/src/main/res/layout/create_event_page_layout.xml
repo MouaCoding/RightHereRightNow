@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/event_addr"
                 android:layout_below="@+id/editAddress"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/event_private"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp" />
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/event_addr"
                 android:layout_below="@+id/event_isPrivate"
-                android:layout_marginTop="74dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/event_location"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp" />
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/event_sd"
                 android:layout_below="@+id/event_private"
-                android:layout_marginTop="230dp"
+                android:layout_marginTop="260dp"
                 android:text="@string/event_description"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp" />
@@ -221,6 +221,15 @@
                 android:hint="@string/timeEvent"
                 android:inputType="none"
                 android:textAlignment="center" />
+
+            <com.example.rhrn.RightHereRightNow.custom.view.ScrollInterceptingMapView
+                android:id="@+id/event_location_map_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_alignStart="@+id/event_loc"
+                android:layout_below="@+id/event_loc"
+                android:layout_marginRight="28dp"
+                android:layout_marginTop="8dp" />
 
             <!-- android:onClick="createEvent" -->
 
