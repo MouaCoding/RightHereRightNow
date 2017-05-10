@@ -106,7 +106,10 @@ public class UserMiniHeaderView extends FrameLayout {
                 //Try if user has profile pic
                 try {
                     //Convert the URL to aa Bitmap using function, then set the profile picture
-                    miniProfilePicView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                    if(user.ProfilePicture != null)
+                        miniProfilePicView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                    else
+                        miniProfilePicView.setImageResource(R.mipmap.ic_launcher);
                 }catch (Exception e){}
                 // eventMiniImageView.setImageBitmap(ev.image);
             }

@@ -2,6 +2,7 @@ package com.example.rhrn.RightHereRightNow;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.app.ProgressDialog;
+import android.widget.PopupMenu;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -37,10 +39,13 @@ import com.google.firebase.database.ValueEventListener;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -64,6 +69,10 @@ public class CreateEventFragment extends Fragment {
 
     int currDay, currMonth, currYear, currHour, currMinute;
 
+    public int isEducation = 0, isSports = 0, isParty = 0, isClubEvent = 0, isOther = 0;
+    Map<String, Integer> map;
+
+    public Button filterButton;
     private FirebaseAuth    firebaseAuth;
     public String key;
     public FirebaseUser usr;
@@ -75,6 +84,7 @@ public class CreateEventFragment extends Fragment {
 //        super.onCreateView(inflater, container, savedInstanceState);
         View r = inflater.inflate(R.layout.create_event_page_layout, container, false);
 
+        //filters = new int[5];
         Button b = (Button) r.findViewById(R.id.create_event_confirm);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,8 +92,6 @@ public class CreateEventFragment extends Fragment {
                 createEvent();
             }
         });
-
-
 
         //Initializes each text view to the class's objects
         event_name = (EditText)r.findViewById(R.id.event_name);
@@ -199,6 +207,14 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        filterButton = (Button) r.findViewById(R.id.filter_button);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterMenu(v);
+            }
+        });
+
         return r;
     }
 
@@ -232,6 +248,7 @@ public class CreateEventFragment extends Fragment {
                     str_event_description, 10, 0, 0, 0));
             createdEvent.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
             createdEvent.child("eventID").setValue("Event_"+gettingKey.getKey());
+            createdEvent.child("filters").setValue(map);
 
             setExtraValues(eventKey,firebaseAuth.getCurrentUser().getUid());
             geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(location.getLatitude(), location.getLongitude()));
@@ -277,6 +294,69 @@ public class CreateEventFragment extends Fragment {
 
             }
         });
+    }
+
+
+    public void filterMenu(View r)
+    {
+        PopupMenu popup = new PopupMenu(getActivity(), r);
+        popup.getMenuInflater().inflate(R.menu.filter_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.filter1) {
+                    checkboxFilter(item);
+                    isEducation = 1;
+                    return false;
+                }
+                else if (i == R.id.filter2){
+                    checkboxFilter(item);
+                    isSports = 1;
+                    return false;
+                }
+                else if (i == R.id.filter3) {
+                    checkboxFilter(item);
+                    isParty = 1;
+                    return false;
+                }
+                else if (i == R.id.filter4) {
+                    checkboxFilter(item);
+                    isClubEvent = 1;
+                    return false;
+                }
+                else if (i == R.id.filter5) {
+                    checkboxFilter(item);
+                    isOther = 1;
+                    return false;
+                }
+                else if (i == R.id.done_filter) {
+                    map = new HashMap<String, Integer>();
+                    map.put("isEducation", isEducation);
+                    map.put("isSports", isSports);
+                    map.put("isParty", isParty);
+                    map.put("isClubEvent", isClubEvent);
+                    map.put("isOther", isOther);
+
+
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
+    }
+
+    public void checkboxFilter(MenuItem item)
+    {
+        item.setChecked(!item.isChecked());
+        SharedPreferences settings = getActivity().getSharedPreferences("settings", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("checkbox", item.isChecked());
+        editor.commit();
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        item.setActionView(new View(getApplicationContext()));
     }
 
 }

@@ -64,12 +64,12 @@
                 android:id="@+id/event_addr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/editStartTime"
-                android:layout_below="@+id/editStartTime"
                 android:layout_marginTop="32dp"
                 android:text="@string/event_address"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_below="@+id/editStartTime"
+                android:layout_alignStart="@+id/editStartTime" />
 
             <TextView
                 android:id="@+id/event_private"
@@ -93,6 +93,27 @@
                 android:checked="false" />
 
             <TextView
+                android:id="@+id/filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/event_private"
+                android:layout_below="@+id/event_private"
+                android:layout_marginTop="56dp"
+                android:text="@string/event_type"
+                android:textColor="@color/colorTextDark"
+                android:textSize="20sp" />
+            <Button
+                android:id="@+id/filter_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBaseline="@+id/filter"
+                android:layout_below="@+id/event_isPrivate"
+                android:layout_marginEnd="13dp"
+                android:text="@string/choose_filter"
+                android:background="@color/colorPrimaryDark"/>
+
+            <TextView
                 android:id="@+id/event_n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -109,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/event_addr"
-                android:layout_below="@+id/event_isPrivate"
+                android:layout_below="@+id/filter"
                 android:layout_marginTop="74dp"
                 android:text="@string/event_location"
                 android:textColor="@color/colorTextDark"
@@ -221,6 +242,7 @@
                 android:hint="@string/timeEvent"
                 android:inputType="none"
                 android:textAlignment="center" />
+
 
             <!-- android:onClick="createEvent" -->
 

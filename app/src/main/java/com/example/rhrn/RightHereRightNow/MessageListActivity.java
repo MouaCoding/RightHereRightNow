@@ -169,7 +169,10 @@ public class MessageListActivity extends AppCompatActivity {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)nameView.getLayoutParams();
 
             try{
-                imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                if(user.ProfilePicture != null)
+                    imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                else
+                    imageView.setImageResource(R.mipmap.ic_launcher);
 
             } catch (Exception e){}
             nameView.setLayoutParams(layoutParams);
