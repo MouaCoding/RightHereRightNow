@@ -119,7 +119,6 @@ public class UserEventView extends FrameLayout {
                 Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", EventID.toString());
-                intent.putExtra("numComments", CommentCount);
                 context.startActivity(intent);
 
             }
@@ -141,7 +140,6 @@ public class UserEventView extends FrameLayout {
                 Event ev = events[0];
                 setEvent(ev);
                 EventID = eventID;
-                CommentCount = ev.comments;
 
             }
         });

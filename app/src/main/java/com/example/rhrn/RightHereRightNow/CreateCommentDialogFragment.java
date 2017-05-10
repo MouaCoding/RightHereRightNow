@@ -81,6 +81,7 @@ public class CreateCommentDialogFragment extends DialogFragment {
         createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, false, ServerValue.TIMESTAMP));
         createdComment.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
+
     }
 
     public void getPostID(String postID) {

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,15 +55,16 @@ public class CommentsListActivity extends FragmentActivity {
         postID = getIntent().getStringExtra("postID");
         CommentCount = getIntent().getIntExtra("numComments", 0);
 
-        if (CommentCount == 0) {
-            newComment(postID);
-        }
 
-        else {
+
             setContentView(R.layout.comment_list);
+
+
             mApp = (App)getApplicationContext();
             mComments = new ArrayList<>();
             mListView = (ListView)findViewById(R.id.comment_list_view);
+            mAdapter = new commentsAdapter(mComments);
+            mListView.setAdapter(mAdapter);
             newComment = (Button) findViewById(R.id.new_comment);
             newComment.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,52 +80,86 @@ public class CommentsListActivity extends FragmentActivity {
                     finish();
                 }
             });
-            getComments(postID);
+            getComments(postID, true);
+        }
+
+
+
+
+
+
+    public void getComments(String postID, boolean first){
+        Toast.makeText(getApplicationContext(), "Got here", Toast.LENGTH_LONG).show();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments").child(postID);
+        ref.orderByChild("timestamp_create");
+        if(first) {
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
+                        Comments comment = commentSnapshot.getValue(Comments.class);
+                        mComments.add(comment);
+                        mAdapter.notifyDataSetChanged();
+
+                    }
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+
+            });
+
+        }
+        else{
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Comments comment = dataSnapshot.getValue(Comments.class);
+                    mAdapter.add(comment);
+
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
 
     }
 
-
-
-    public void getComments(String postID){
-        Toast.makeText(getApplicationContext(), "Got here", Toast.LENGTH_LONG).show();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments").child(postID);
-        ref.orderByChild("timestamp_create");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
-                    Comments comment = commentSnapshot.getValue(Comments.class);
-                    mComments.add(comment);
-
-                }
-
-                mAdapter = new commentsAdapter(mComments);
-                mListView.setAdapter(mAdapter);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-
-        });
-
-
-
-
-    }
-
     public void newComment(String postID){
+        mAdapter.clear();
         FragmentManager manager = this.getSupportFragmentManager();
         CreateCommentDialogFragment createComment = new CreateCommentDialogFragment();
         Toast.makeText(getApplicationContext(), postID, Toast.LENGTH_LONG).show();
         createComment.getPostID(postID);
-        createComment.getOrder(0);
         createComment.show(manager, "comment");
+        getComments(postID, true);
+
+
+
     }
 
     public class commentsAdapter extends ArrayAdapter<Comments> {
@@ -134,10 +170,6 @@ public class CommentsListActivity extends FragmentActivity {
         public View getView(int position, View convertView, ViewGroup parent){
             convertView = super.getView(position, convertView, parent);
             final Comments comment = getItem(position);
-            TextView likeTextButton = (TextView) convertView.findViewById(R.id.like_text_button);
-            TextView replyTextButton = (TextView) convertView.findViewById(R.id.reply_text_button);
-            TextView likeCount = (TextView) convertView.findViewById(R.id.comment_like_count);
-            TextView replyCount = (TextView) convertView.findViewById(R.id.comment_reply_count);
             TextView commentText = (TextView) convertView.findViewById(R.id.comment_text);
             final TextView displayName = (TextView) convertView.findViewById(R.id.comment_simp_user_name);
             final TextView handle = (TextView) convertView.findViewById(R.id.comment_simp_user_handle);
@@ -166,24 +198,6 @@ public class CommentsListActivity extends FragmentActivity {
             }
 
             commentText.setText(comment.content);
-            likeCount.setText(String.valueOf(comment.likes));
-            replyCount.setText(String.valueOf(comment.replies));
-
-
-            likeTextButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Comments.increment("likes", comment.commentID, comment.responseID);
-                }
-            });
-
-            replyTextButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-
             return convertView;
         }
 
