@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -16,7 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.firebase.client.ServerValue;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +43,9 @@ public class CommentsListActivity extends FragmentActivity {
 
     private Button newComment;
     private ImageButton backButton;
+    private Button postButton;
+    private CheckBox anon;
+    private EditText content;
     private ListView mListView;
     private ArrayList<Comments> mComments;
     private commentsAdapter mAdapter;
@@ -65,12 +73,18 @@ public class CommentsListActivity extends FragmentActivity {
             mListView = (ListView)findViewById(R.id.comment_list_view);
             mAdapter = new commentsAdapter(mComments);
             mListView.setAdapter(mAdapter);
-            newComment = (Button) findViewById(R.id.new_comment);
-            newComment.setOnClickListener(new View.OnClickListener() {
+            anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
+            content = (EditText) findViewById(R.id.Comment_content);
+
+            postButton = (Button) findViewById(R.id.Comment_post_button);
+            postButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    newComment(postID);
-
+                    mAdapter.clear();
+                    String temp = content.getText().toString();
+                    createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID,  temp, 0, null);
+                    Event.changeCount("comments", postID, true);
+                    getComments(postID, true);
                 }
             });
             backButton = (ImageButton) findViewById(R.id.comment_back_button);
@@ -149,14 +163,22 @@ public class CommentsListActivity extends FragmentActivity {
 
     }
 
-    public void newComment(String postID){
-        mAdapter.clear();
-        FragmentManager manager = this.getSupportFragmentManager();
-        CreateCommentDialogFragment createComment = new CreateCommentDialogFragment();
-        Toast.makeText(getApplicationContext(), postID, Toast.LENGTH_LONG).show();
-        createComment.getPostID(postID);
-        createComment.show(manager, "comment");
-        getComments(postID, true);
+    public void createComment(String userID, String postID, String Content, int Order, String responseID) {
+
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference rootreference = FirebaseDatabase.getInstance().getReference("Comments").child(postID);
+        DatabaseReference reference;
+        if(Order == 0){
+            reference = rootRef.child("comment").push();
+        }
+        else{
+            reference = rootRef.child("comment").child(postID).child(responseID).push();
+        }
+        String key = reference.getKey();
+
+        DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child(key);
+        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, false, ServerValue.TIMESTAMP));
+        createdComment.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
 
 
