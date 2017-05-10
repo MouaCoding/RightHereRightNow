@@ -52,13 +52,13 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
 
     private EditText post_content;
 
-<<<<<<< HEAD
+
     private CheckBox    anon;
 
     private FirebaseAuth firebaseAuth;
-=======
+
     private LatLng createLoc;
->>>>>>> master
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -219,13 +219,10 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
 
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
-<<<<<<< HEAD
-            createdPost.setValue(new Post(firebaseAuth.getCurrentUser().getUid(), createdPost.getKey(), date, time,
-                    str_event_content, "response Post ID", 10, 0, 0, 0, anon.isChecked()));
-=======
+
             createdPost.setValue(new Post( FirebaseAuth.getInstance().getCurrentUser().getUid(), createdPost.getKey(), date, time,
                     postContent, "response Post ID", 10, 0, 0, 0,false));
->>>>>>> master
+
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
             geoFireLocation.setLocation(createdPost.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));

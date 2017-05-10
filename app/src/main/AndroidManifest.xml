@@ -27,21 +27,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD
-        <activity android:name=".MainActivity">
-
-            <!--
-                <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
-=======
         <activity android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan"/>
->>>>>>> master
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -85,9 +73,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-<<<<<<< HEAD
 
-=======
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="134cf1747263e127c412def9f67626d8c3389c82" />
@@ -95,7 +81,7 @@
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".AlmostDoneActivity" />
         <activity android:name=".ViewPostActivity"></activity>
->>>>>>> master
+
     </application>
 
 </manifest>
