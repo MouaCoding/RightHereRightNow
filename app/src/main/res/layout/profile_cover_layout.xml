@@ -28,14 +28,28 @@
             android:src="@drawable/ic_camera_alt_black_24dp" />
     </RelativeLayout>
 
-    <TextView
-        android:text="John Smith"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/profile_name_main"
-        android:textAlignment="center"
-        android:textAppearance="@android:style/TextAppearance.Material.Headline"
-        android:layout_gravity="center" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/profile_name_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="John Smith"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Headline" />
+
+        <ImageView
+            android:id="@+id/edit_display"
+            android:layout_width="22dp"
+            android:layout_height="24dp"
+            app:srcCompat="@drawable/exchange"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 
     <TextView
         android:text="\@jsmith1"

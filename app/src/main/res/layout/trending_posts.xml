@@ -35,6 +35,9 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:textSize="24sp" />
     </LinearLayout>
+
+    <!--<include layout="@layout/user_event_framed_layout"/>-->
+
     <LinearLayout android:orientation="horizontal"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
@@ -42,15 +45,16 @@
             android:layout_height="fill_parent"
             android:layout_width="0dp">
 
+
             <ListView
-                android:id ="@+id/global_list"
+                android:id ="@+id/global_list_trending"
                 android:layout_weight="100"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@null" />
         </LinearLayout>
 
-
+<!--
         <LinearLayout android:layout_weight="1"
             android:layout_height="fill_parent"
             android:layout_width="0dp">
@@ -60,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@null" />
-        </LinearLayout>
+        </LinearLayout>-->
     </LinearLayout>
 
 </LinearLayout>

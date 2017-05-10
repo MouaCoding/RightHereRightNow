@@ -125,9 +125,27 @@ public class RegisterActivity extends LoginActivity {
     //Added a register button function
     public void registerUser() //https://www.simplifiedcoding.net/android-firebase-tutorial-1/
     {
+<<<<<<< HEAD
         //Init email and password into Strings
         String email = user_email.getText().toString().trim();
         String password = user_password.getText().toString().trim();
+=======
+        firstName = first_name.getText().toString().trim();
+        lastName = last_name.getText().toString().trim();
+        displayName = display_name.getText().toString().trim();
+        handle_ = "@" + handle.getText().toString().trim();
+        fullname = firstName + " " + String.valueOf(lastName);
+        //fullname = firstName.concat(String.valueOf(lastName));
+        email = user_email.getText().toString().trim();
+        password = user_password.getText().toString().trim();
+        phone = user_phone.getText().toString().trim();
+        address = user_address.getText().toString().trim();
+        city = user_city.getText().toString().trim();
+        state = user_state.getText().toString().trim();
+
+        if(!isValid(firstName,lastName,displayName,handle_,email,password,phone,address,city,state))
+            return;
+>>>>>>> master
 
         //Once register button is clicked, will display a progress dialog
         progressDialog.setMessage("Registering Please Wait...");
@@ -142,7 +160,12 @@ public class RegisterActivity extends LoginActivity {
                         //Should only save user data to Firebase if successful
                         if(task.isSuccessful()){
                             saveData();
+<<<<<<< HEAD
                             Toast.makeText(RegisterActivity.this,"Successfully registered",Toast.LENGTH_LONG).show();
+=======
+                            verifyEmail();
+                            Toast.makeText(RegisterActivity.this,"Successfully registered, Verify your email!",Toast.LENGTH_LONG).show();
+>>>>>>> master
                             //Once successfully registered, changes activity to the login activity
                             Intent goBackToLogin = new Intent (getApplicationContext(), LoginActivity.class);
                             startActivity(goBackToLogin);
@@ -153,4 +176,38 @@ public class RegisterActivity extends LoginActivity {
                     }
                 });
     }
+<<<<<<< HEAD
+=======
+
+    private boolean isValid(String firstname,String lastname,String displayname,String handle1,String phone,
+                            String email1,String password1,String address,String city,String state) {
+        if(firstname.isEmpty()) {first_name.setError(getString(R.string.error_field_required)); return false;}
+        if(lastname.isEmpty()) {last_name.setError(getString(R.string.error_field_required));return false;}
+        if(displayname.isEmpty()) {display_name.setError(getString(R.string.error_field_required)); return false;}
+        if(handle1.isEmpty()) {handle.setError(getString(R.string.error_field_required)); return false;}
+        if(email1.isEmpty()) {user_email.setError(getString(R.string.error_field_required)); return false;}
+        //if(address.isEmpty()) {user_address.setError(getString(R.string.error_field_required)); return false;}
+        //if(city.isEmpty()) {user_city.setError(getString(R.string.error_field_required)); return false;}
+        //if(state.isEmpty()) {user_state.setError(getString(R.string.error_field_required));return false;}
+
+        if(!firstname.matches(".*[a-zA-Z]+.*")) {first_name.setError("Invalid First Name"); return false;}
+        if(!lastname.matches(".*[a-zA-Z]+.*")) { last_name.setError("Invalid Last Name"); return false;}
+        if(!displayname.matches(".*[a-zA-Z0-9]+.*")) {display_name.setError("Letters and Numbers only"); return false;}
+        //TODO: if handle already exists, then invalid
+        if(!handle1.matches(".*[a-zA-Z]+.*")) {handle.setError("Invalid Handle"); return false;}
+        if(email1.contains("@")) {user_email.setError("Invalid Email"); return false;}
+        //TODO: Password Check
+        //if(password1.length() <= 5) {user_password.setError("At least 6 characters"); return false;}
+        //TODO: Address should be confidential? confirm this.
+        /*
+        if(!address.matches(".*[a-zA-Z]+.*")) {user_address.setError("Invalid Address"); return false;}
+        if(!city.matches(".*[a-zA-Z]+.*")) {user_city.setError("Invalid City"); return false;}
+        if(!state.matches(".*[a-zA-Z]+.*") ) {user_state.setError("Invalid State"); return false;}
+        */
+
+        return true;
+    }
+
+
+>>>>>>> master
 }

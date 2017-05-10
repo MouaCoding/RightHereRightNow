@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.ViewUserActivity;
@@ -105,10 +106,10 @@ public class UserMiniHeaderView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (curUserID != null && curUserID != otherUserID) {
-                    FirebaseDatabase.getInstance().getReference("Following")
-                            .child(curUserID).child(otherUserID).setValue(new FollowingUser());
-                }
-
+                            Toast.makeText(getApplicationContext(),"Followed!", Toast.LENGTH_SHORT).show();
+                            FirebaseDatabase.getInstance().getReference("User").child(curUserID).child("Following")
+                                    .child(otherUserID).setValue(new FollowingUser());
+                   }
             }
         });
     }

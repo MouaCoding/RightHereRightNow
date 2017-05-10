@@ -92,7 +92,8 @@ public class ViewUserActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String otherUserID = intent.getStringExtra("otherUserID");
-        queryFirebase(otherUserID);
+        if(otherUserID!=null)
+            queryFirebase(otherUserID);
     }
 
     public void queryFirebase(String userUID)
