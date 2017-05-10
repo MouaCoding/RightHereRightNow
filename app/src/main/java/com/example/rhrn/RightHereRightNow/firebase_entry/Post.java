@@ -32,7 +32,11 @@ public class Post {
     public Post() {}
 
     public Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
+<<<<<<< HEAD
                 String aResponseID, double aViewRadius, int aShares, int aLikes, int aComments, boolean Anon) {
+=======
+                String aResponseID, double aViewRadius, int aShares, int aLikes, int aComments, boolean aAnon) {
+>>>>>>> master
 
         ownerID     = aOwner;
         postID      = aID;
@@ -49,7 +53,11 @@ public class Post {
         shares       = aShares;
         likes       = aLikes;
         comments    = aComments;
+<<<<<<< HEAD
         isAnon      = Anon;
+=======
+        isAnon      = aAnon;
+>>>>>>> master
     }
 
     public static void requestPost(String PostID, String authToken, final Post.PostReceivedListener listener) {
