@@ -646,22 +646,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         popup.show();
     }
 
-    public void drawWithFilters(Map<String, Integer> aMap) {
+    public void drawWithFilters(final Map<String, Integer> aMap) {
         DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Event");
         //iterate through all the keys/flags that are on filtering
-        for (String key: aMap.keySet()) {
+        for (final String key: aMap.keySet()) {
             Log.d("KEY", key);
-            eventRef.orderByChild("filters").equalTo(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            eventRef.orderByChild(key).equalTo(key).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                        int value = (int) childSnapshot.getValue();
-                        Log.d("valueee", Integer.toString(value));
-                        //for key values that equal 1, draw them onto the map
-                        if (value == 1) {
+                    Log.d("GOTHERE",dataSnapshot.getKey());
+                    int val = aMap.get(key);
+                    Log.d("KEYVALUE", Integer.toString(val));
+                        if (val == 1) {
                             mMap.clear();
-                            queryEventWithFilter(childSnapshot.getKey());
-                    }
+                            queryEventWithFilter(dataSnapshot.getKey());
                     }
                 }
 
@@ -674,6 +672,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     public void queryEventWithFilter(String filterKey)
     {
+        filterKey = "Event_-KjntAFmoRC6SfFtUmvr";
         DatabaseReference filterEvent = FirebaseDatabase.getInstance().getReference("EventLocations").child(filterKey);
         GeoFire eventFire = new GeoFire(filterEvent);
 
@@ -682,7 +681,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
         GeoQuery filterEventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), radius / 1000); // 12800.0);
         //(radius * 0.001) * kmToMiles * 70);
-        GeoQuery filterPostQuery = postFire.queryAtLocation(eventQuery.getCenter(), radius / 1000);//12800.0);
+        GeoQuery filterPostQuery = postFire.queryAtLocation(filterEventQuery.getCenter(), radius / 1000);//12800.0);
         // (radius * 0.001) * kmToMiles * 70);
 
         // might be something to do with initialization
