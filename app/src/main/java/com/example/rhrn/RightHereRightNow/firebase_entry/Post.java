@@ -14,6 +14,7 @@ public class Post {
                     createTime,
                     content,
                     responseID,
+                    handle,
                     DisplayName,
                     ProfilePicture;
     //  TODO: BB: Change dates and times to type Date

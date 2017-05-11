@@ -665,7 +665,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                             mMap.clear();
                             Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                             handleNewLocation(loc);
-                            queryEventWithFilter(key,childSnapshot.getKey());
+                            queryWithFilter(key,childSnapshot.getKey());
                         }
                     }
 
@@ -677,36 +677,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public void queryEventWithFilter(String filter, String filterKey)
+    public void queryWithFilter(String filter, String filterKey)
     {
         DatabaseReference filterEvent;
         GeoFire eventFire;
-        if(filter.equals("isSports")) {
+        //Filter by event
+        if(filter.equals("isSports"))
             filterEvent = FirebaseDatabase.getInstance().getReference("SportEventLocations");
-            eventFire = new GeoFire(filterEvent);
-        }
-        else if(filter.equals("isEducation")) {
+        else if(filter.equals("isEducation"))
             filterEvent = FirebaseDatabase.getInstance().getReference("EducationEventLocations");
-            eventFire = new GeoFire(filterEvent);
-        }
-        else if(filter.equals("isClubEvent")) {
+        else if(filter.equals("isClubEvent"))
             filterEvent = FirebaseDatabase.getInstance().getReference("ClubEventLocations");
-            eventFire = new GeoFire(filterEvent);
-        }
-        else if(filter.equals("isOther")) {
+        else if(filter.equals("isOther"))
             filterEvent = FirebaseDatabase.getInstance().getReference("OtherEventLocations");
-            eventFire = new GeoFire(filterEvent);
-        }
-        else if(filter.equals("isParty")) {
+        else if(filter.equals("isParty"))
             filterEvent = FirebaseDatabase.getInstance().getReference("PartyEventLocations");
-            eventFire = new GeoFire(filterEvent);
-        }
-        else{
+        else
             filterEvent = FirebaseDatabase.getInstance().getReference("EventLocations");
-            eventFire = new GeoFire(filterEvent);
-        }
+        eventFire = new GeoFire(filterEvent);
 
-        DatabaseReference filterPost = FirebaseDatabase.getInstance().getReference("SportPostLocations");
+        DatabaseReference filterPost = FirebaseDatabase.getInstance().getReference("PostLocations");
         GeoFire postFire = new GeoFire(filterPost);
 
         GeoQuery filterEventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), radius / 1000); // 12800.0);

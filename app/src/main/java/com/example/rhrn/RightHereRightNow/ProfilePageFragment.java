@@ -314,7 +314,7 @@ public class ProfilePageFragment extends Fragment {
     public void populatePost()
     {
         DatabaseReference users= FirebaseDatabase.getInstance().getReference("Post");
-        users.orderByChild("ownerID").limitToLast(3).equalTo(fbuser.getUid())
+        users.orderByChild("ownerID").limitToLast(2).equalTo(fbuser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

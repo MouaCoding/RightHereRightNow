@@ -34,7 +34,7 @@
                 android:id ="@+id/post_list"
                 android:layout_weight="100"
                 android:layout_width="match_parent"
-                android:layout_height="220dp" />
+                android:layout_height="450dp" />
 
             <!--<include layout="@layout/user_post_framed_layout"/>-->
 
@@ -55,7 +55,7 @@
                 android:id ="@+id/event_list"
                 android:layout_weight="100"
                 android:layout_width="match_parent"
-                android:layout_height="520dp"
+                android:layout_height="550dp"
                 android:divider="@null" />
 
 
