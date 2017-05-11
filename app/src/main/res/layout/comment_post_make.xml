@@ -7,29 +7,39 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <CheckBox
-            android:id="@+id/anonymous_check"
+            android:id="@+id/comment_anonymous_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/Anon_label" />
 
         <Button
-            android:id="@+id/post_button"
+            android:id="@+id/Comment_post_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/post_button" />
 
+
     </LinearLayout>
 
-    <TextView
+    <EditText
         android:id="@+id/Comment_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/enter_comment"
-        android:textSize="24sp" />
+        android:ems="10"
+        android:hint="@string/enter_comment"
+        android:inputType="textPersonName" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+
 </LinearLayout>
