@@ -40,7 +40,7 @@
         android:layout_weight="1">
 
         <TextView
-            android:text="Activity Points"
+            android:text="Following"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/profile_activitypoints_label"

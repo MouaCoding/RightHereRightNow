@@ -68,8 +68,10 @@ public class UserPostView extends FrameLayout {
     }
 
     public void setPost(Post p) {
-        postMakerHeader.getUser(p.ownerID);
-        postBodyTextView.setText(p.content);
+        try {
+            postMakerHeader.getUser(p.ownerID);
+            postBodyTextView.setText(p.content);
+        } catch (Exception e) {}
         //
     }
 }

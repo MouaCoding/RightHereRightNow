@@ -29,16 +29,14 @@
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:layout_margin="8dp" />
 
-            <!-- TODO: Create a list of posts to display on user profile page
+
             <ListView
                 android:id ="@+id/post_list"
                 android:layout_weight="100"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:divider="@null" />
-            -->
+                android:layout_height="220dp" />
 
-            <include layout="@layout/user_post_framed_layout"/>
+            <!--<include layout="@layout/user_post_framed_layout"/>-->
 
             <View
                 android:layout_width="match_parent"
@@ -53,9 +51,15 @@
                 android:id="@+id/textView2"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:layout_margin="8dp" />
+            <ListView
+                android:id ="@+id/event_list"
+                android:layout_weight="100"
+                android:layout_width="match_parent"
+                android:layout_height="520dp"
+                android:divider="@null" />
 
 
-            <include layout="@layout/user_event_framed_layout"/>
+            <!--<include layout="@layout/user_event_framed_layout"/>-->
 
 
             <ProgressBar

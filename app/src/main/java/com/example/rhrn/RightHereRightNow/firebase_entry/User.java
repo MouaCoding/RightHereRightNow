@@ -24,9 +24,7 @@ public class User {
                     uid, // added user id, easier to use with FirebaseUser instance
                     AboutMe,
                     ProfilePicture;
-    public ArrayList<String> followers; //TODO: Decide what is best to store followers -> uid? name?
-    //public ArrayList<String> UsersMessaged;
-    //public ArrayList<Map<String,Object>> UsersMessaged = new ArrayList<Map<String,Object>>();
+    public ArrayList<String> followers;
     public int  ActivityPoints,
                 LikesReceived;
 
@@ -37,9 +35,6 @@ public class User {
 
     public User() {
         FirstName = LastName = DisplayName = handle = Email = Phone = Address = City = State = id = uid = AboutMe = null;
-        followers = new ArrayList<String>();
-        //ActivityPoints = 0;
-        //LikesReceived = 0;
     }
 
     //Copy constructor to assign email to a user's full name

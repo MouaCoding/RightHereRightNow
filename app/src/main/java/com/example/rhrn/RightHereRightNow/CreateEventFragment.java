@@ -2,6 +2,9 @@ package com.example.rhrn.RightHereRightNow;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -13,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.app.ProgressDialog;
+import android.widget.PopupMenu;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -32,7 +37,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -54,6 +68,10 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
 
     int currDay, currMonth, currYear, currHour, currMinute;
 
+    public int isEducation = 0, isSports = 0, isParty = 0, isClubEvent = 0, isOther = 0;
+    Map<String, Integer> map;
+
+    public Button filterButton;
     GoogleMap mMap;
     LatLng createLoc;
 
@@ -63,6 +81,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View r = inflater.inflate(R.layout.create_event_page_layout, container, false);
 
+        //filters = new int[5];
         Button b = (Button) r.findViewById(R.id.create_event_confirm);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +89,6 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                 createEvent();
             }
         });
-
-
 
         //Initializes each text view to the class's objects
         event_name = (EditText)r.findViewById(R.id.event_name);
@@ -184,6 +201,14 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
             }
         });
 
+        filterButton = (Button) r.findViewById(R.id.filter_button);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterMenu(v);
+            }
+        });
+
         event_location = (MapView) r.findViewById(R.id.event_location_map_view);
         event_location.onCreate(savedInstanceState);
         event_location.getMapAsync(this);
@@ -281,37 +306,132 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         try {
 //            Location location = LocationUtils.getBestAvailableLastKnownLocation(getContext());
 
-            //ProgressDialog progressDialog = new ProgressDialog(getActivity());
-            //progressDialog.setMessage("Creating Event, Please Wait...");
-            //progressDialog.show();
-
             Toast.makeText(getContext(), "Creating Event...", Toast.LENGTH_SHORT).show();
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference gettingKey = RootRef.child("Event").push();
             DatabaseReference createdEvent = RootRef.child("Event").child("Event_" + gettingKey.getKey());
+            String eventKey = "Event_"+gettingKey.getKey();
             gettingKey.setValue(null);
 
             DatabaseReference eventLocation = RootRef.child("EventLocations");
             GeoFire geoFireLocation = new GeoFire(eventLocation);
 
-
-            // TODO: BB: include all fields from Event rather than just some, and get actual coordinates
             createdEvent.setValue(new Event(str_event_name, FirebaseAuth.getInstance().getCurrentUser().getUid(), str_eventSDate,
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
                     str_event_description, 10, 0, 0, 0));
             createdEvent.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
+            createdEvent.child("eventID").setValue("Event_"+gettingKey.getKey());
+            createdEvent.child("filters").setValue(map);
 
             // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
             //              String aEndTime, String aAddress, String aDescription,
             //              double aViewRadius, int aLikes, int aComments, int aRSVPs)
 
             geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
+            setExtraValues(eventKey,firebaseAuth.getCurrentUser().getUid());
+
+            //Saves the city of created event
+            Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+            try {
+                List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                if (addresses.size() > 0 & addresses != null) {
+                    RootRef.child("Event").child("Event_" + gettingKey.getKey()).child("City")
+                            .setValue(addresses.get(0).getLocality());
+                }
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
 
             //progressDialog.dismiss();
             Toast.makeText(getContext(), "Event Created!", Toast.LENGTH_SHORT).show();
         } catch (SecurityException e) {}
 
         getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    public void setExtraValues(final String eventID, final String ownerID)
+    {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User owner = dataSnapshot.getValue(User.class);
+                ref.child("Event").child(eventID).child("DisplayName").setValue(owner.DisplayName);
+                ref.child("Event").child(eventID).child("handle").setValue(owner.handle);
+                try{
+                    ref.child("Event").child(eventID).child("userProfilePicture").setValue(owner.ProfilePicture);
+                }catch (Exception e){}
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    public void filterMenu(View r)
+    {
+        PopupMenu popup = new PopupMenu(getActivity(), r);
+        popup.getMenuInflater().inflate(R.menu.filter_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.filter1) {
+                    checkboxFilter(item);
+                    isEducation = 1;
+                    return false;
+                }
+                else if (i == R.id.filter2){
+                    checkboxFilter(item);
+                    isSports = 1;
+                    return false;
+                }
+                else if (i == R.id.filter3) {
+                    checkboxFilter(item);
+                    isParty = 1;
+                    return false;
+                }
+                else if (i == R.id.filter4) {
+                    checkboxFilter(item);
+                    isClubEvent = 1;
+                    return false;
+                }
+                else if (i == R.id.filter5) {
+                    checkboxFilter(item);
+                    isOther = 1;
+                    return false;
+                }
+                else if (i == R.id.done_filter) {
+                    map = new HashMap<String, Integer>();
+                    map.put("isEducation", isEducation);
+                    map.put("isSports", isSports);
+                    map.put("isParty", isParty);
+                    map.put("isClubEvent", isClubEvent);
+                    map.put("isOther", isOther);
+
+
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
+    }
+
+    public void checkboxFilter(MenuItem item)
+    {
+        item.setChecked(!item.isChecked());
+        SharedPreferences settings = getActivity().getSharedPreferences("settings", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("checkbox", item.isChecked());
+        editor.commit();
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        item.setActionView(new View(getApplicationContext()));
     }
 
 }

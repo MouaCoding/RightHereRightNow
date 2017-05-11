@@ -54,6 +54,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -210,7 +211,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         isChecked = settings1.getBoolean("isChecked", false);
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (isChecked && firebaseUser != null) {
+        if (isChecked & firebaseUser != null) {
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
@@ -340,7 +341,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
-    private void showProgressDialog()
+    public void showProgressDialog()
     {
         pd = new ProgressDialog(LoginActivity.this);
         pd.setMessage("Loading...");

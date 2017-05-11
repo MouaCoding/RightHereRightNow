@@ -43,6 +43,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.City;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -75,6 +76,9 @@ import com.google.firebase.database.ValueEventListener;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,7 +98,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public int countNumber = 0;
-    public boolean isEducation = false, isSports = false, isParty = false, isClubEvent = false, isOther = false, logout = false;
+    public int isEducation = 0, isSports = 0, isParty = 0, isClubEvent = 0, isOther = 0, logout = 0;
+    Map<String, Integer> map;
+    int [] filter;
+
     private GoogleMap mMap;
     public MapView mapView;
     public static final String TAG = MapsFragment.class.getSimpleName();
@@ -371,13 +378,30 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         LatLng latLng = new LatLng(curLatitude, curLongitude);
         Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
-            List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            final List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
             if (addresses.size() > 0 & addresses != null) {
-                //Toast.makeText(getApplicationContext(),addresses.get(0).getLocality(),Toast.LENGTH_LONG).show();
                 MenuItem cityMenuItem = topNavigationView.getMenu().findItem(R.id.current_city);
-
                 cityMenuItem.setTitle(addresses.get(0).getLocality());
+                final DatabaseReference cityRef = FirebaseDatabase.getInstance().getReference().child("City").child(addresses.get(0).getLocality());
+                cityRef.child(addresses.get(0).getLocality()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) //if city is already in the database
+                            ;//do nothing
+                        else {
+                            //city does not exist, so create new
+                            City city = new City(addresses.get(0).getLocality(),
+                                    addresses.get(0).getAdminArea(),
+                                    addresses.get(0).getCountryName(), null, "0");
+                            cityRef.setValue(city);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
             }
         }catch (IOException e) {
             e.printStackTrace();
@@ -610,7 +634,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     return true;
                 }
                 else if (i == R.id.logout) {
-                    logout = true;
+                    logout = 1;
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
@@ -626,6 +650,137 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         popup.show();
     }
 
+    public void drawWithFilters(final Map<String, Integer> aMap) {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Event");
+        //iterate through all the keys/flags that are on filtering
+        for (final String key: aMap.keySet()) {
+            Log.d("KEY", key);
+            eventRef.orderByChild(key).equalTo(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("GOTHERE",dataSnapshot.getKey());
+                    int val = aMap.get(key);
+                    Log.d("KEYVALUE", Integer.toString(val));
+                        if (val == 1) {
+                            mMap.clear();
+                            queryEventWithFilter(dataSnapshot.getKey());
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
+    }
+
+    public void queryEventWithFilter(String filterKey)
+    {
+        filterKey = "Event_-KjntAFmoRC6SfFtUmvr";
+        DatabaseReference filterEvent = FirebaseDatabase.getInstance().getReference("EventLocations").child(filterKey);
+        GeoFire eventFire = new GeoFire(filterEvent);
+
+        DatabaseReference filterPost = FirebaseDatabase.getInstance().getReference("PostLocations");
+        GeoFire postFire = new GeoFire(filterPost);
+
+        GeoQuery filterEventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), radius / 1000); // 12800.0);
+        //(radius * 0.001) * kmToMiles * 70);
+        GeoQuery filterPostQuery = postFire.queryAtLocation(filterEventQuery.getCenter(), radius / 1000);//12800.0);
+        // (radius * 0.001) * kmToMiles * 70);
+
+        // might be something to do with initialization
+
+        Log.d("CENTER", Double.toString(filterEventQuery.getCenter().latitude));
+
+        filterEventQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String s, GeoLocation l) {
+
+                LatLng location = new LatLng(l.latitude, l.longitude);
+
+                Marker m = mMap.addMarker(new MarkerOptions()
+                        .position(location).draggable(false)
+                        //TODO: MM: Change marker size with our algorithm -> query likes and multiply
+                        .icon(BitmapDescriptorFactory.fromBitmap(Marker)));
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
+                eventMarkerKeys.put(m, s);
+                eventKeyMarkers.put(s, m);
+            }  // have discovered an event, so put it in hashmap and put a marker for it
+
+            @Override
+            public void onKeyMoved(String s, GeoLocation l) {
+                Marker toRemove = eventKeyMarkers.get(s);
+                eventMarkerKeys.remove(eventKeyMarkers.remove(s));
+                toRemove.remove();
+
+                LatLng location = new LatLng(l.latitude, l.longitude);
+                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+
+                eventMarkerKeys.put(m, s);
+                eventKeyMarkers.put(s, m);
+            }  // event has been moved, so move marker
+
+            @Override
+            public void onKeyExited(String s) {
+                Marker m = eventKeyMarkers.get(s);
+                eventMarkerKeys.remove(eventKeyMarkers.remove(s));
+                m.remove();
+            }  // event no longer in range, so remove it from hashmaps and map
+
+            @Override
+            public void onGeoQueryError(DatabaseError e) {
+                Log.d("ERROR", "GEOQUERY EVENT ERROR");
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+        });
+
+        filterPostQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String s, GeoLocation l) {
+                LatLng location = new LatLng(l.latitude, l.longitude);
+                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
+                postMarkerKeys.put(m, s);
+                postKeyMarkers.put(s, m);
+            }
+
+            @Override
+            public void onKeyMoved(String s, GeoLocation l) {
+                Marker toRemove = postKeyMarkers.get(s);
+                postMarkerKeys.remove(postKeyMarkers.remove(s));
+                toRemove.remove();
+
+                LatLng location = new LatLng(l.latitude, l.longitude);
+                Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false));
+
+                postMarkerKeys.put(m, s);
+                postKeyMarkers.put(s, m);
+            }
+
+            @Override
+            public void onKeyExited(String s) {
+                Marker m = postKeyMarkers.get(s);
+                postMarkerKeys.remove(postKeyMarkers.remove(s));
+                m.remove();
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError e) {
+                Log.d("ERROR", "GEOQUERY POST ERROR");
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+        });
+    }
+
+
     public void filterMenu(View r)
     {
         PopupMenu popup = new PopupMenu(getActivity(), r);
@@ -635,36 +790,43 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 int i = item.getItemId();
                 if (i == R.id.filter1) {
                     checkboxFilter(item);
-                    isEducation = true;
+                    isEducation = 1;
                     return false;
                 }
                 else if (i == R.id.filter2){
                     checkboxFilter(item);
-                    isSports = true;
+                    isSports = 1;
                     return false;
                 }
                 else if (i == R.id.filter3) {
                     checkboxFilter(item);
-                    isParty = true;
+                    isParty = 1;
                     return false;
                 }
                 else if (i == R.id.filter4) {
                     checkboxFilter(item);
-                    isClubEvent = true;
+                    isClubEvent = 1;
                     return false;
                 }
                 else if (i == R.id.filter5) {
                     checkboxFilter(item);
-                    isOther = true;
+                    isOther = 1;
                     return false;
                 }
                 else if (i == R.id.done_filter) {
-                    boolean[] filters = new boolean[5];
-                    filters[0] = isEducation;
-                    filters[1] = isSports;
-                    filters[2] = isParty;
-                    filters[3] = isClubEvent;
-                    filters[4] = isOther;
+                    map = new HashMap<String, Integer>();
+                    filter = new int[5];
+                    map.put("isEducation", isEducation);
+                    map.put("isSports", isSports);
+                    map.put("isParty", isParty);
+                    map.put("isClubEvent", isClubEvent);
+                    map.put("isOther", isOther);
+                    filter[0] = isEducation;
+                    filter[1] = isSports;
+                    filter[2] = isParty;
+                    filter[3] = isClubEvent;
+                    filter[4] = isOther;
+                    //drawWithFilters(map);
 
                     return true;
                 }
@@ -685,6 +847,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         editor.commit();
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         item.setActionView(new View(getApplicationContext()));
+    }
+
+    //stackoverflow function
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

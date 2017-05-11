@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,7 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
+
 
 /**
  * Created by Matt on 3/8/2017.
@@ -38,6 +40,8 @@ public class MessageListActivity extends AppCompatActivity {
     private ImageButton backButton;
     public App mApp;
     Bundle extra;
+    TextView messageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,23 +161,26 @@ public class MessageListActivity extends AppCompatActivity {
             convertView = super.getView(position, convertView, parent);
             User user = getItem(position);
             TextView nameView = (TextView)convertView.findViewById(R.id.user);
-            TextView messageView = (TextView)convertView.findViewById(R.id.message_preview);
+            messageView = (TextView)convertView.findViewById(R.id.message_preview);
             ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
             nameView.setText(user.DisplayName);
             //TODO: Populate the message preview with the most recent message
-            messageView.setText(user.FirstName); // placeholder for now...
+            //messageView.setText(user.FirstName); // placeholder for now...
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)nameView.getLayoutParams();
 
             try{
-                imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                if(user.ProfilePicture != null)
+                    imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                else
+                    imageView.setImageResource(R.mipmap.ic_launcher);
 
             } catch (Exception e){}
             nameView.setLayoutParams(layoutParams);
+            //previewMessage(user.uid);
             return convertView;
         }
 
 
     }
-
 
 }

@@ -120,4 +120,6 @@
     <string name="filter5">Other</string>
     <string name="done_filter">Done</string>
     <string name="keep_logged_in">Keep me logged in</string>
+    <string name="event_type">Event Type</string>
+    <string name="choose_filter">Choose Type</string>
 </resources>

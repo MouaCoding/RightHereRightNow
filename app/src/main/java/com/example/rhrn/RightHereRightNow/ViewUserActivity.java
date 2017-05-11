@@ -29,6 +29,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
+
 /**
  * Created by Matt on 4/2/2017.
  * Class to view other user profiles
@@ -103,7 +105,7 @@ public class ViewUserActivity extends AppCompatActivity {
                         User temp = dataSnapshot.getValue(User.class);
                         userName.setText(temp.DisplayName);
                         hash_tag.setText(temp.handle);
-                        numberFollowers.setText(Integer.toString(temp.followers.size()));
+//                        numberFollowers.setText(Integer.toString(temp.followers.size()));
                         numActivityPoints.setText(Integer.toString(temp.ActivityPoints));
                         numLikes.setText(Integer.toString(temp.LikesReceived));
                         about.setText(temp.AboutMe);
@@ -124,16 +126,4 @@ public class ViewUserActivity extends AppCompatActivity {
                 });
     }
 
-    //stackoverflow function
-    public static Bitmap getBitmapFromURL(String src){
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (Exception e) {return null;}
-    }
 }
