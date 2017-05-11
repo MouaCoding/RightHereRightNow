@@ -651,36 +651,62 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public void drawWithFilters(final Map<String, Integer> aMap) {
-        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Event");
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("Event");
         //iterate through all the keys/flags that are on filtering
         for (final String key: aMap.keySet()) {
-            Log.d("KEY", key);
-            eventRef.orderByChild(key).equalTo(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("GOTHERE",dataSnapshot.getKey());
-                    int val = aMap.get(key);
-                    Log.d("KEYVALUE", Integer.toString(val));
-                        if (val == 1) {
+            int val = aMap.get(key);
+            if (val == 1) {
+                Log.d("KEY", key);
+                eventRef.orderByChild(key).equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                            Log.d("keyevent", childSnapshot.getKey());
                             mMap.clear();
-                            queryEventWithFilter(dataSnapshot.getKey());
+                            Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                            handleNewLocation(loc);
+                            queryEventWithFilter(key,childSnapshot.getKey());
+                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
         }
     }
 
-    public void queryEventWithFilter(String filterKey)
+    public void queryEventWithFilter(String filter, String filterKey)
     {
-        filterKey = "Event_-KjntAFmoRC6SfFtUmvr";
-        DatabaseReference filterEvent = FirebaseDatabase.getInstance().getReference("EventLocations").child(filterKey);
-        GeoFire eventFire = new GeoFire(filterEvent);
+        DatabaseReference filterEvent;
+        GeoFire eventFire;
+        if(filter.equals("isSports")) {
+            filterEvent = FirebaseDatabase.getInstance().getReference("SportEventLocations");
+            eventFire = new GeoFire(filterEvent);
+        }
+        else if(filter.equals("isEducation")) {
+            filterEvent = FirebaseDatabase.getInstance().getReference("EducationEventLocations");
+            eventFire = new GeoFire(filterEvent);
+        }
+        else if(filter.equals("isClubEvent")) {
+            filterEvent = FirebaseDatabase.getInstance().getReference("ClubEventLocations");
+            eventFire = new GeoFire(filterEvent);
+        }
+        else if(filter.equals("isOther")) {
+            filterEvent = FirebaseDatabase.getInstance().getReference("OtherEventLocations");
+            eventFire = new GeoFire(filterEvent);
+        }
+        else if(filter.equals("isParty")) {
+            filterEvent = FirebaseDatabase.getInstance().getReference("PartyEventLocations");
+            eventFire = new GeoFire(filterEvent);
+        }
+        else{
+            filterEvent = FirebaseDatabase.getInstance().getReference("EventLocations");
+            eventFire = new GeoFire(filterEvent);
+        }
 
-        DatabaseReference filterPost = FirebaseDatabase.getInstance().getReference("PostLocations");
+        DatabaseReference filterPost = FirebaseDatabase.getInstance().getReference("SportPostLocations");
         GeoFire postFire = new GeoFire(filterPost);
 
         GeoQuery filterEventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), radius / 1000); // 12800.0);
@@ -688,19 +714,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GeoQuery filterPostQuery = postFire.queryAtLocation(filterEventQuery.getCenter(), radius / 1000);//12800.0);
         // (radius * 0.001) * kmToMiles * 70);
 
-        // might be something to do with initialization
-
         Log.d("CENTER", Double.toString(filterEventQuery.getCenter().latitude));
 
         filterEventQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String s, GeoLocation l) {
-
                 LatLng location = new LatLng(l.latitude, l.longitude);
-
                 Marker m = mMap.addMarker(new MarkerOptions()
                         .position(location).draggable(false)
-                        //TODO: MM: Change marker size with our algorithm -> query likes and multiply
                         .icon(BitmapDescriptorFactory.fromBitmap(Marker)));
                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 eventMarkerKeys.put(m, s);
@@ -815,18 +836,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 }
                 else if (i == R.id.done_filter) {
                     map = new HashMap<String, Integer>();
-                    filter = new int[5];
                     map.put("isEducation", isEducation);
                     map.put("isSports", isSports);
                     map.put("isParty", isParty);
                     map.put("isClubEvent", isClubEvent);
                     map.put("isOther", isOther);
-                    filter[0] = isEducation;
-                    filter[1] = isSports;
-                    filter[2] = isParty;
-                    filter[3] = isClubEvent;
-                    filter[4] = isOther;
-                    //drawWithFilters(map);
+                    clearFilterFlags();
+                    drawWithFilters(map);
 
                     return true;
                 }
@@ -836,6 +852,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             }
         });
         popup.show();
+    }
+
+    public void clearFilterFlags()
+    {
+        isEducation = isClubEvent = isOther = isParty = isSports = 0;
     }
 
     public void checkboxFilter(MenuItem item)

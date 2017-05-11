@@ -321,7 +321,35 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                     str_event_description, 10, 0, 0, 0));
             createdEvent.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
             createdEvent.child("eventID").setValue("Event_"+gettingKey.getKey());
-            createdEvent.child("filters").setValue(map);
+            for(String key: map.keySet()) {
+                createdEvent.child(key).setValue(map.get(key));
+                //IF Statements ONLY because we can have multiple categories of events
+                if(key.equals("isSports") && map.get(key) == 1){
+                    DatabaseReference sport = RootRef.child("SportEventLocations");
+                    GeoFire geoFire = new GeoFire(sport);
+                    geoFire.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
+                }
+                if(key.equals("isEducation")&& map.get(key) == 1){
+                    DatabaseReference sport = RootRef.child("EducationEventLocations");
+                    GeoFire geoFire = new GeoFire(sport);
+                    geoFire.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
+                }
+                if(key.equals("isClubEvent") && map.get(key) == 1 ){
+                    DatabaseReference sport = RootRef.child("ClubEventLocations");
+                    GeoFire geoFire = new GeoFire(sport);
+                    geoFire.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
+                }
+                if(key.equals("isOther") && map.get(key) == 1) {
+                    DatabaseReference sport = RootRef.child("OtherEventLocations");
+                    GeoFire geoFire = new GeoFire(sport);
+                    geoFire.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
+                }
+                if(key.equals("isParty") && map.get(key) == 1){
+                    DatabaseReference sport = RootRef.child("PartyEventLocations");
+                    GeoFire geoFire = new GeoFire(sport);
+                    geoFire.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
+                }
+            }
 
             // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
             //              String aEndTime, String aAddress, String aDescription,
