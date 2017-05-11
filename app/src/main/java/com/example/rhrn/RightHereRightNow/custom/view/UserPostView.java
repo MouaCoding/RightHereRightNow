@@ -7,6 +7,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.backend.Posts;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 
 /**
@@ -52,9 +53,9 @@ public class UserPostView extends FrameLayout {
     }
 
     public void getPost(final String postID) {
-      Post.requestPost(postID, "authToken", new Post.PostReceivedListener() {
+      Posts.requestPost(postID, "authToken", new Posts.PostsReceivedListener() {
           @Override
-          public void onPostReceived(Post... posts) {
+          public void onPostsReceived(Post... posts) {
               Post pst = posts[0];
               setPost(pst);
           }

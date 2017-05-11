@@ -17,12 +17,9 @@ public class Post {
                     createDate,
                     createTime,
                     content,
-                    responseID,
                     DisplayName,
                     ProfilePicture;
     //  TODO: BB: Change dates and times to type Date
-
-    public double   viewRadius;
 
     public int      //order,  // is it an original post (0), response (1), or response to a response (2)
                     likes,
@@ -44,35 +41,10 @@ public class Post {
 
         content     = aContent;
 
-        responseID  = aResponseID;
-
-        viewRadius  = aViewRadius;
-
         shares       = aShares;
         likes       = aLikes;
         comments    = aComments;
         isAnon      = Anon;
-    }
-
-    public static void requestPost(String PostID, String authToken, final Post.PostReceivedListener listener) {
-        if (listener == null) return;
-        FirebaseDatabase.getInstance().getReference("Post").child(PostID)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Post pst  = dataSnapshot.getValue(Post.class);
-                        listener.onPostReceived(pst);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        listener.onPostReceived();
-                    }
-                });
-    }
-
-    public static interface PostReceivedListener {
-        public void onPostReceived(Post... posts);
     }
 
 
@@ -101,14 +73,6 @@ public class Post {
     }
 
     public void setContent(String content) { this.content = content; }
-
-    public void setResponseID(String responseID) {
-        this.responseID = responseID;
-    }
-
-    public void setViewRadius(double viewRadius) {
-        this.viewRadius = viewRadius;
-    }
 
     public void setShares(int share) {
         this.shares = share;
