@@ -5,6 +5,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 /**
@@ -75,6 +77,38 @@ public class Post {
         public void onPostReceived(Post... posts);
     }
 
+    public static void changeCount(String type, String postID, final boolean inc) {
+
+        FirebaseDatabase.getInstance().getReference("Post").child(postID).child(type).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+
+                }
+                else {
+
+                    int count = mutableData.getValue(Integer.class);
+                    if(inc){
+                        mutableData.setValue(count + 1);
+                    }
+                    else{
+                        mutableData.setValue(count - 1);
+                    }
+
+
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+
+        });
+
+    }
 
     public void setComments(int comments) {
         this.comments = comments;

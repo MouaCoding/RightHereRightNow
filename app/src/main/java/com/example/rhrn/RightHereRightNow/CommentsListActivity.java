@@ -1,11 +1,13 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.app.Service;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.client.ServerValue;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +55,7 @@ public class CommentsListActivity extends FragmentActivity {
     public App mApp;
 
     String postID;
-    int CommentCount;
+    int type;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -61,9 +64,7 @@ public class CommentsListActivity extends FragmentActivity {
 
 
         postID = getIntent().getStringExtra("postID");
-        CommentCount = getIntent().getIntExtra("numComments", 0);
-
-
+        type = getIntent().getIntExtra("type", 0);
 
             setContentView(R.layout.comment_list);
 
@@ -82,9 +83,15 @@ public class CommentsListActivity extends FragmentActivity {
                 public void onClick(View v) {
                     mAdapter.clear();
                     String temp = content.getText().toString();
-                    createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID,  temp, 0, null);
-                    Event.changeCount("comments", postID, true);
-                    getComments(postID, true);
+                    createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID,  temp, 0, null, anon.isChecked());
+                    if(type == 0) {
+                        Event.changeCount("comments", postID, true);
+                    }
+                    else{
+                        Post.changeCount("comments", postID, true);
+                    }
+                    content.setText(null);
+                    getComments(postID);
                 }
             });
             backButton = (ImageButton) findViewById(R.id.comment_back_button);
@@ -94,7 +101,7 @@ public class CommentsListActivity extends FragmentActivity {
                     finish();
                 }
             });
-            getComments(postID, true);
+            getComments(postID);
         }
 
 
@@ -102,11 +109,11 @@ public class CommentsListActivity extends FragmentActivity {
 
 
 
-    public void getComments(String postID, boolean first){
+    public void getComments(String postID){
         Toast.makeText(getApplicationContext(), "Got here", Toast.LENGTH_LONG).show();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments").child(postID);
         ref.orderByChild("timestamp_create");
-        if(first) {
+
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -128,42 +135,9 @@ public class CommentsListActivity extends FragmentActivity {
 
             });
 
-        }
-        else{
-            ref.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Comments comment = dataSnapshot.getValue(Comments.class);
-                    mAdapter.add(comment);
-
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-
-
     }
 
-    public void createComment(String userID, String postID, String Content, int Order, String responseID) {
+    public void createComment(String userID, String postID, String Content, int Order, String responseID, boolean anon) {
 
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference rootreference = FirebaseDatabase.getInstance().getReference("Comments").child(postID);
@@ -177,7 +151,7 @@ public class CommentsListActivity extends FragmentActivity {
         String key = reference.getKey();
 
         DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child(key);
-        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, false, ServerValue.TIMESTAMP));
+        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, anon, ServerValue.TIMESTAMP));
         createdComment.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
 

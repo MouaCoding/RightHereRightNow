@@ -49,7 +49,6 @@ public class UserEventView extends FrameLayout {
     private Spinner eventRSVPStateSpinner;
 
     private String EventID;
-    private int CommentCount;
     private String currUsr = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
 
 
@@ -118,10 +117,11 @@ public class UserEventView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Context context = getContext();
-                Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", EventID.toString());
+                intent.putExtra("type", 0);
                 context.startActivity(intent);
+                getEvent(EventID);
 
             }
         });
