@@ -61,7 +61,7 @@ public class AboutMeActivity extends AppCompatActivity{
                 String edit = content.getText().toString(); //Update this string to Firebase
                 FirebaseDatabase.getInstance().getReference().child("User")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("AboutMe").setValue(edit);
+                        .child("AboutMeActivity").setValue(edit);
                 finish();
             }
         });
