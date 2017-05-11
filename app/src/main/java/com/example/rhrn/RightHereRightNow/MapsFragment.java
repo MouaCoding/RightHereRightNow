@@ -178,6 +178,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                                 break;
                             case R.id.favorite: //TODO: Refresh or favorite?
                                 Toast.makeText(getApplicationContext(),"Refreshing...", Toast.LENGTH_SHORT).show();
+                                drawPointsWithinUserRadius();
                                 onResume();
                                 Toast.makeText(getApplicationContext(),"Refreshed!", Toast.LENGTH_SHORT).show();
                                 //promptFavorite();
@@ -512,7 +513,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             public void onKeyEntered(String s, GeoLocation l) {
                 LatLng location = new LatLng(l.latitude, l.longitude);
                 Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_blue)));
                 postMarkerKeys.put(m, s);
                 postKeyMarkers.put(s, m);
             }
@@ -696,7 +697,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             filterEvent = FirebaseDatabase.getInstance().getReference("EventLocations");
         eventFire = new GeoFire(filterEvent);
 
-        DatabaseReference filterPost = FirebaseDatabase.getInstance().getReference("PostLocations");
+        DatabaseReference filterPost = FirebaseDatabase.getInstance().getReference("SportPostLocations");
         GeoFire postFire = new GeoFire(filterPost);
 
         GeoQuery filterEventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), radius / 1000); // 12800.0);
@@ -754,7 +755,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             public void onKeyEntered(String s, GeoLocation l) {
                 LatLng location = new LatLng(l.latitude, l.longitude);
                 Marker m = mMap.addMarker(new MarkerOptions().position(location).draggable(false)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_blue)));
                 postMarkerKeys.put(m, s);
                 postKeyMarkers.put(s, m);
             }
