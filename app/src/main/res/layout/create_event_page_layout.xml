@@ -141,8 +141,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/event_sd"
-                android:layout_below="@+id/event_private"
-                android:layout_marginTop="260dp"
+                android:layout_below="@+id/event_location_map_view"
+                android:layout_marginTop="16dp"
                 android:text="@string/event_description"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp" />
@@ -242,6 +242,15 @@
                 android:hint="@string/timeEvent"
                 android:inputType="none"
                 android:textAlignment="center" />
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/event_location_map_view"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_alignStart="@+id/filter"
+                android:layout_below="@+id/event_loc"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="14dp" />
 
             <!-- android:onClick="createEvent" -->
 

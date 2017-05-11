@@ -11,17 +11,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.app.ProgressDialog;
 import android.widget.PopupMenu;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.LocationUtils;
 import com.firebase.client.ServerValue;
 import com.firebase.geofire.GeoFire;
@@ -34,19 +35,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -328,12 +328,12 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
             //              double aViewRadius, int aLikes, int aComments, int aRSVPs)
 
             geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
-            setExtraValues(eventKey,firebaseAuth.getCurrentUser().getUid());
+            setExtraValues(eventKey,FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             //Saves the city of created event
-            Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+            Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
             try {
-                List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                List<Address> addresses = gcd.getFromLocation(createLoc.latitude, createLoc.longitude, 1);
 
                 if (addresses.size() > 0 & addresses != null) {
                     RootRef.child("Event").child("Event_" + gettingKey.getKey()).child("City")
@@ -431,7 +431,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         editor.putBoolean("checkbox", item.isChecked());
         editor.commit();
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        item.setActionView(new View(getApplicationContext()));
+        item.setActionView(new View(getContext()));
     }
 
 }
