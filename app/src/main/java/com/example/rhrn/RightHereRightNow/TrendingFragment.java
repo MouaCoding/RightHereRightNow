@@ -117,7 +117,7 @@ public class TrendingFragment extends Fragment {
 
     public static class EventAdapter extends ArrayAdapter<Event> {
         EventAdapter(Context context, ArrayList<Event> users){
-            super(context, R.layout.user_event_layout, R.id.user_event_title, users);
+            super(context, R.layout.user_event_framed_layout, R.id.user_event_title, users);
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {

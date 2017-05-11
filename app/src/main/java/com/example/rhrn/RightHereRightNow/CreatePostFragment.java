@@ -224,8 +224,8 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User owner = dataSnapshot.getValue(User.class);
-                Log.d("HOOO",ownerID);
                 ref.child("Post").child(postID).child("DisplayName").setValue(owner.DisplayName);
+                ref.child("Post").child(postID).child("handle").setValue(owner.handle);
                 try{
                     ref.child("Post").child(postID).child("ProfilePicture").setValue(owner.ProfilePicture);
                 }catch (Exception e){}
