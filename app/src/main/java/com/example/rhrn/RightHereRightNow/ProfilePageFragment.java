@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -43,6 +44,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.rhrn.RightHereRightNow.MainActivity.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -57,7 +59,8 @@ public class ProfilePageFragment extends Fragment {
             numActivityPoints,
             numLikes,
             about;
-    public ImageView profilePicture, edit;
+    public EditText profileMain;
+    public ImageView profilePicture, edit,editDisplay;
     public ImageButton changeProfile;
 
     //Posts
@@ -163,7 +166,18 @@ public class ProfilePageFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AboutMeActivity.class);
                 startActivity(intent);
-                //queryFirebase();
+            }
+        });
+
+        profileMain = (EditText) r.findViewById(R.id.profile_name_main);
+        editDisplay = (ImageView) r.findViewById(R.id.edit_display); //clicked pencil edit
+        editDisplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newDisplayName = profileMain.getText().toString().trim();
+                Toast.makeText(getApplicationContext(),"Display Name Changed to " + newDisplayName, Toast.LENGTH_SHORT).show();
+                FirebaseDatabase.getInstance().getReference().child("User")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DisplayName").setValue(newDisplayName);
             }
         });
 
@@ -225,7 +239,7 @@ public class ProfilePageFragment extends Fragment {
 
     public void queryFirebase() {
         DatabaseReference users= FirebaseDatabase.getInstance().getReference("User");
-        users.orderByChild("Email").equalTo(fbuser.getEmail())
+        users.orderByChild("uid").equalTo(fbuser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -287,20 +301,6 @@ public class ProfilePageFragment extends Fragment {
         }
     }
 
-    //stackoverflow function
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     //populate posts from firebase
     public void populatePost()

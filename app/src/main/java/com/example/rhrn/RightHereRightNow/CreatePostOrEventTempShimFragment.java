@@ -13,6 +13,8 @@ import android.widget.Button;
  */
 
 public class CreatePostOrEventTempShimFragment extends Fragment {
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View r = inflater.inflate(R.layout.post_event_create_shim_layout, container, false);

@@ -33,7 +33,13 @@
 
     </style>
 
-
+    <!-- Dark Buttons -->
+    <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 
 
 
@@ -45,6 +51,10 @@
 
     <style name="textFont">sans-serif</style>
     <style name="textSizeSmall">18sp</style>
+    <style name="bigger_text">
+        <item name="android:listPreferredItemHeightSmall">40dp</item>
+        <item name="android:textSize">20sp</item> <!--item text size-->
+    </style>
 
 
 </resources>

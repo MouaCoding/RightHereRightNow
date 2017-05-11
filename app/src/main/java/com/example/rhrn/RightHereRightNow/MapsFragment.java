@@ -3,25 +3,45 @@ package com.example.rhrn.RightHereRightNow;
 import android.Manifest;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.BottomNavigationMenuView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -49,12 +69,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -66,23 +93,29 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private static final int INITIAL_REQUEST = 1337;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    public int countNumber = 0;
+    public boolean isEducation = false, isSports = false, isParty = false, isClubEvent = false, isOther = false, logout = false;
     private GoogleMap mMap;
-    private MapView mapView;
+    public MapView mapView;
     public static final String TAG = MapsFragment.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private int radius = 1000;
     private FloatingActionButton button;
+    private Menu menu;
 
     private double kmToMiles = 0.621371;
     private double curLatitude;
     private double curLongitude;
+    boolean locationChanged = false;
 
     private String curUserID;
     private GeoLocation curLocation;
 
     private DatabaseReference   eventsOnMap,
                                 postsOnMap;
+
+    public BottomNavigationView topNavigationView;
 
     // eventually remove these
     ValueAnimator temp;
@@ -101,7 +134,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View r = (View) inflater.inflate(R.layout.maps_fragment_layout, container, false);
+        final View r = (View) inflater.inflate(R.layout.maps_fragment_layout, container, false);
 
         mapView = (MapView) r.findViewById(R.id.primary_map);
 //        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -111,19 +144,50 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         drawPointsWithinUserRadius();
         //mapView = new MapView(getActivity());
 
-        button = (FloatingActionButton) r.findViewById(R.id.message_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getCurrentUserInfo();
-            }
-        });
 
+        topNavigationView = (BottomNavigationView) r.findViewById(R.id.top_navigation);
+
+        try {
+            BottomNavigationMenuView menuView = (BottomNavigationMenuView) topNavigationView.getChildAt(0);
+            BottomNavigationItemView city = (BottomNavigationItemView) menuView.getChildAt(2);
+            city.setShiftingMode(false);
+            city.setChecked(city.getItemData().isChecked());
+        }catch (Exception e){}
+
+        topNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem bottom_navigation) {
+                        View menuItemView = r.findViewById(R.id.search);
+                        View options = r.findViewById(R.id.refresh);
+                        switch (bottom_navigation.getItemId()) {
+                            case R.id.search:
+                                filterMenu(menuItemView);
+                                break;
+                            case R.id.message:
+                                getCurrentUserInfo();
+                                break;
+                            case R.id.current_city:
+                                break;
+                            case R.id.favorite: //TODO: Refresh or favorite?
+                                Toast.makeText(getApplicationContext(),"Refreshing...", Toast.LENGTH_SHORT).show();
+                                onResume();
+                                Toast.makeText(getApplicationContext(),"Refreshed!", Toast.LENGTH_SHORT).show();
+                                //promptFavorite();
+                                break;
+                            case R.id.refresh:
+                                optionsMenu(options);
+                                break;
+                        }
+                        return true;
+                    }
+                });
 
         // restore any state here if necessary
 
         return r;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -147,6 +211,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         //button = (Button) findViewById(R.id.message_button);
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
@@ -160,15 +225,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         mGoogleApiClient.connect();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
-        mapView.onPause();
-    }
 
     @Override
     public void onStop() {
@@ -187,6 +243,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+
 
     @Override
     public void onLowMemory() {
@@ -208,6 +265,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMap.setMyLocationEnabled(true);
+
         curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -227,6 +287,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         });  // add listeners for clicking markers
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+
             @Override
             public void onMarkerDragEnd(Marker marker) {
                 ourLoc.remove();
@@ -308,6 +369,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         postQuery.setCenter(new GeoLocation(curLatitude, curLongitude));
 
         LatLng latLng = new LatLng(curLatitude, curLongitude);
+        Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+            if (addresses.size() > 0 & addresses != null) {
+                //Toast.makeText(getApplicationContext(),addresses.get(0).getLocality(),Toast.LENGTH_LONG).show();
+                MenuItem cityMenuItem = topNavigationView.getMenu().findItem(R.id.current_city);
+
+                cityMenuItem.setTitle(addresses.get(0).getLocality());
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
 
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
@@ -342,12 +416,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 circle.setRadius(animatedFraction * radius);
             }
         });
-        vAnimator.start();
 
+        vAnimator.start();
 
     }
 
-    private void drawPointsWithinUserRadius() {
+    public void drawPointsWithinUserRadius() {
         eventsOnMap = FirebaseDatabase.getInstance().getReference("EventLocations");
         GeoFire eventFire = new GeoFire(eventsOnMap);
 
@@ -486,6 +560,131 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         return marker;
     }
 
+    public void promptFavorite()
+    {
+        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getActivity());
+        dlgAlert.setTitle("Would you like to save this location?");
+        dlgAlert.setMessage("You can come back to this location later.");
 
+        dlgAlert.setNegativeButton("Yes", new OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //Opens the gallery of the phone if user clicked "Upload"
+                Toast.makeText(getApplicationContext(), "Location Saved!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //if user cancels
+        dlgAlert.setPositiveButton("No", new OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+
+        dlgAlert.setCancelable(true);
+        dlgAlert.create();
+        dlgAlert.show();
+    }
+
+    public void optionsMenu(View r)
+    {
+        PopupMenu popup = new PopupMenu(getActivity(), r);
+        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.action1) {
+                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action2){
+                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action3) {
+                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action4) {
+                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.logout) {
+                    logout = true;
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
+    }
+
+    public void filterMenu(View r)
+    {
+        PopupMenu popup = new PopupMenu(getActivity(), r);
+        popup.getMenuInflater().inflate(R.menu.filter_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.filter1) {
+                    checkboxFilter(item);
+                    isEducation = true;
+                    return false;
+                }
+                else if (i == R.id.filter2){
+                    checkboxFilter(item);
+                    isSports = true;
+                    return false;
+                }
+                else if (i == R.id.filter3) {
+                    checkboxFilter(item);
+                    isParty = true;
+                    return false;
+                }
+                else if (i == R.id.filter4) {
+                    checkboxFilter(item);
+                    isClubEvent = true;
+                    return false;
+                }
+                else if (i == R.id.filter5) {
+                    checkboxFilter(item);
+                    isOther = true;
+                    return false;
+                }
+                else if (i == R.id.done_filter) {
+                    boolean[] filters = new boolean[5];
+                    filters[0] = isEducation;
+                    filters[1] = isSports;
+                    filters[2] = isParty;
+                    filters[3] = isClubEvent;
+                    filters[4] = isOther;
+
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
+    }
+
+    public void checkboxFilter(MenuItem item)
+    {
+        item.setChecked(!item.isChecked());
+        SharedPreferences settings = getActivity().getSharedPreferences("settings", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("checkbox", item.isChecked());
+        editor.commit();
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        item.setActionView(new View(getApplicationContext()));
+    }
 
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
@@ -100,7 +101,10 @@ public class NewMessageActivity extends ChatActivity{
                             mConvoId = ids[0]+ids[1];
                             //mUsers.add(receiver);
                         }
-                        rootRef.child(userKey).child("UsersMessaged").child(receiverID).setValue(true);
+                        if(receiverID != null)
+                            rootRef.child(userKey).child("UsersMessaged").child(receiverID).setValue(true);
+                        else
+                            Toast.makeText(NewMessageActivity.this, "No User with that handle found!", Toast.LENGTH_SHORT).show();
                         MessageSource.saveMessage(msg, mConvoId);
                         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                         intent.putExtra(ChatActivity.RECEIVER_ID,msg.getReceiver());
