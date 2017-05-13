@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -149,15 +150,19 @@ public class TrendingFragment extends Fragment {
 
             try {
                 if (event.userProfilePicture != null)
-                    profilePicture.setImageBitmap(getBitmapFromURL(event.userProfilePicture));
+                    Picasso.with(getContext()).load(event.userProfilePicture).into(profilePicture);
+                    //profilePicture.setImageBitmap(getBitmapFromURL(event.userProfilePicture));
                 else
-                    profilePicture.setImageResource(R.mipmap.ic_launcher);
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(profilePicture);
+                    //profilePicture.setImageResource(R.mipmap.ic_launcher);
             }catch (Exception e){}
             try{
                 if (event.ProfilePicture != null)
-                    eventImage.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
+                    Picasso.with(getContext()).load(event.userProfilePicture).into(eventImage);
+                    //eventImage.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
                 else
-                    eventImage.setImageResource(R.drawable.ic_group_black_24dp);
+                    Picasso.with(getContext()).load(R.drawable.images).into(eventImage);
+                    //eventImage.setImageResource(R.drawable.ic_group_black_24dp);
             } catch (Exception e){}
 
             //On clicks to navigate to view user or event
@@ -239,9 +244,11 @@ public class TrendingFragment extends Fragment {
             });
             try {
                 if (city.Picture != null)
-                    cityImage.setImageBitmap(getBitmapFromURL(city.Picture));
+                    Picasso.with(getContext()).load(city.Picture).into(cityImage);
+                    //cityImage.setImageBitmap(getBitmapFromURL(city.Picture));
                 else
-                    cityImage.setImageResource(R.drawable.cityscape);
+                    Picasso.with(getContext()).load(R.drawable.cityscape).into(cityImage);
+                    //cityImage.setImageResource(R.drawable.cityscape);
             }catch (Exception e){}
             return convertView;
         }

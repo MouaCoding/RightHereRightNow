@@ -165,11 +165,18 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
         String postContent = post_content.getText().toString().trim();
 
         Calendar c = Calendar.getInstance();
-        String date = Integer.toString(c.get(Calendar.MONTH)) + "/" + Integer.toString(c.get(Calendar.DAY_OF_MONTH))
-                + "/" + Integer.toString(c.get(Calendar.YEAR));
-        String time = "";
+        int Year = c.get(Calendar.YEAR);
+        int Month = c.get(Calendar.MONTH) + 1; //Calendar starts at 0 I DONT KNOW WHY......
+        int Day = c.get(Calendar.DAY_OF_MONTH);
         int Minute = c.get(Calendar.MINUTE);
         int Hour = c.get(Calendar.HOUR_OF_DAY);
+        int Second = c.get(Calendar.SECOND);
+        //String date = Integer.toString(Month) + "/" + Integer.toString(Day) + "/" + Integer.toString(Year);
+        String time = "";
+        String timeAndDate = String.format("%04d%02d%02d%02d%02d%02d",Year,Month,Day,Hour,Minute,Second);
+        //timeAndDate = Integer.toString(c.get(Calendar.YEAR)) + Integer.toString(c.get(Calendar.MONTH)) +
+        //        Integer.toString(c.get(Calendar.DAY_OF_MONTH)) + Integer.toString(Hour) + Integer.toString(Minute) +
+        //        Integer.toString(c.get(Calendar.SECOND));
         if(Hour >= 12)
         {
             if(Hour == 12){
@@ -203,9 +210,10 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
 
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
-            createdPost.setValue(new Post( FirebaseAuth.getInstance().getCurrentUser().getUid(), createdPost.getKey(), date, time,
+            createdPost.setValue(new Post( FirebaseAuth.getInstance().getCurrentUser().getUid(), createdPost.getKey(), timeAndDate, time,
                     postContent, "response Post ID", 10, 0, 0, 0,false));
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
+
 
             setExtraValues(createdPost.getKey(),  FirebaseAuth.getInstance().getCurrentUser().getUid());
 

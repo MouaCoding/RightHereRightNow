@@ -1,5 +1,6 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,12 +33,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -54,6 +60,7 @@ public class NotificationFragment extends Fragment {
     private ArrayList<Object> mUserNotifications;
     private PostAdapter mAdapter;
     private ListView list, userList;
+    int notificationFlag = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,7 +73,7 @@ public class NotificationFragment extends Fragment {
                 mPosts = new ArrayList<>();
                 mAdapter = new PostAdapter(getContext(), mPosts);
                 list.setAdapter(mAdapter);
-                getUsers();
+                getPostsNotifications();//getUsers();
             }
         });
         you = (Button) r.findViewById(R.id.you_button);
@@ -95,7 +102,8 @@ public class NotificationFragment extends Fragment {
         userList = (ListView) r.findViewById(R.id.global_list);
 
         //getPosts();
-        getUsers();
+        getUsersFollowed();
+        getPostsNotifications();
 
         return r;
     }
@@ -113,7 +121,7 @@ public class NotificationFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             convertView = super.getView(position, convertView, parent);
-            Post post = getItem(position);
+            final Post post = getItem(position);
 
             TextView postBodyTextView = (TextView) convertView.findViewById(R.id.user_post_body);
             ImageButton likeButton = (ImageButton) convertView.findViewById(R.id.user_post_like_button);
@@ -132,10 +140,28 @@ public class NotificationFragment extends Fragment {
             numComments.setText(Integer.toString(post.comments));
             try {
                 if (post.ProfilePicture != null)
-                    miniProfilePicView.setImageBitmap(getBitmapFromURL(post.ProfilePicture));
+                    Picasso.with(getContext()).load(post.ProfilePicture).into(miniProfilePicView);
+                    //miniProfilePicView.setImageBitmap(getBitmapFromURL(post.ProfilePicture));
                 else
-                    miniProfilePicView.setImageResource(R.mipmap.ic_launcher);
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(miniProfilePicView);
+                    //miniProfilePicView.setImageResource(R.mipmap.ic_launcher);
             } catch(Exception e){}
+            displayNameView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(),ViewPostActivity.class);
+                    intent.putExtra("postid",post.postID);
+                    getContext().startActivity(intent);
+                }
+            });
+            miniProfilePicView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(),ViewPostActivity.class);
+                    intent.putExtra("postid",post.postID);
+                    getContext().startActivity(intent);
+                }
+            });
 
             /*
             TextView nameView = (TextView)convertView.findViewById(R.id.user);
@@ -173,42 +199,33 @@ public class NotificationFragment extends Fragment {
                     list.setAdapter(mAdapter);
                 }catch (Exception e){}
             }
-
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
 
 
         });
 
     }
 
-
     public void getPosts(String following)
     {
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference().child("Post");
-        postRef.orderByChild("ownerID").equalTo(following).limitToLast(10).addChildEventListener(new ChildEventListener() {
+        postRef.orderByChild("ownerID").equalTo(following).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Post posts = dataSnapshot.getValue(Post.class);
-                Log.d("postcreated", posts.createDate);
-                try {
+                //TODO: since this saves all posts by each user, it might be inefficient... MM
+                DatabaseReference notifyRequest = FirebaseDatabase.getInstance().getReference().child("NotificationRequest");
+                DatabaseReference curUser = notifyRequest.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                curUser.child(posts.postID).setValue(posts);
+
+                /*try {
                     mPosts.add(0, posts);
                     mAdapter = new PostAdapter(getContext(), mPosts);
                     list.setAdapter(mAdapter);
@@ -224,34 +241,20 @@ public class NotificationFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
+                */
             }
-
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-
+            public void onCancelled(DatabaseError databaseError) {}
         });
-
     }
 
-    public void getUsers()
+    public void getUsersFollowed()
     {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User");
         userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Following")
@@ -261,29 +264,43 @@ public class NotificationFragment extends Fragment {
                 Log.d("SNAP",dataSnapshot.getKey().toString());
                 getPosts(dataSnapshot.getKey().toString());
             }
-
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
+    public void getPostsNotifications()
+    {
+        DatabaseReference notify = FirebaseDatabase.getInstance().getReference().child("NotificationRequest");
+        notify.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                //.orderByChild("createDate").startAt("201701").endAt("201712").
+                //Seems like firebase already sorts them in order of created date!
+                .limitToLast(5).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Post posts = dataSnapshot.getValue(Post.class);
+                try {
+                    mPosts.add(0,posts);
+                    mAdapter = new PostAdapter(getContext(), mPosts);
+                    list.setAdapter(mAdapter);
+                }catch (Exception e){}
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
 
     public void userNotification()
     {
@@ -291,27 +308,17 @@ public class NotificationFragment extends Fragment {
     }
 
 
-    public static class ImageDownload extends AsyncTask {
+    public static class ImageDownload extends AsyncTask<String, Void, String> {
 
-        private ProgressDialog progressDialog;
-        private ImageView pic;
 
         @Override
-        protected Bitmap doInBackground(Object[] params) {
-            return getBitmapFromURL((String) params[0]);
+        protected String doInBackground(String... url) {
+            return "";
         }
 
         @Override
-        protected void onPreExecute()
+        protected void onPostExecute(String result)
         {
-            progressDialog = ProgressDialog.show(getApplicationContext(),
-                    "Wait", "Downloading Image");
-        }
-
-        protected void onPostExecute(Bitmap result)
-        {
-            pic.setImageBitmap(result);
-            progressDialog.dismiss();
         }
 
         public Bitmap getBitmapFromURL(String src) {

@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -170,9 +171,11 @@ public class MessageListActivity extends AppCompatActivity {
 
             try{
                 if(user.ProfilePicture != null)
-                    imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                    Picasso.with(getContext()).load(user.ProfilePicture).into(imageView);
+                    //imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
                 else
-                    imageView.setImageResource(R.mipmap.ic_launcher);
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(imageView);
+                    //imageView.setImageResource(R.mipmap.ic_launcher);
 
             } catch (Exception e){}
             nameView.setLayoutParams(layoutParams);

@@ -38,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -221,6 +222,7 @@ public class ProfilePageFragment extends Fragment {
                 Bitmap bitmap = MediaStore.Images.Media
                         .getBitmap(getApplicationContext().getContentResolver(), filePath);
                 Log.d("pathfileee", bitmap.toString());
+                //Picasso.with(getContext()).load(filePath).into(profilePicture);
                 profilePicture.setImageBitmap(bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -261,9 +263,10 @@ public class ProfilePageFragment extends Fragment {
                             try {
                                 //Convert the URL to aa Bitmap using function, then set the profile picture
                                 if(temp.ProfilePicture != null)
-                                    profilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
-                                else
-                                    profilePicture.setImageResource(R.mipmap.ic_launcher);
+                                    Picasso.with(getContext()).load(temp.ProfilePicture).into(profilePicture);
+                                    //profilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
+                                //else
+                                    //profilePicture.setImageResource(R.mipmap.ic_launcher);
                             }catch (Exception e){
                                 e.printStackTrace();
                             }

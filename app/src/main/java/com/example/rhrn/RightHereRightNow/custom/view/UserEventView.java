@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -145,7 +146,10 @@ public class UserEventView extends FrameLayout {
                 numComments.setText(Integer.toString(ev.comments));
 
                 try {
-                     eventMiniImageView.setImageBitmap(getBitmapFromURL(ev.ProfilePicture));
+                    if(ev.ProfilePicture != null)
+                        Picasso.with(getContext()).load(ev.ProfilePicture).into(eventMiniImageView);
+                    else
+                        Picasso.with(getContext()).load(R.drawable.images).into(eventMiniImageView);
                 }catch (Exception e){}
             }
 
