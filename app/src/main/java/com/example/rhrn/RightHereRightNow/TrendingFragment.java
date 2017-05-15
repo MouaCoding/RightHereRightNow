@@ -138,10 +138,9 @@ public class TrendingFragment extends Fragment {
             startTime.setText(event.startTime);
             endTime.setText(event.endTime);
             eventLoc.setText(event.address);
-            try {
-                numLikes.setText(Integer.toString(event.likes));
-                numComments.setText(Integer.toString(event.comments));
-            }catch(Exception e){}
+            numLikes.setText(Integer.toString(event.likes));
+            numComments.setText(Integer.toString(event.comments));
+
             displayNameView.setText(event.DisplayName);
             userHandleView.setText(event.handle);
 
@@ -153,7 +152,7 @@ public class TrendingFragment extends Fragment {
                     //profilePicture.setImageBitmap(getBitmapFromURL(event.userProfilePicture));
                 else
                     Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(profilePicture);
-                    //profilePicture.setImageResource(R.mipmap.ic_launcher);
+                //profilePicture.setImageResource(R.mipmap.ic_launcher);
             }catch (Exception e){}
             try{
                 if (event.ProfilePicture != null)
@@ -161,7 +160,7 @@ public class TrendingFragment extends Fragment {
                     //eventImage.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
                 else
                     Picasso.with(getContext()).load(R.drawable.images).into(eventImage);
-                    //eventImage.setImageResource(R.drawable.ic_group_black_24dp);
+                //eventImage.setImageResource(R.drawable.ic_group_black_24dp);
             } catch (Exception e){}
 
             //On clicks to navigate to view user or event
@@ -247,7 +246,7 @@ public class TrendingFragment extends Fragment {
                     //cityImage.setImageBitmap(getBitmapFromURL(city.Picture));
                 else
                     Picasso.with(getContext()).load(R.drawable.cityscape).into(cityImage);
-                    //cityImage.setImageResource(R.drawable.cityscape);
+                //cityImage.setImageResource(R.drawable.cityscape);
             }catch (Exception e){}
             return convertView;
         }

@@ -55,23 +55,28 @@ public class CityEventsActivity extends AppCompatActivity {
         eventList = (ListView) findViewById(R.id.city_events_list);
 
         queryCityEvents(city);
+        sortByLikes(city);
+
     }
 
     public void queryCityEvents(final String city_name)
     {
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Event").orderByChild("City").equalTo(city_name).limitToLast(5).addValueEventListener(new ValueEventListener() {
+        RootRef.child("Event").orderByChild("City").equalTo(city_name).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot1) {
                 int favoriteCount = 0;
                 for (DataSnapshot dataSnapshot : dataSnapshot1.getChildren()) {
                     Event ev = dataSnapshot.getValue(Event.class);
-                    eventArray.add(ev);
+
+                    FirebaseDatabase.getInstance().getReference().child("CityEvents").child(city_name)
+                            .child(ev.eventID).setValue(ev);
+                    //eventArray.add(ev);
                     favoriteCount++;
                 }
                 //FirebaseDatabase.getInstance().getReference().child("City").child(city_name).child("NumFavorites").setValue(Integer.toString(favoriteCount));
-                eventAdapter = new TrendingFragment.EventAdapter(getBaseContext(),eventArray);
+                /*eventAdapter = new TrendingFragment.EventAdapter(getBaseContext(),eventArray);
                 eventList.setAdapter(eventAdapter);
                 eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -80,11 +85,42 @@ public class CityEventsActivity extends AppCompatActivity {
                         intent.putExtra("otherUserID",eventArray.get(position).ownerID);
                         startActivity(intent);
                     }
-                });
+                });*/
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    public void sortByLikes(String city_name)
+    {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("CityEvents");
+        ref.child(city_name).orderByChild("likes").startAt(0).endAt(1234567890).limitToLast(5)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                            Event ev = dataSnapshot1.getValue(Event.class);
+                            eventArray.add(0,ev);
+                        }
+                        eventAdapter = new TrendingFragment.EventAdapter(getBaseContext(),eventArray);
+                        eventList.setAdapter(eventAdapter);
+                        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent(CityEventsActivity.this,ViewEventActivity.class);
+                                intent.putExtra("otherUserID",eventArray.get(position).ownerID);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
 }
