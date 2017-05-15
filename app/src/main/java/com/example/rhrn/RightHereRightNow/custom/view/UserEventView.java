@@ -22,9 +22,6 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -145,29 +142,6 @@ public class UserEventView extends FrameLayout {
                 Event ev = events[0];
                 setEvent(ev);
                 EventID = eventID;
-                OwnerID = ev.ownerID;
-                eventLikes = ev.likes;
-                getOwnerLikes(OwnerID);
-
-                eventMakerHeader.getUser(ev.ownerID);
-                eventTitleView.setText(ev.eventName);
-                eventStartTimeView.setText(ev.startTime);
-                eventEndTimeView.setText(ev.endTime);
-                eventLocationView.setText(ev.address);
-                numLikes.setText(Integer.toString(ev.likes));
-                numComments.setText(Integer.toString(ev.comments));
-
-                try {
-                    if(ev.ProfilePicture != null)
-                        Picasso.with(getContext()).load(ev.ProfilePicture).into(eventMiniImageView);
-                    else
-                        Picasso.with(getContext()).load(R.drawable.images).into(eventMiniImageView);
-                }catch (Exception e){}
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
 
             }
         });

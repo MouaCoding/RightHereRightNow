@@ -13,7 +13,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 
@@ -48,10 +47,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 likes.setText(Integer.toString(post.likes));
                 comments.setText(Integer.toString(post.comments));
                 try{
-                    if(post.ProfilePicture != null)
-                        Picasso.with(getBaseContext()).load(post.ProfilePicture).into(profile);
-                    else
-                        Picasso.with(getBaseContext()).load(R.drawable.images).into(profile);
+                    profile.setImageBitmap(getBitmapFromURL(post.ProfilePicture));
                 } catch(Exception e){}
             }
 
