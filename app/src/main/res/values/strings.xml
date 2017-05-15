@@ -122,4 +122,5 @@
     <string name="keep_logged_in">Keep me logged in</string>
     <string name="event_type">Event Type</string>
     <string name="choose_filter">Choose Type</string>
+    <string name="filterByHandle">Or Choose User</string>
 </resources>

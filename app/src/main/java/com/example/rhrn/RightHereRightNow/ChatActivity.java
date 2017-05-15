@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-
 import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -141,7 +140,7 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
             TextView nameView = (TextView)convertView.findViewById(R.id.msg);
             nameView.setText(message.getMessage());
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)nameView.getLayoutParams();
-            int sdk = android.os.Build.VERSION.SDK_INT;
+
             //if the sender matches the id of the sender, then bubble appears right side and green
             if ( message.getSender().equals(fbuser.getUid())){
                     nameView.setBackground(getDrawable(R.drawable.bubble_right_green));

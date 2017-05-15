@@ -95,18 +95,16 @@ public class TrendingFragment extends Fragment {
     public void queryAllEvents()
     {
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Event").orderByChild("likes").startAt(0).endAt(1000).limitToLast(3).addValueEventListener(new ValueEventListener() {
+        RootRef.child("Event").orderByChild("likes").startAt(0).endAt(1000).limitToLast(5).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot1) {
                 for (DataSnapshot dataSnapshot : dataSnapshot1.getChildren()) {
                     Event ev = dataSnapshot.getValue(Event.class);
-
                     eventList.add(0,ev);
-                    eventAdapter = new EventAdapter(getContext(), eventList);
-                    trendingList.setAdapter(eventAdapter);
-                    //populateEventHeader(ev.ownerID);
                 }
+                eventAdapter = new EventAdapter(getContext(), eventList);
+                trendingList.setAdapter(eventAdapter);
             }
 
             @Override
@@ -169,7 +167,7 @@ public class TrendingFragment extends Fragment {
             displayNameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
+                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
                     intent.putExtra("otherUserID",event.ownerID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
@@ -178,7 +176,7 @@ public class TrendingFragment extends Fragment {
             profilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
+                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
                     intent.putExtra("otherUserID",event.ownerID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
@@ -187,7 +185,7 @@ public class TrendingFragment extends Fragment {
             eventTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ViewEventActivity.class);
+                    Intent intent = new Intent(getContext(), ViewEventActivity.class);
                     intent.putExtra("eventid",event.eventID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
@@ -196,7 +194,7 @@ public class TrendingFragment extends Fragment {
             eventImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ViewEventActivity.class);
+                    Intent intent = new Intent(getContext(), ViewEventActivity.class);
                     intent.putExtra("eventid",event.eventID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
