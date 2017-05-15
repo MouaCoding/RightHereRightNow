@@ -315,11 +315,11 @@ public class NotificationFragment extends Fragment {
                 list.setAdapter(mmAdapter);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position
-                        getContext().startActivity(intent);, long id) {
-                            Intent intent = new Intent(getContext(), ViewUserActivity.class);
-                            intent.putExtra("otherUserID",mUsers.get(position).uid);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                        intent.putExtra("otherUserID",mUsers.get(position).uid);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().startActivity(intent);
                     }
                 });
             }
