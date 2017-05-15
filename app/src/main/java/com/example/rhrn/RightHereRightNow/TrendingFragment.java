@@ -127,8 +127,8 @@ public class TrendingFragment extends Fragment {
             TextView startTime = (TextView)convertView.findViewById(R.id.user_event_start_time);
             TextView endTime = (TextView)convertView.findViewById(R.id.user_event_end_time);
             TextView eventLoc = (TextView)convertView.findViewById(R.id.user_event_location);
-            TextView numLikes = (TextView)convertView.findViewById(R.id.number_likes);
-            TextView numComments = (TextView)convertView.findViewById(R.id.number_comments);
+            TextView numLikes = (TextView)convertView.findViewById(R.id.user_event_like_count);
+            TextView numComments = (TextView)convertView.findViewById(R.id.user_event_comment_count);
 
             TextView displayNameView = (TextView) convertView.findViewById(R.id.mini_name);
             ImageView profilePicture = (ImageView) convertView.findViewById(R.id.mini_profile_picture);
@@ -138,9 +138,10 @@ public class TrendingFragment extends Fragment {
             startTime.setText(event.startTime);
             endTime.setText(event.endTime);
             eventLoc.setText(event.address);
-            numLikes.setText(Integer.toString(event.likes));
-            numComments.setText(Integer.toString(event.comments));
-
+            try {
+                numLikes.setText(Integer.toString(event.likes));
+                numComments.setText(Integer.toString(event.comments));
+            }catch(Exception e){}
             displayNameView.setText(event.DisplayName);
             userHandleView.setText(event.handle);
 

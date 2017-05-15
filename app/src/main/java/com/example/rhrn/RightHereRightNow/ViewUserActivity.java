@@ -57,7 +57,8 @@ public class ViewUserActivity extends AppCompatActivity {
             miniHandle,
             body,
             postsNumLikes,
-            postsNumComments;
+            postsNumComments,
+            postNumShares;
 
     //Populating list of posts and events
     public ListView postList, eventList;
@@ -103,6 +104,7 @@ public class ViewUserActivity extends AppCompatActivity {
         body = (TextView) findViewById(R.id.user_post_body);
         postsNumLikes = (TextView) findViewById(R.id.number_likes);
         postsNumComments = (TextView) findViewById(R.id.number_comments);
+        postNumShares = (TextView) findViewById(R.id.user_post_share_count);
         postArray = new ArrayList<>();
         eventArray = new ArrayList<>();
 

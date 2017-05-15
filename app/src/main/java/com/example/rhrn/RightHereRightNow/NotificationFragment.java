@@ -162,8 +162,8 @@ public class NotificationFragment extends Fragment {
             ImageView miniProfilePicView = (ImageView) convertView.findViewById(R.id.mini_profile_picture);;
             TextView displayNameView= (TextView) convertView.findViewById(R.id.mini_name);
             TextView userHandleView= (TextView) convertView.findViewById(R.id.mini_user_handle);
-            TextView numLikes = (TextView) convertView.findViewById(R.id.number_likes);
-            TextView numComments = (TextView) convertView.findViewById(R.id.number_comments);
+            TextView numLikes = (TextView) convertView.findViewById(R.id.user_post_like_count);
+            TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
 
             displayNameView.setText(post.DisplayName);
             userHandleView.setText(post.handle);

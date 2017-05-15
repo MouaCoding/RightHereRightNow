@@ -30,6 +30,7 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -73,6 +74,7 @@ public class ProfilePageFragment extends Fragment {
                     miniHandle,
                     body,
                     postsNumLikes,
+                    postsNumShares,
                     postsNumComments;
 
     //Populating list of posts and events
@@ -202,6 +204,7 @@ public class ProfilePageFragment extends Fragment {
         postsNumComments = (TextView) r.findViewById(R.id.number_comments);
         postList = (ListView)r.findViewById(R.id.post_list);
         eventList = (ListView) r.findViewById(R.id.event_list);
+        postsNumShares = (TextView) r.findViewById(R.id.user_post_share_count);
         postArray = new ArrayList<>();
         eventArray = new ArrayList<>();
 

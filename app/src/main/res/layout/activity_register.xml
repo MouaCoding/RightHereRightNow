@@ -47,7 +47,7 @@
             android:layout_below="@+id/last_name"
             android:layout_alignParentStart="true" />
         <EditText
-            android:id="@+id/handle"
+            android:id="@+id/hashtag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/handle"
@@ -133,7 +133,7 @@
             android:text="@string/action_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/register_state"
+            android:layout_below="@+id/register_city"
             android:layout_alignParentStart="true" />
 
     </RelativeLayout>

@@ -32,17 +32,17 @@ import java.util.Locale;
 public class RegisterActivity extends LoginActivity {
 
     private EditText    first_name,
-                        last_name,
-                        display_name,
-                        handle,
-                        user_email,
-                        user_password,
-                        user_phone,
-                        user_address,
-                        user_city,
-                        user_state,
-                        activity_points,
-                        numLikes;
+            last_name,
+            display_name,
+            handle,
+            user_email,
+            user_password,
+            user_phone,
+            user_address,
+            user_city,
+            user_state,
+            activity_points,
+            numLikes;
     String firstName,lastName,displayName,handle_,fullname,email,password,phone,address,city,state,id, uid;
 
     //Button for when user fills in the texts and then clicks on button
@@ -67,7 +67,7 @@ public class RegisterActivity extends LoginActivity {
         first_name = (EditText)findViewById(R.id.first_name);
         last_name = (EditText)findViewById(R.id.last_name);
         display_name = (EditText)findViewById(R.id.display_name);
-        handle = (EditText)findViewById(R.id.handle);
+        handle = (EditText)findViewById(R.id.hashtag);
         user_email = (EditText)findViewById(R.id.register_email);
         user_password = (EditText)findViewById(R.id.register_password);
         user_phone = (EditText)findViewById(R.id.register_phone);

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -46,7 +47,13 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
 
     private EditText post_content;
 
+
+    private CheckBox    anon;
+
+    private FirebaseAuth firebaseAuth;
+
     private LatLng createLoc;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,6 +66,10 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
                 createPost();
             }
         });
+
+        anon  = (CheckBox) r.findViewById(R.id.AnonBox);
+
+
 
         //Initializes each text view to the class's objects
         post_content = (EditText)r.findViewById(R.id.content_post);
@@ -212,6 +223,7 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
             createdPost.setValue(new Post( FirebaseAuth.getInstance().getCurrentUser().getUid(), createdPost.getKey(), timeAndDate, time,
                     postContent, "response Post ID", 10, 0, 0, 0,false));
+
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
 

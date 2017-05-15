@@ -29,6 +29,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan"/>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -53,13 +54,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".ChatActivity" />
-        <activity android:name=".MessageListActivity" />
-        <activity android:name=".NewMessageActivity" />
-        <activity android:name=".AboutMeActivity" />
-        <activity android:name=".ViewUserActivity" />
-        <activity android:name=".WallActivity" />
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".ChatActivity"/>
+        <activity android:name=".MessageListActivity"/>
+        <activity android:name=".NewMessageActivity"/>
+        <activity android:name=".AboutMeActivity"/>
+        <activity android:name=".ViewUserActivity"/>
+        <activity android:name=".WallActivity"/>
+        <activity android:name=".CommentsListActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -70,6 +72,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
 
         <meta-data
             android:name="io.fabric.ApiKey"
