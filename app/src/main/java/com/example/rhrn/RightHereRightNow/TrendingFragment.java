@@ -138,8 +138,8 @@ public class TrendingFragment extends Fragment {
             startTime.setText(event.startTime);
             endTime.setText(event.endTime);
             eventLoc.setText(event.address);
-            numLikes.setText(Integer.toString(event.likes));
-            numComments.setText(Integer.toString(event.comments));
+//            numLikes.setText(Integer.toString(event.likes));
+//            numComments.setText(Integer.toString(event.comments));
 
             displayNameView.setText(event.DisplayName);
             userHandleView.setText(event.handle);

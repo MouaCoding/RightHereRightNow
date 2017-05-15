@@ -1,7 +1,5 @@
 package com.example.rhrn.RightHereRightNow;
 
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,12 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
     private MapView post_location;
@@ -46,6 +40,7 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
 
     private EditText post_content;
 
+    private CheckBox anon;
     private LatLng createLoc;
 
     @Override
@@ -59,6 +54,10 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
                 createPost();
             }
         });
+
+        anon  = (CheckBox) r.findViewById(R.id.AnonBox);
+
+
 
         //Initializes each text view to the class's objects
         post_content = (EditText)r.findViewById(R.id.content_post);
@@ -211,27 +210,14 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
             //set date and time to today, right now?
             // TODO: BB: include all fields from Post rather than just some, and get actual coordinates
             createdPost.setValue(new Post( FirebaseAuth.getInstance().getCurrentUser().getUid(), createdPost.getKey(), timeAndDate, time,
-                    postContent, "response Post ID", 10, 0, 0, 0,false));
+                    postContent, "response Post ID", 10, 0, 0, 0,anon.isChecked()));
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
 
 
             setExtraValues(createdPost.getKey(),  FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             geoFireLocation.setLocation(createdPost.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
-            //Saves the city of created event
-            Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
-            try {
-                List<Address> addresses = gcd.getFromLocation(createLoc.latitude, createLoc.longitude, 1);
-
-                if (addresses.size() > 0 & addresses != null) {
-                    rootRef.child("Post").child("Post_" + gettingKey.getKey()).child("City")
-                            .setValue(addresses.get(0).getLocality());
-                }
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            setExtraValues(createdPost.getKey(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+            setExtraValues(createdPost.getKey(),  FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
             Toast.makeText(getContext(), "Post Created!", Toast.LENGTH_SHORT).show();

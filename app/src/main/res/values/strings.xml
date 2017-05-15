@@ -33,7 +33,7 @@
     <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
     <string name="facebook_app_id">1862159977386608</string>
     <string name="error_signin">Error logging in.</string>
-    <string name="forgot_password">Forgot Password?</string>
+    <string name="forgot_password">Forgot?</string>
 
     <!-- Strings relates to events -->
     <string name="event_rsvp_not_going">Not Going</string>
@@ -120,6 +120,8 @@
     <string name="filter5">Other</string>
     <string name="done_filter">Done</string>
     <string name="keep_logged_in">Keep me logged in</string>
+    <string name="reply">Reply</string>
+    <string name="like">Like</string>
     <string name="event_type">Event Type</string>
     <string name="choose_filter">Choose Type</string>
     <string name="filterByHandle">Or Choose User</string>

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.ViewUserActivity;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.FollowingUser;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.client.Firebase;
@@ -117,17 +118,13 @@ public class UserMiniHeaderView extends FrameLayout {
                 // eventMiniImageView.setImageBitmap(ev.image);
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-    }
 
     public void anonUser(){
         displayNameView.setText("Anonymous");
         userHandleView.setText("");
         miniProfilePicView.setImageResource(R.drawable.happy);
+        miniProfilePicView.setClickable(false);
         addButton.setVisibility(View.GONE);
 
     }
@@ -145,6 +142,50 @@ public class UserMiniHeaderView extends FrameLayout {
         });
     }
 
+    public void getUser(final String userID) {
+        // TODO fetch event information from params and fill fields
+        User.requestUser(userID, "AuthToken", new User.UserReceivedListener() {
+            @Override
+            public void onUserReceived(User...users) {
+                User usr = users[0];
+                setUser(usr);
+
+
+            }
+        });
+    }
+
+
+    public void setUser(User user){
+        displayNameView.setText(user.DisplayName);
+        userHandleView.setText(user.handle);
+        otherUserID = user.uid;
+        curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        //Try if user has profile pic
+        try {
+    //Convert the URL to aa Bitmap using function, then set the profile picture
+            miniProfilePicView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+        }catch (Exception e){}
+    // eventMiniImageView.setImageBitmap(ev.image);
+
+
+
+    }
+
+    //stackoverflow function
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch( Exception e) {
+            return null;
+        }
+    }
 
 }
 // TODO use params to get user data and fill fields.
