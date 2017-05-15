@@ -1,5 +1,6 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -96,7 +97,7 @@ public class MessageListActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        mAdapter = new UserAdapter(mUsers);
+                        mAdapter = new UserAdapter(getBaseContext(),mUsers);
                         mListView.setAdapter(mAdapter);
                         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -150,10 +151,10 @@ public class MessageListActivity extends AppCompatActivity {
     }//getCurrentUserInfo()
 
 
-    public class UserAdapter extends ArrayAdapter<User> {
-        UserAdapter(ArrayList<User> users){
+    public static class UserAdapter extends ArrayAdapter<User> {
+        UserAdapter(Context context, ArrayList<User> users){
 
-            super(MessageListActivity.this, R.layout.user_item, R.id.user, users);
+            super(context, R.layout.user_item, R.id.user, users);
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -161,7 +162,7 @@ public class MessageListActivity extends AppCompatActivity {
             convertView = super.getView(position, convertView, parent);
             User user = getItem(position);
             TextView nameView = (TextView)convertView.findViewById(R.id.user);
-            messageView = (TextView)convertView.findViewById(R.id.message_preview);
+            TextView messageView = (TextView)convertView.findViewById(R.id.message_preview);
             ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
             nameView.setText(user.DisplayName);
             //TODO: Populate the message preview with the most recent message
