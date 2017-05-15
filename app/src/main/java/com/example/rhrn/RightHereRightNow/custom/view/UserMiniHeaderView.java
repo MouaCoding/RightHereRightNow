@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,6 +91,32 @@ public class UserMiniHeaderView extends FrameLayout {
             followButton();
         }
     }
+
+    public void getUser(String userID) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        if (ref == null)
+            return;
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                displayNameView.setText(user.DisplayName);
+                userHandleView.setText(user.handle);
+                otherUserID = user.uid;
+                curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                //Try if user has profile pic
+                try {
+                    //Convert the URL to aa Bitmap using function, then set the profile picture
+                    if(user.ProfilePicture != null)
+                        Picasso.with(getContext()).load(user.ProfilePicture).into(miniProfilePicView);
+                        //miniProfilePicView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                    else
+                        Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(miniProfilePicView);
+                        //miniProfilePicView.setImageResource(R.mipmap.ic_launcher);
+                }catch (Exception e){}
+                // eventMiniImageView.setImageBitmap(ev.image);
+            }
 
 
 

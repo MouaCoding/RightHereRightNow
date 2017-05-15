@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -94,18 +95,16 @@ public class TrendingFragment extends Fragment {
     public void queryAllEvents()
     {
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Event").orderByChild("likes").startAt(0).endAt(1000).limitToLast(3).addValueEventListener(new ValueEventListener() {
+        RootRef.child("Event").orderByChild("likes").startAt(0).endAt(1000).limitToLast(5).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot1) {
                 for (DataSnapshot dataSnapshot : dataSnapshot1.getChildren()) {
                     Event ev = dataSnapshot.getValue(Event.class);
-
                     eventList.add(0,ev);
-                    eventAdapter = new EventAdapter(getContext(), eventList);
-                    trendingList.setAdapter(eventAdapter);
-                    //populateEventHeader(ev.ownerID);
                 }
+                eventAdapter = new EventAdapter(getContext(), eventList);
+                trendingList.setAdapter(eventAdapter);
             }
 
             @Override
@@ -149,22 +148,26 @@ public class TrendingFragment extends Fragment {
 
             try {
                 if (event.userProfilePicture != null)
-                    profilePicture.setImageBitmap(getBitmapFromURL(event.userProfilePicture));
+                    Picasso.with(getContext()).load(event.userProfilePicture).into(profilePicture);
+                    //profilePicture.setImageBitmap(getBitmapFromURL(event.userProfilePicture));
                 else
-                    profilePicture.setImageResource(R.mipmap.ic_launcher);
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(profilePicture);
+                    //profilePicture.setImageResource(R.mipmap.ic_launcher);
             }catch (Exception e){}
             try{
                 if (event.ProfilePicture != null)
-                    eventImage.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
+                    Picasso.with(getContext()).load(event.userProfilePicture).into(eventImage);
+                    //eventImage.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
                 else
-                    eventImage.setImageResource(R.drawable.ic_group_black_24dp);
+                    Picasso.with(getContext()).load(R.drawable.images).into(eventImage);
+                    //eventImage.setImageResource(R.drawable.ic_group_black_24dp);
             } catch (Exception e){}
 
             //On clicks to navigate to view user or event
             displayNameView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
+                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
                     intent.putExtra("otherUserID",event.ownerID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
@@ -173,7 +176,7 @@ public class TrendingFragment extends Fragment {
             profilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ViewUserActivity.class);
+                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
                     intent.putExtra("otherUserID",event.ownerID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
@@ -182,7 +185,7 @@ public class TrendingFragment extends Fragment {
             eventTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ViewEventActivity.class);
+                    Intent intent = new Intent(getContext(), ViewEventActivity.class);
                     intent.putExtra("eventid",event.eventID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
@@ -191,7 +194,7 @@ public class TrendingFragment extends Fragment {
             eventImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ViewEventActivity.class);
+                    Intent intent = new Intent(getContext(), ViewEventActivity.class);
                     intent.putExtra("eventid",event.eventID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
@@ -239,9 +242,11 @@ public class TrendingFragment extends Fragment {
             });
             try {
                 if (city.Picture != null)
-                    cityImage.setImageBitmap(getBitmapFromURL(city.Picture));
+                    Picasso.with(getContext()).load(city.Picture).into(cityImage);
+                    //cityImage.setImageBitmap(getBitmapFromURL(city.Picture));
                 else
-                    cityImage.setImageResource(R.drawable.cityscape);
+                    Picasso.with(getContext()).load(R.drawable.cityscape).into(cityImage);
+                    //cityImage.setImageResource(R.drawable.cityscape);
             }catch (Exception e){}
             return convertView;
         }
