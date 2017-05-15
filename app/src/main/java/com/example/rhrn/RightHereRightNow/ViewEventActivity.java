@@ -3,27 +3,22 @@ package com.example.rhrn.RightHereRightNow;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
-import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 
 public class ViewEventActivity extends AppCompatActivity {
     TextView content, likes, comments, title;
     ImageView profile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +49,9 @@ public class ViewEventActivity extends AppCompatActivity {
                 try{
                     content.setText(event.description);
                     if(event.ProfilePicture != null)
-                        Picasso.with(getBaseContext()).load(event.ProfilePicture).into(profile);
-                        //profile.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
+                        profile.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
                     else
-                        Picasso.with(getBaseContext()).load(R.drawable.images).into(profile);
-                        //profile.setImageResource(R.drawable.ic_recent_actors_black_24dp);
+                        profile.setImageResource(R.drawable.ic_recent_actors_black_24dp);
                 } catch(Exception e){}
             }
 
@@ -68,4 +61,5 @@ public class ViewEventActivity extends AppCompatActivity {
             }
         });
     }
+
 }

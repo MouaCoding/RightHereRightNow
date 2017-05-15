@@ -1,21 +1,13 @@
 package com.example.rhrn.RightHereRightNow;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,10 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 
@@ -51,27 +41,12 @@ public class MessageListActivity extends AppCompatActivity {
     public App mApp;
     Bundle extra;
     TextView messageView;
-    private TextWatcher searchFriendsFilter;
-    public EditText search;
-    private static final int NEW_MESSAGE = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_list);
-
-        searchFriendsFilter = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {try{mAdapter.getFilter().filter(s);}catch (Exception e){}}
-            @Override
-            public void afterTextChanged(Editable s) {}
-        };
-        search = (EditText) findViewById(R.id.search_friends);
-        search.addTextChangedListener(searchFriendsFilter);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); // hide keyboard until clicked
-
         mApp = (App)getApplicationContext();
         mUsers = new ArrayList<>();
         mListView = (ListView)findViewById(R.id.message_list_view);
@@ -82,8 +57,7 @@ public class MessageListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), NewMessageActivity.class);
-                startActivityForResult(intent,NEW_MESSAGE);
-                //startActivity(intent);
+                startActivity(intent);
             }
         });
         backButton = (ImageButton) findViewById(R.id.back_button);
@@ -103,17 +77,6 @@ public class MessageListActivity extends AppCompatActivity {
         // else if(extra == null){
             //getCurrentUserInfo();
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == NEW_MESSAGE && resultCode == Activity.RESULT_OK) {
-            //TODO: Update message list after user finishes chat activity
-            //mAdapter = new UserAdapter(MessageListActivity.this, mUsers);
-            //mAdapter.notifyDataSetChanged();
-        }
-    }
-
     public void getUsersMessaged()
     {
         final ArrayList<String> keys = (ArrayList<String>) extra.getSerializable("objects");
@@ -133,7 +96,7 @@ public class MessageListActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        mAdapter = new UserAdapter(MessageListActivity.this, mUsers);
+                        mAdapter = new UserAdapter(mUsers);
                         mListView.setAdapter(mAdapter);
                         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -187,115 +150,37 @@ public class MessageListActivity extends AppCompatActivity {
     }//getCurrentUserInfo()
 
 
-    public static class UserAdapter extends ArrayAdapter<User> implements Filterable {
+    public class UserAdapter extends ArrayAdapter<User> {
+        UserAdapter(ArrayList<User> users){
 
-        private ArrayList<User> mUsers;
-        private ArrayList<User> mUsersFilter;
-
-        UserAdapter(Context context, ArrayList<User> users) {
-            super(context, R.layout.user_item, R.id.user, users);
-            mUsers = users;
-            mUsersFilter = users;
-            getFilter();
+            super(MessageListActivity.this, R.layout.user_item, R.id.user, users);
         }
-
-        @Override
-        public int getCount() {
-
-            return mUsers.size();
-        }
-
-        //Get the data item associated with the specified position in the data set.
-        @Override
-        public User getItem(int position) {
-
-            return mUsers.get(position);
-        }
-
-        //Get the row id associated with the specified position in the list.
-        @Override
-        public long getItemId(int position) {
-
-            return position;
-        }
-
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
             convertView = super.getView(position, convertView, parent);
             User user = getItem(position);
-            TextView nameView = (TextView) convertView.findViewById(R.id.user);
-            TextView messageView = (TextView) convertView.findViewById(R.id.message_preview);
+            TextView nameView = (TextView)convertView.findViewById(R.id.user);
+            messageView = (TextView)convertView.findViewById(R.id.message_preview);
             ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
             nameView.setText(user.DisplayName);
             //TODO: Populate the message preview with the most recent message
             //messageView.setText(user.FirstName); // placeholder for now...
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameView.getLayoutParams();
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)nameView.getLayoutParams();
 
-            try {
-                if (user.ProfilePicture != null)
-                    Picasso.with(getContext()).load(user.ProfilePicture).into(imageView);
-                    //imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+            try{
+                if(user.ProfilePicture != null)
+                    imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
                 else
-                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(imageView);
-                //imageView.setImageResource(R.mipmap.ic_launcher);
+                    imageView.setImageResource(R.mipmap.ic_launcher);
 
-            } catch (Exception e) {
-            }
+            } catch (Exception e){}
             nameView.setLayoutParams(layoutParams);
             //previewMessage(user.uid);
             return convertView;
         }
 
-        @Override
-        public Filter getFilter() {
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence charSequence) {
-                    FilterResults results = new FilterResults();
 
-                    //If there's nothing to filter on, return the original data for your list
-                    if (charSequence != null && charSequence.length() > 0) {
-                        ArrayList<User> filterList = new ArrayList<User>();
-                        for (int i = 0; i < mUsersFilter.size(); i++) {
-
-                            if (mUsersFilter.get(i).DisplayName.contains(charSequence)) {
-                                filterList.add(mUsersFilter.get(i));
-                            }
-                        }
-
-
-                        results.count = filterList.size();
-
-                        results.values = filterList;
-
-                    } else {
-
-                        results.count = mUsersFilter.size();
-
-                        results.values = mUsersFilter;
-
-                    }
-
-                    return results;
-                }
-
-
-                //Invoked in the UI thread to publish the filtering results in the user interface.
-                @SuppressWarnings("unchecked")
-                @Override
-                protected void publishResults(CharSequence constraint,
-                                              FilterResults results) {
-
-                    mUsers = (ArrayList<User>) results.values;
-
-                    notifyDataSetChanged();
-
-
-                }
-            };
-        }
     }
 
 }
