@@ -26,6 +26,7 @@ public class UserPostView extends FrameLayout {
     private ImageButton commentButton;
     private ImageButton shareButton;
 
+
     public UserPostView(Context context) {
         super(context);
         createView();
@@ -49,6 +50,11 @@ public class UserPostView extends FrameLayout {
         likeButton = (ImageButton) findViewById(R.id.user_post_like_button);
         commentButton = (ImageButton) findViewById(R.id.user_post_comment_button);
         shareButton = (ImageButton) findViewById(R.id.user_post_share_button);
+
+
+
+
+
     }
 
     public void getPost(final String postID) {
@@ -72,10 +78,6 @@ public class UserPostView extends FrameLayout {
         likesCount.setText(Integer.toString(p.likes));
         commentsCount.setText(Integer.toString(p.comments));
         sharesCount.setText(Integer.toString(p.shares));
-        try {
-            postMakerHeader.getUser(p.ownerID);
-            postBodyTextView.setText(p.content);
-        } catch (Exception e) {}
         //
     }
 }

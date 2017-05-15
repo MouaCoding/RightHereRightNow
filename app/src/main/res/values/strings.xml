@@ -18,7 +18,7 @@
     <string name="first_name">First Name*</string>
     <string name="last_name">Last Name*</string>
     <string name="display_name">Display Name*</string>
-    <string name="handle">Handle* (@handle)</string>
+    <string name="handle">Hash Tag* (@hash)</string>
     <string name="prompt_phone">Phone (Optional)</string>
     <string name="prompt_address">Address (Optional)</string>
     <string name="prompt_city">City (Optional)</string>
@@ -105,6 +105,8 @@
     <!--Strings related to comments-->
     <string name="enter_comment">Enter comment here</string>
     <string name="new_comment">New Comment</string>
+    <string name="reply">Reply</string>
+    <string name="like">Like</string>
     <string name="zipcode">Zip*</string>
     <string name="forgot_password_description">Forgot your password? Don\'t worry, we can help.</string>
     <string name="enter_password">Enter Email</string>
@@ -120,8 +122,7 @@
     <string name="filter5">Other</string>
     <string name="done_filter">Done</string>
     <string name="keep_logged_in">Keep me logged in</string>
-    <string name="reply">Reply</string>
-    <string name="like">Like</string>
     <string name="event_type">Event Type</string>
     <string name="choose_filter">Choose Type</string>
+    <string name="filterByHandle">Or Choose User</string>
 </resources>

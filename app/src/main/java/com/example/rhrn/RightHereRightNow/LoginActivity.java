@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.app.ProgressDialog;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -54,7 +55,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -66,17 +66,15 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
-import com.example.rhrn.RightHereRightNow.firebase_entry.User;
-import com.twitter.sdk.android.core.services.AccountService;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 
 import retrofit2.Call;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_CONTACTS;
+
 
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnClickListener {
@@ -87,6 +85,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     // UI references.
     public AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    TextView forgotPassword;
 
     //Firebase authentication object
     private FirebaseAuth firebaseAuth;
@@ -95,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public ProgressDialog progressDialog;
 
     private CallbackManager callbackManager;
-    private TextView forgotPassword;
+
 
     //Google sign in
     private GoogleApiClient mGoogleApiClient;
@@ -156,6 +155,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},LOCATIONS_PERMISSION);
         }
+
         forgotPassword = (TextView) findViewById(R.id.forgot_password);
         forgotPassword.setOnClickListener(new OnClickListener() {
             @Override
@@ -482,7 +482,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful() && emailVerified()) {
+                        if (task.isSuccessful()) {
                             //if successfully logs in, displays success,
                             Toast.makeText(LoginActivity.this,"Successfully Logged In",Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -497,30 +497,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 });
     }
 
-    public boolean emailVerified()
-    {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user.isEmailVerified())
-        {
-            return true;
-        }
-        else
-        {
-            //logout user and return false
-            FirebaseAuth.getInstance().signOut();
-            Toast.makeText(LoginActivity.this,"Email not Verified!",Toast.LENGTH_LONG).show();
-            return false;
-        }
-    }
-
     private boolean isEmailValid(String email) {
-        //TODO: MM: send email verfication?
-        return (email.contains("@"));
+        //TODO: Replace this with your own logic
+        return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: MM: Password implementation? Right Now->If not empty (No restriction on password)
-        return (password.length() > 0);
+        //TODO: Replace this with your own logic
+        return password.length() > 4;
     }
 
     @Override

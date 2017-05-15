@@ -46,16 +46,15 @@
             android:layout_marginRight="15dp"
             android:layout_below="@+id/last_name"
             android:layout_alignParentStart="true" />
-
         <EditText
-            android:id="@+id/handle"
+            android:id="@+id/hashtag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/display_name"
+            android:hint="@string/handle"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:hint="@string/handle" />
+            android:layout_below="@+id/display_name"
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:id="@+id/register_phone"

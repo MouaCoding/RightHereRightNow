@@ -1,6 +1,7 @@
 package com.example.rhrn.RightHereRightNow;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -70,6 +74,7 @@ public class ProfilePageFragment extends Fragment {
                     miniHandle,
                     body,
                     postsNumLikes,
+                    postsNumShares,
                     postsNumComments;
 
     //Populating list of posts and events
@@ -181,6 +186,9 @@ public class ProfilePageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String newDisplayName = profileMain.getText().toString().trim();
+                editDisplay.clearFocus();
+                InputMethodManager in = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(editDisplay.getWindowToken(), 0);
                 Toast.makeText(getApplicationContext(),"Display Name Changed to " + newDisplayName, Toast.LENGTH_SHORT).show();
                 FirebaseDatabase.getInstance().getReference().child("User")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DisplayName").setValue(newDisplayName);
@@ -196,6 +204,7 @@ public class ProfilePageFragment extends Fragment {
         postsNumComments = (TextView) r.findViewById(R.id.number_comments);
         postList = (ListView)r.findViewById(R.id.post_list);
         eventList = (ListView) r.findViewById(R.id.event_list);
+        postsNumShares = (TextView) r.findViewById(R.id.user_post_share_count);
         postArray = new ArrayList<>();
         eventArray = new ArrayList<>();
 
@@ -221,6 +230,7 @@ public class ProfilePageFragment extends Fragment {
                 Bitmap bitmap = MediaStore.Images.Media
                         .getBitmap(getApplicationContext().getContentResolver(), filePath);
                 Log.d("pathfileee", bitmap.toString());
+                //Picasso.with(getContext()).load(filePath).into(profilePicture);
                 profilePicture.setImageBitmap(bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -261,9 +271,10 @@ public class ProfilePageFragment extends Fragment {
                             try {
                                 //Convert the URL to aa Bitmap using function, then set the profile picture
                                 if(temp.ProfilePicture != null)
-                                    profilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
-                                else
-                                    profilePicture.setImageResource(R.mipmap.ic_launcher);
+                                    Picasso.with(getContext()).load(temp.ProfilePicture).into(profilePicture);
+                                    //profilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
+                                //else
+                                    //profilePicture.setImageResource(R.mipmap.ic_launcher);
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
