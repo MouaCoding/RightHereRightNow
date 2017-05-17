@@ -19,6 +19,17 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp" />
 
+    <EditText
+        android:hint="@string/search_friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_friends"
+        android:textStyle="normal|bold"
+        android:textAlignment="center"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:layout_marginBottom="30dp"/>
+
     <ListView
         android:id ="@+id/message_list_view"
         android:layout_weight="100"

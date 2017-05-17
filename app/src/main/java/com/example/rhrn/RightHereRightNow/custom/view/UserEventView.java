@@ -146,8 +146,10 @@ public class UserEventView extends FrameLayout {
             @Override
             public void onEventReceived(Event... events) {
                 Event ev = events[0];
-                setEvent(ev);
-                EventID = eventID;
+                try {
+                    setEvent(ev);
+                    EventID = eventID;
+                }catch(Exception e){}
 
             }
         });
