@@ -200,8 +200,8 @@ public class ProfilePageFragment extends Fragment {
         miniUserName = (TextView) r.findViewById(R.id.mini_name);
         miniHandle = (TextView) r.findViewById(R.id.mini_user_handle);
         body = (TextView) r.findViewById(R.id.user_post_body);
-        postsNumLikes = (TextView) r.findViewById(R.id.number_likes);
-        postsNumComments = (TextView) r.findViewById(R.id.number_comments);
+        postsNumLikes = (TextView) r.findViewById(R.id.user_post_like_count);
+        postsNumComments = (TextView) r.findViewById(R.id.user_post_comment_count);
         postList = (ListView)r.findViewById(R.id.post_list);
         eventList = (ListView) r.findViewById(R.id.event_list);
         postsNumShares = (TextView) r.findViewById(R.id.user_post_share_count);

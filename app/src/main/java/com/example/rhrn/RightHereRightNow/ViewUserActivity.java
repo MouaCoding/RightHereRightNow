@@ -102,8 +102,8 @@ public class ViewUserActivity extends AppCompatActivity {
         miniUserName = (TextView) findViewById(R.id.mini_name);
         miniHandle = (TextView) findViewById(R.id.mini_user_handle);
         body = (TextView) findViewById(R.id.user_post_body);
-        postsNumLikes = (TextView) findViewById(R.id.number_likes);
-        postsNumComments = (TextView) findViewById(R.id.number_comments);
+        postsNumLikes = (TextView) findViewById(R.id.user_post_like_count);
+        postsNumComments = (TextView) findViewById(R.id.user_post_comment_count);
         postNumShares = (TextView) findViewById(R.id.user_post_share_count);
         postArray = new ArrayList<>();
         eventArray = new ArrayList<>();
@@ -165,7 +165,7 @@ public class ViewUserActivity extends AppCompatActivity {
                             postArray.add(0,post);
                         }
                         postAdapter = new NotificationFragment.PostAdapter(getBaseContext(),postArray);
-                        postList.setAdapter(postAdapter);
+                        try{postList.setAdapter(postAdapter);}catch (Exception e){}
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {

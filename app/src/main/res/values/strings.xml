@@ -125,4 +125,5 @@
     <string name="event_type">Event Type</string>
     <string name="choose_filter">Choose Type</string>
     <string name="filterByHandle">Or Choose User</string>
+    <string name="view_event_content">Event Content...</string>
 </resources>
