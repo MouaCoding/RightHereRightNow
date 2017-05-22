@@ -12,12 +12,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.City;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -115,6 +118,10 @@ public class TrendingFragment extends Fragment {
     }
 
     public static class EventAdapter extends ArrayAdapter<Event> {
+        private ImageButton likeButton;
+        private ImageButton commentButton;
+        private ImageButton shareButton;
+
         EventAdapter(Context context, ArrayList<Event> users){
             super(context, R.layout.user_event_framed_layout, R.id.user_event_title, users);
         }
@@ -144,6 +151,7 @@ public class TrendingFragment extends Fragment {
             displayNameView.setText(event.DisplayName);
             userHandleView.setText(event.handle);
 
+            setButtons(convertView, event.eventID, event.ownerID);
 
 
             try {
@@ -202,6 +210,51 @@ public class TrendingFragment extends Fragment {
             });
             return convertView;
         }
+
+        public void setButtons(View view, final String EventID, final String currUsr)
+        {
+            likeButton = (ImageButton) view.findViewById(R.id.user_event_like_button);
+            likeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(Likes.hasLiked(2, EventID, currUsr )){
+                        likeButton.setColorFilter(R.color.colorTextDark);
+                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                        FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
+                        Event.changeCount("likes", EventID, false);
+                    }
+                    else{
+                        likeButton.setColorFilter(R.color.crimson);
+                        Likes.Like(2, EventID, currUsr);
+                        Event.changeCount("likes", EventID, true);
+                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            commentButton = (ImageButton) view.findViewById(R.id.user_event_comment_button);
+            commentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = getContext();
+                    Bundle params = new Bundle();
+                    Intent intent = new Intent(context, CommentsListActivity.class);
+                    intent.putExtra("postID", EventID.toString());
+                    context.startActivity(intent);
+
+                }
+            });
+
+            shareButton = (ImageButton) view.findViewById(R.id.user_event_share_button);
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: increment shares, implement sharing
+                }
+            });
+
+        }
+
     }
 
 
@@ -218,11 +271,9 @@ public class TrendingFragment extends Fragment {
             TextView cityName = (TextView)convertView.findViewById(R.id.city_name);
             ImageView cityImage = (ImageView) convertView.findViewById(R.id.city_image);
             TextView cityLocation = (TextView)convertView.findViewById(R.id.city_location);
-            TextView numComments = (TextView)convertView.findViewById(R.id.num_comments);
 
             cityName.setText(city.CityName);
             cityLocation.setText(city.CityName + ", " + city.State + ", " + city.Country);
-            numComments.setText(city.NumFavorites);
 
             cityName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -255,7 +306,7 @@ public class TrendingFragment extends Fragment {
     public void queryCityEvents()
     {
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("City").orderByChild("CityName").startAt("A").endAt("Z").limitToLast(5).addValueEventListener(new ValueEventListener() {
+        RootRef.child("City").orderByChild("CityName").startAt("A").endAt("Z").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot1) {
@@ -270,8 +321,6 @@ public class TrendingFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {}
         });
     }
-
-
 
     public void showProgressDialog()
     {

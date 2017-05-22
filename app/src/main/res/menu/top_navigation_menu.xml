@@ -25,7 +25,7 @@
         android:id="@+id/favorite"
         android:enabled="true"
         android:icon="@drawable/refresh_button"
-        android:title="Favorite"
+        android:title="@string/refresh"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/refresh"

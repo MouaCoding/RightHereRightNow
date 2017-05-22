@@ -59,6 +59,8 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
         profile = (ImageView) findViewById(R.id.view_post_user);
         shares = (TextView) findViewById(R.id.user_post_share_count);
         displayName = (TextView) findViewById(R.id.view_user_displayname);
+        commentList = (ListView) findViewById(R.id.view_post_comment_list);
+        commentArray = new ArrayList<>();
 
         post_location = (MapView) findViewById(R.id.post_location_map_view);
         //post_location.getMapAsync(this);
@@ -67,6 +69,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
         if(getIntent().getExtras()!=null) {
             postid = getIntent().getExtras().getString("postid");
             populate(postid);
+            populateComments(postid);
             //TODO:MM - get the post location
             //getPostLocation(postid);
         }
@@ -126,6 +129,31 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
             }
 
 
+        });
+    }
+
+    public void populateComments(String postid)
+    {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comments").child(postid);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists())
+                    ;
+                else{
+                    for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
+                        Comments comments = dataSnapshot1.getValue(Comments.class);
+                        commentArray.add(comments);
+                    }
+                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(),commentArray);
+                    commentList.setAdapter(commentsAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
         });
     }
 

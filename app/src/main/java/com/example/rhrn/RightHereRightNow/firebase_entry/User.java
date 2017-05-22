@@ -21,7 +21,6 @@ public class User {
                     handle,
                     Email,
                     Phone,
-                    Address,
                     City,
                     State,
                     id,
@@ -29,7 +28,8 @@ public class User {
                     AboutMe,
                     ProfilePicture;
     public ArrayList<String> followers;
-    public int  ActivityPoints,
+    public int  NumberFollowing,
+                NumberFollowers,
                 LikesReceived;
 
     public String   fullName;
@@ -38,7 +38,7 @@ public class User {
     private String Password;
 
     public User() {
-        FirstName = LastName = DisplayName = handle = Email = Phone = Address = City = State = id = uid = AboutMe = null;
+        FirstName = LastName = DisplayName = handle = Email = Phone = City = State = id = uid = AboutMe = null;
     }
 
     //Copy constructor to assign email to a user's full name
@@ -48,7 +48,7 @@ public class User {
     }
 
     public User(String aFirstName,String aLastName, String aDisplayName, String aHashTag,String aEmail, String aPassword,
-                String aPhone,String aAddress,String aCity,String aState,String aId, String aUid, int activityPoints, int likesReceived) {
+                String aPhone,String aCity,String aState,String aId, String aUid, int numberFollowing, int likesReceived,int numberFollowers) {
         FirstName   = aFirstName;
         LastName    = aLastName;
         DisplayName = aDisplayName;
@@ -56,18 +56,18 @@ public class User {
         Email       = aEmail;
         Password    = aPassword;
         Phone       = aPhone;
-        Address     = aAddress;
         City        = aCity;
         State       = aState;
         id          = aId;
         uid         = aUid;
-        ActivityPoints = activityPoints;
+        NumberFollowing = numberFollowing;
         LikesReceived = likesReceived;
+        NumberFollowers = numberFollowers;
     }
 
     //Since phone is optional, need a constructor for one without phone
     public User(String aFirstName, String aLastName, String adisplayName, String aHashTag,String aEmail, String aPassword,
-                String aAddress, String aCity, String aState, String aId, String aUid, int activityPoints, int likesReceived) {
+                String aCity, String aState, String aId, String aUid, int numberFollowing, int likesReceived,int numberFollowers) {
         FirstName   = aFirstName;
         LastName    = aLastName;
         DisplayName = adisplayName;
@@ -75,13 +75,13 @@ public class User {
         fullName    = FirstName + " " + String.valueOf(LastName);
         Email       = aEmail;
         Password    = aPassword;
-        Address     = aAddress;
         City        = aCity;
         State       = aState;
         id          = aId;
         uid         = aUid;
-        ActivityPoints = activityPoints;
+        NumberFollowing = numberFollowing;
         LikesReceived = likesReceived;
+        NumberFollowers = numberFollowers;
     }
 
     public static void requestUser(String UserID, String authToken, final User.UserReceivedListener listener) {

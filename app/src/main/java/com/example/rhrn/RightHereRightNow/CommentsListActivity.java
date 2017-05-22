@@ -1,5 +1,6 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -71,7 +72,7 @@ public class CommentsListActivity extends FragmentActivity {
             mApp = (App)getApplicationContext();
             mComments = new ArrayList<>();
             mListView = (ListView)findViewById(R.id.comment_list_view);
-            mAdapter = new commentsAdapter(mComments);
+            mAdapter = new commentsAdapter(getBaseContext(),mComments);
             mListView.setAdapter(mAdapter);
             anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
             content = (EditText) findViewById(R.id.Comment_content);
@@ -190,9 +191,9 @@ public class CommentsListActivity extends FragmentActivity {
 
     }
 
-    public class commentsAdapter extends ArrayAdapter<Comments> {
-        commentsAdapter(ArrayList<Comments> commentses){
-            super (CommentsListActivity.this, R.layout.comment_post_display, R.id.comment_text, commentses);
+    public static class commentsAdapter extends ArrayAdapter<Comments> {
+        commentsAdapter(Context context, ArrayList<Comments> commentses){
+            super (context, R.layout.comment_post_display, R.id.comment_text, commentses);
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent){

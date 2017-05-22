@@ -61,7 +61,7 @@ public class ProfilePageFragment extends Fragment {
     public TextView userName,
             hash_tag,
             numberFollowers,
-            numActivityPoints,
+            numberFollowing,
             numLikes,
             about;
     public EditText profileMain;
@@ -117,7 +117,7 @@ public class ProfilePageFragment extends Fragment {
         userName = (TextView) r.findViewById(R.id.profile_name_main);
         hash_tag = (TextView) r.findViewById(R.id.profile_userhandle);
         numberFollowers = (TextView) r.findViewById(R.id.profile_followers_value);
-        numActivityPoints = (TextView) r.findViewById(R.id.profile_activitypoints_value);
+        numberFollowing = (TextView) r.findViewById(R.id.profile_number_following);
         numLikes = (TextView) r.findViewById(R.id.profile_karma_value);
         about = (TextView) r.findViewById(R.id.profile_about_text);
         profilePicture = (ImageView) r.findViewById(R.id.profile_picture);
@@ -263,7 +263,8 @@ public class ProfilePageFragment extends Fragment {
                             temp = userSnapshot.getValue(User.class);
                             userName.setText(temp.DisplayName);
                             hash_tag.setText(temp.handle);
-                            numActivityPoints.setText(Integer.toString(temp.ActivityPoints));
+                            numberFollowers.setText(Integer.toString(temp.NumberFollowers));
+                            numberFollowing.setText(Integer.toString(temp.NumberFollowing));
                             numLikes.setText(Integer.toString(temp.LikesReceived));
                             about.setText(temp.AboutMe);
 

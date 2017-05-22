@@ -17,7 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class AlmostDoneActivity extends AppCompatActivity {
 
     private EditText display_name, handle, user_phone;
-    String displayNAME,handle1,phone;
+    String displayNAME, handle1, phone;
 
     //Button for when user fills in the texts and then clicks on button
     private Button button;
@@ -38,9 +38,9 @@ public class AlmostDoneActivity extends AppCompatActivity {
         });
 
         //Initializes each text view to the class's objects
-        display_name = (EditText)findViewById(R.id.displayName);
-        handle = (EditText)findViewById(R.id.handle1);
-        user_phone = (EditText)findViewById(R.id.phone_number);
+        display_name = (EditText) findViewById(R.id.displayName);
+        handle = (EditText) findViewById(R.id.handle1);
+        user_phone = (EditText) findViewById(R.id.phone_number);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -48,11 +48,15 @@ public class AlmostDoneActivity extends AppCompatActivity {
     }
 
     //Function to save the data onto firebase
-    private void saveData()
-    {
+    private void saveData() {
         displayNAME = display_name.getText().toString().trim();
         handle1 = handle.getText().toString().trim();
         phone = user_phone.getText().toString().trim();
+        if(!handle1.contains("@"))
+            handle1 = "@" + handle1;
+
+        if (!isValid(displayNAME, handle1))
+            return;
 
         //Create a root reference of database onto the JSON tree provided by firebase
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
@@ -65,7 +69,7 @@ public class AlmostDoneActivity extends AppCompatActivity {
         String lastName = getIntent().getStringExtra("last_name");
         String ProfilePicture = getIntent().getStringExtra("profile_picture");
 
-        final User usr = new User(firstName,lastName,displayNAME,handle1,null,null,phone,null,null,null,"000",uid,0,0);
+        final User usr = new User(firstName, lastName, displayNAME, handle1, null, phone, null, null, null, "000", uid, 0, 0, 0);
 
 
         //creating user and indexing by Firebase UID
@@ -83,6 +87,15 @@ public class AlmostDoneActivity extends AppCompatActivity {
 
     }
 
-
-
+    private boolean isValid(String displayName, String handle2) {
+        if (displayName.isEmpty()) {
+            display_name.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        if (handle2.isEmpty()) {
+            handle.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        return true;
+    }
 }

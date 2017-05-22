@@ -4,10 +4,15 @@ import android.content.Intent;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.util.LocationUtils;
@@ -31,15 +36,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 
 
 public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCallback {
-    TextView content, likes, comments, shares, displayName;
+    TextView content, likes, comments, shares, displayName, handle;
     ImageView profile, eventImage;
+    ImageButton back;
     GoogleMap mMap;
     private LatLng createLoc;
     private MapView event_location;
+
+    ArrayList<Comments> commentArray;
+    ListView commentList;
+    CommentsListActivity.commentsAdapter commentsAdapter;
+
 
 
     @Override
@@ -53,14 +66,23 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         shares = (TextView) findViewById(R.id.user_event_share_count);
         displayName = (TextView) findViewById(R.id.view_user_displayname);
         eventImage = (ImageView) findViewById(R.id.view_user_eventimage);
+        commentList = (ListView) findViewById(R.id.view_event_comment_list);
+        handle = (TextView) findViewById(R.id.view_user_handle);
+        commentArray = new ArrayList<>();
 
         event_location = (MapView) findViewById(R.id.event_location_map_view);
+        back = (ImageButton) findViewById(R.id.back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {finish();}
+        });
         //event_location.getMapAsync(this);
         //event_location.onCreate(savedInstanceState);
         String eventid = null;
         if(getIntent().getExtras()!=null) {
             eventid = getIntent().getExtras().getString("eventid");
             populate(eventid);
+            populateComments(eventid);
             //TODO:MM - get the post location
             //getPostLocation(postid);
         }
@@ -86,6 +108,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                 comments.setText(Integer.toString(event.comments));
                 shares.setText(Integer.toString(event.shares));
                 displayName.setText(event.DisplayName);
+                handle.setText(event.handle);
                 try{
                     if(event.userProfilePicture != null)
                         Picasso.with(getBaseContext()).load(event.userProfilePicture).into(profile);
@@ -96,7 +119,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                     if(event.ProfilePicture != null)
                         Picasso.with(getBaseContext()).load(event.ProfilePicture).into(eventImage);
                     else
-                        Picasso.with(getBaseContext()).load(R.drawable.ic_group_black_24dp).into(eventImage);
+                        Picasso.with(getBaseContext()).load(R.drawable.images).into(eventImage);
                 } catch(Exception e){}
             }
 
@@ -140,6 +163,52 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
             }
 
 
+        });
+    }
+
+    public void populateComments(String eventid)
+    {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comments").child(eventid);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists())
+                    ; //no comments, so do nothing
+                else{
+                    for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
+                        Comments comments = dataSnapshot1.getValue(Comments.class);
+                        commentArray.add(comments);
+                    }
+                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(),commentArray);
+                    commentList.setAdapter(commentsAdapter);
+                    commentList.setOnTouchListener(new ListView.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            int action = event.getAction();
+                            switch (action) {
+                                case MotionEvent.ACTION_DOWN:
+                                    // Disallow ScrollView to intercept touch events.
+                                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                                    break;
+
+                                case MotionEvent.ACTION_UP:
+                                    // Allow ScrollView to intercept touch events.
+                                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                                    break;
+                            }
+
+                            // Handle ListView touch events.
+                            v.onTouchEvent(event);
+                            return true;
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
         });
     }
 

@@ -282,7 +282,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             final FirebaseUser user = firebaseAuth.getCurrentUser();
                             final DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
                             final Profile profile = Profile.getCurrentProfile();
-                            final User usr = new User(profile.getFirstName(),profile.getLastName(),null,null,null,null,null,null,null,null,"000",user.getUid(),0,0);
+                            final User usr = new User(profile.getFirstName(),profile.getLastName(),null,null,null,null,null,null,null,"000",user.getUid(),0,0,0);
 
                             //updateUI(user);
                             String msg = "Successfully logged in as " + Profile.getCurrentProfile().getFirstName();
@@ -408,7 +408,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void success(Result<com.twitter.sdk.android.core.models.User> userResult) {
                         com.twitter.sdk.android.core.models.User usr = userResult.data;
-                        User curUser = new User(usr.name, usr.name, usr.screenName, "@"+usr.screenName, usr.email, null, null, usr.location, usr.location, usr.location, "000", fbuser.getUid(), 0, 0);
+                        User curUser = new User(usr.name, usr.name, usr.screenName, "@"+usr.screenName, usr.email, null, null, usr.location, usr.location, "000", fbuser.getUid(), 0, 0,0);
                         RootRef.child("User").child(fbuser.getUid()).setValue(curUser);
                     }
                     @Override
@@ -498,13 +498,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 0;
     }
 
     @Override
