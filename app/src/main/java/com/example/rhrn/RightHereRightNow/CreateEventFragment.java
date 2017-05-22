@@ -66,6 +66,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
     private DatePickerDialog   sDate,
                                  eDate;
 
+
     int currDay, currMonth, currYear, currHour, currMinute;
 
     public int isEducation = 0, isSports = 0, isParty = 0, isClubEvent = 0, isOther = 0;
@@ -105,6 +106,8 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         currYear = c.get(Calendar.YEAR);
         currHour = c.get(Calendar.HOUR_OF_DAY);
         currMinute = c.get(Calendar.MINUTE);
+
+        final Calendar firstDate = Calendar.getInstance();
 
 
         startTime.setOnClickListener(new View.OnClickListener() {
@@ -181,9 +184,12 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                 sDate = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
                         startDate.setText((month+1)+"/"+dayOfMonth+"/"+year);
+                        firstDate.set(year, month, dayOfMonth);
                     }
                 }, currYear, currMonth, currDay);
+                sDate.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 sDate.show();
             }
         });
@@ -197,6 +203,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                         endDate.setText((month+1)+"/"+dayOfMonth+"/"+year);
                     }
                 }, currYear, currMonth, currDay);
+                eDate.getDatePicker().setMinDate(firstDate.getTimeInMillis() - 1000);
                 eDate.show();
             }
         });

@@ -18,8 +18,8 @@
 
             <ImageView
                 android:id="@+id/comment_simp_user_image"
-                android:layout_width="61dp"
-                android:layout_height="wrap_content"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 app:srcCompat="@mipmap/ic_launcher" />
 
             <LinearLayout

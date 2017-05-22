@@ -82,9 +82,15 @@ public class CommentsListActivity extends FragmentActivity {
                 public void onClick(View v) {
                     mAdapter.clear();
                     String temp = content.getText().toString();
-                    createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID,  temp, 0, null);
-                    Event.changeCount("comments", postID, true);
-                    getComments(postID, true);
+                    temp = temp.trim();
+                    if(temp.length() > 0) {
+                        createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID, temp, 0, null);
+                        Event.changeCount("comments", postID, true);
+                        getComments(postID, true);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Please Enter Comment", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
             backButton = (ImageButton) findViewById(R.id.comment_back_button);
