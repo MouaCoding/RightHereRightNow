@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
@@ -242,15 +243,14 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
             }catch (IOException e) {
                 e.printStackTrace();
             }
-
+            //Set displayname, handle, and profile pic for easier listview populating
             setExtraValues(createdPost.getKey(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
             Toast.makeText(getContext(), "Post Created!", Toast.LENGTH_SHORT).show();
             //progressDialog.dismiss();
-
         } catch (SecurityException e) {}
         getActivity().getSupportFragmentManager().popBackStack();
+
+
     }
 
     public void setExtraValues(final String postID, final String ownerID)

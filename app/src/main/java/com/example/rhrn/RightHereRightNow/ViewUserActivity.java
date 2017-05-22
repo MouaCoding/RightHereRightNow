@@ -45,7 +45,7 @@ public class ViewUserActivity extends AppCompatActivity {
     public TextView userName,
             hash_tag,
             numberFollowers,
-            numActivityPoints,
+            numFollowing,
             numLikes,
             about;
     public ImageView profilePicture;
@@ -77,7 +77,7 @@ public class ViewUserActivity extends AppCompatActivity {
         userName = (TextView) findViewById(R.id.profile_name_main);
         hash_tag = (TextView) findViewById(R.id.profile_userhandle);
         numberFollowers = (TextView) findViewById(R.id.profile_followers_value);
-        numActivityPoints = (TextView) findViewById(R.id.profile_activitypoints_value);
+        numFollowing = (TextView) findViewById(R.id.profile_number_following);
         numLikes = (TextView) findViewById(R.id.profile_karma_value);
         about = (TextView) findViewById(R.id.profile_about_text);
         postList = (ListView)findViewById(R.id.post_list);
@@ -119,6 +119,7 @@ public class ViewUserActivity extends AppCompatActivity {
 
     public void queryFirebase(String userUID)
     {
+
         FirebaseDatabase.getInstance().getReference("User").child(userUID)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -126,8 +127,8 @@ public class ViewUserActivity extends AppCompatActivity {
                         User temp = dataSnapshot.getValue(User.class);
                         userName.setText(temp.DisplayName);
                         hash_tag.setText(temp.handle);
-//                        numberFollowers.setText(Integer.toString(temp.followers.size()));
-                        numActivityPoints.setText(Integer.toString(temp.ActivityPoints));
+                        numberFollowers.setText(Integer.toString(temp.NumberFollowers));
+                        numFollowing.setText(Integer.toString(temp.NumberFollowing));
                         numLikes.setText(Integer.toString(temp.LikesReceived));
                         about.setText(temp.AboutMe);
 
@@ -155,17 +156,25 @@ public class ViewUserActivity extends AppCompatActivity {
     public void populatePost(String otherID)
     {
         DatabaseReference users= FirebaseDatabase.getInstance().getReference("Post");
-        users.orderByChild("ownerID").limitToLast(2).equalTo(otherID)
+        users.orderByChild("ownerID").equalTo(otherID).limitToLast(2)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            Post post = userSnapshot.getValue(Post.class);
-                            //Most recent first
-                            postArray.add(0,post);
+                        if(!dataSnapshot.exists())
+                            return;
+                        else {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                Post post = userSnapshot.getValue(Post.class);
+                                //Most recent first
+                                postArray.add(0, post);
+                            }
+                            if(postArray.size() != 0) {
+                                postAdapter = new NotificationFragment.PostAdapter(ViewUserActivity.this, postArray);
+                                try {
+                                    postList.setAdapter(postAdapter);
+                                } catch (Exception e){}
+                            }
                         }
-                        postAdapter = new NotificationFragment.PostAdapter(getBaseContext(),postArray);
-                        try{postList.setAdapter(postAdapter);}catch (Exception e){}
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -178,17 +187,25 @@ public class ViewUserActivity extends AppCompatActivity {
     {
         DatabaseReference users= FirebaseDatabase.getInstance().getReference("Event");
         //two events since events views are big
-        users.orderByChild("ownerID").limitToLast(2).equalTo(otherID)
+        users.orderByChild("ownerID").equalTo(otherID).limitToLast(2)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            Event event = userSnapshot.getValue(Event.class);
-                            //Most recent first
-                            eventArray.add(0,event);
+                        if(!dataSnapshot.exists())
+                            return;
+                        else {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                Event event = userSnapshot.getValue(Event.class);
+                                //Most recent first
+                                eventArray.add(0, event);
+                            }
+                            if(eventArray.size() != 0){
+                                eventAdapter = new TrendingFragment.EventAdapter(ViewUserActivity.this, eventArray);
+                                try{
+                                    eventList.setAdapter(eventAdapter);
+                                } catch (Exception e){}
+                            }
                         }
-                        eventAdapter = new TrendingFragment.EventAdapter(getBaseContext(),eventArray);
-                        eventList.setAdapter(eventAdapter);
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {

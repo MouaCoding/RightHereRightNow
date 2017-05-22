@@ -22,7 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,6 +57,7 @@ public class NotificationFragment extends Fragment {
     private ListView list, userList;
     NotificationManager notificationManager;
     int notifyFlag=0;
+    int numUsersFollowed = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -144,6 +148,10 @@ public class NotificationFragment extends Fragment {
         private ArrayList<Post> mPosts;
         private ArrayList<Post> mPostsFilter;
 
+        private ImageButton likeButton;
+        private ImageButton commentButton;
+        private ImageButton shareButton;
+
         PostAdapter(Context context, ArrayList<Post> users){
             super(context, R.layout.user_post_framed_layout/*user_item*/, R.id.mini_name, users);
             mPostsFilter = users;
@@ -164,6 +172,8 @@ public class NotificationFragment extends Fragment {
             TextView userHandleView= (TextView) convertView.findViewById(R.id.mini_user_handle);
             TextView numLikes = (TextView) convertView.findViewById(R.id.user_post_like_count);
             TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
+
+            setButtons(convertView, post.postID, post.ownerID);
 
             displayNameView.setText(post.DisplayName);
             userHandleView.setText(post.handle);
@@ -195,6 +205,50 @@ public class NotificationFragment extends Fragment {
                 }
             });
             return convertView;
+        }
+
+        public void setButtons(View view, final String EventID, final String currUsr)
+        {
+            likeButton = (ImageButton) view.findViewById(R.id.user_event_like_button);
+            likeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(Likes.hasLiked(2, EventID, currUsr )){
+                        likeButton.setColorFilter(R.color.colorTextDark);
+                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                        FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
+                        Event.changeCount("likes", EventID, false);
+                    }
+                    else{
+                        likeButton.setColorFilter(R.color.crimson);
+                        Likes.Like(2, EventID, currUsr);
+                        Event.changeCount("likes", EventID, true);
+                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            commentButton = (ImageButton) view.findViewById(R.id.user_event_comment_button);
+            commentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = getContext();
+                    Bundle params = new Bundle();
+                    Intent intent = new Intent(context, CommentsListActivity.class);
+                    intent.putExtra("postID", EventID.toString());
+                    context.startActivity(intent);
+
+                }
+            });
+
+            shareButton = (ImageButton) view.findViewById(R.id.user_event_share_button);
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: increment shares, implement sharing
+                }
+            });
+
         }
         @Override
         public int getCount() {
@@ -304,13 +358,14 @@ public class NotificationFragment extends Fragment {
     }
     public void getUsers(final String following)
     {
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User");
+        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User");
         userRef.child(following).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final User usr = dataSnapshot.getValue(User.class);
                 mUsers.add(usr);
+
                 mmAdapter = new MessageListActivity.UserAdapter(getContext(),mUsers);
                 list.setAdapter(mmAdapter);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -322,6 +377,7 @@ public class NotificationFragment extends Fragment {
                         getContext().startActivity(intent);
                     }
                 });
+                userRef.child("NumberFollowing").setValue(mUsers.size());
             }
 
             @Override

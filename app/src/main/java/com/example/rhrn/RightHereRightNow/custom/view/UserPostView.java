@@ -1,11 +1,15 @@
 package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.rhrn.RightHereRightNow.CommentsListActivity;
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 
@@ -49,6 +53,12 @@ public class UserPostView extends FrameLayout {
 
         likeButton = (ImageButton) findViewById(R.id.user_post_like_button);
         commentButton = (ImageButton) findViewById(R.id.user_post_comment_button);
+        commentButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         shareButton = (ImageButton) findViewById(R.id.user_post_share_button);
 
 
@@ -68,6 +78,9 @@ public class UserPostView extends FrameLayout {
     }
 
     public void setPost(Post p) {
+        if(p == null)
+            return;
+
         if(p.isAnon == true){
             postMakerHeader.anonUser();
         }

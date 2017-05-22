@@ -85,21 +85,13 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    // return map fragment
                     return new MapsFragment();
-                    // break;
                 case 1:
-                    // return posts and event fragment
                     return new TrendingFragment();
-                    //break;
                 case 2:
-                    // return middle button fragment?
                     return new CreatePostOrEventTempShimFragment();
-                    // break;
                 case 3:
-                    // return something?
                     return new NotificationFragment();
-                    //break;
                 case 4:
                     return new ProfilePageFragment();// return profile page fragment
             }
@@ -108,47 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            //return 3;
             return NUM_PAGES;
-            // TODO make it work for all 5
         }
     }
-
-
-//    public class ImageDownload extends AsyncTask {
-//
-//        @Override
-//        protected Bitmap doInBackground(Object[] params) {
-//            return getBitmapFromURL((String) params[0]);
-//        }
-//
-//        @Override
-//        protected void onPreExecute()
-//        {
-//            progressDialog = ProgressDialog.show(MainActivity.this,
-//                    "Wait", "Downloading Image");
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Bitmap result)
-//        {
-//            imageView.setImageBitmap(result);
-//            progressDialog.dismiss();
-//        }
-//
-//        public Bitmap getBitmapFromURL(String src) {
-//            try {
-//                URL url = new URL(src);
-//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//                connection.setDoInput(true);
-//                connection.connect();
-//                InputStream input = connection.getInputStream();
-//                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-//                return myBitmap;
-//            } catch (Exception e) {
-//                return null;
-//            }
-//        }
-//    }
 
 }
