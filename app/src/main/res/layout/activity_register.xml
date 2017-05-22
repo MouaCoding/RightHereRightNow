@@ -88,20 +88,9 @@
             android:maxLines="1"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_alignBottom="@+id/register_state"
-            android:layout_marginBottom="51dp"
+            android:layout_below="@+id/register_password"
             android:layout_alignParentEnd="true" />
 
-        <EditText
-            android:id="@+id/register_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_address"
-            android:maxLines="1"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_above="@+id/register_city"
-            android:layout_alignParentStart="true" />
 
         <EditText
             android:id="@+id/register_state"
@@ -111,8 +100,7 @@
             android:maxLines="1"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="107dp"
-            android:layout_below="@+id/register_password"
+            android:layout_below="@+id/register_city"
             android:layout_alignParentStart="true" />
 
         <EditText
@@ -133,7 +121,7 @@
             android:text="@string/action_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/register_city"
+            android:layout_below="@+id/register_state"
             android:layout_alignParentStart="true" />
 
     </RelativeLayout>

@@ -53,7 +53,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profile_activitypoints_value"
+            android:id="@+id/profile_number_following"
             android:textAppearance="@android:style/TextAppearance.Material.Body1"
             android:textAlignment="center"
             android:gravity="center"

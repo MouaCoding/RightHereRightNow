@@ -15,7 +15,8 @@
         android:layout_gravity="left|center_vertical"
         android:padding="8dp"
         android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp" />
+        android:layout_marginRight="4dp"
+        android:focusableInTouchMode="true"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,7 +28,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/user_main_layout" />
+            <include layout="@layout/profile_main_layout_wo_camera" />
 
             <TextView
                 android:text="Posts"
@@ -37,7 +38,11 @@
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:layout_margin="8dp" />
 
-            <include layout="@layout/user_post_framed_layout"/>
+            <ListView
+                android:id ="@+id/post_list"
+                android:layout_weight="100"
+                android:layout_width="match_parent"
+                android:layout_height="450dp" />
 
             <View
                 android:layout_width="match_parent"
@@ -52,6 +57,12 @@
                 android:id="@+id/textView2"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:layout_margin="8dp" />
+            <ListView
+                android:id ="@+id/event_list"
+                android:layout_weight="100"
+                android:layout_width="match_parent"
+                android:layout_height="550dp"
+                android:divider="@null" />
 
 
         </LinearLayout>

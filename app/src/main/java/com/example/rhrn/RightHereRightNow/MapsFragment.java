@@ -20,17 +20,25 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +48,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,9 +59,15 @@ import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.PlacePhotoResult;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -75,6 +90,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -86,6 +102,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import io.fabric.sdk.android.services.network.HttpRequest;
+import okhttp3.internal.http.StatusLine;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -114,7 +133,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private double kmToMiles = 0.621371;
     private double curLatitude;
     private double curLongitude;
-    boolean locationChanged = false;
+    private boolean first = true;
 
     private String curUserID;
     private GeoLocation curLocation;
@@ -139,6 +158,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private HashMap<Marker, String> postMarkerKeys  = new HashMap<Marker, String>();
     private HashMap<String, Marker> postKeyMarkers  = new HashMap<String, Marker>();
 
+    //Globals related to on map long click
+    private LinearLayout layoutToAdd;
+    private int inflateButtons = 0;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View r = (View) inflater.inflate(R.layout.maps_fragment_layout, container, false);
@@ -150,6 +174,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
         drawPointsWithinUserRadius();
         //mapView = new MapView(getActivity());
+        layoutToAdd = (LinearLayout) r.findViewById(R.id.maps_fragment_layout);
 
 
         topNavigationView = (BottomNavigationView) r.findViewById(R.id.top_navigation);
@@ -206,6 +231,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
                 .build();
 
         // Create the LocationRequest object
@@ -321,10 +348,50 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).draggable(true).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                //if user long clicks at even numbers (0, 2, 4, 6, 8 times) then inflate view
+                if((inflateButtons % 2) == 0) {
+                    //Toast.makeText(getContext(), "Create Event or Post", Toast.LENGTH_SHORT).show();
+                    LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+                    View view = inflater.inflate(R.layout.post_event_create_shim_layout, null);
+                    layoutToAdd.addView(view);
+                    giveButtonFunctionality();
+                } else {
+                    //Else remove the view if odd numbers
+                    View namebar = getView().findViewById(R.id.post_event_create);
+                    layoutToAdd.removeView(namebar);
+                }
+                inflateButtons++;
+            }
+        });
+
+
+        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, "ChIJ81PH6Kw3hYARqfmp8MV8-mk").setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+            @Override
+            public void onResult(PlacePhotoMetadataResult placePhotoMetadataResult) {
+                if (placePhotoMetadataResult.getStatus().isSuccess()) {
+                    Log.d("HEREEEE", "Photo  loaded");
+                    PlacePhotoMetadataBuffer photoMetadata = placePhotoMetadataResult.getPhotoMetadata();
+                    PlacePhotoMetadata placePhotoMetadata = photoMetadata.get(0);
+                    final String photoDetail = placePhotoMetadata.toString();
+                    placePhotoMetadata.getPhoto(mGoogleApiClient).setResultCallback(new ResultCallback<PlacePhotoResult>() {
+                        @Override
+                        public void onResult(PlacePhotoResult placePhotoResult) {
+                            if (placePhotoResult.getStatus().isSuccess()) {
+                                Log.d("HEREEEE", "Photo "+photoDetail+" loaded");
+                            } else {
+                                Log.d("HEREEEE", "Photo "+photoDetail+" failed to load");
+                            }
+                        }
+                    });
+                    photoMetadata.release();
+                } else {
+                    Log.e(TAG, "No photos returned");
+                }
+            }
+        });
 
     }
 
@@ -382,13 +449,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             final List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
             if (addresses.size() > 0 & addresses != null) {
+
+
+
+
+
+
+
+
+
                 MenuItem cityMenuItem = topNavigationView.getMenu().findItem(R.id.current_city);
                 cityMenuItem.setTitle(addresses.get(0).getLocality());
                 final DatabaseReference cityRef = FirebaseDatabase.getInstance().getReference().child("City").child(addresses.get(0).getLocality());
                 cityRef.child(addresses.get(0).getLocality()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) //if city is already in the database
+                        if (dataSnapshot.exists()) //if city is already in the database
                             ;//do nothing
                         else {
                             //city does not exist, so create new
@@ -414,7 +490,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .title("My Location");
                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exc));
         ourLoc = mMap.addMarker(options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+        if (first) {
+            first = false;
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+        }
 
         final Circle circle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(curLatitude, curLongitude))
@@ -445,6 +524,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         vAnimator.start();
 
     }
+
 
     public void drawPointsWithinUserRadius() {
         eventsOnMap = FirebaseDatabase.getInstance().getReference("EventLocations");
@@ -876,4 +956,83 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    public void giveButtonFunctionality()
+    {
+        Button createPost, createEvent;
+        createPost = (Button) getView().findViewById(R.id.create_post_button);
+        createEvent = (Button) getView().findViewById(R.id.create_event_button);
+
+        createPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final FragmentManager manager = getActivity().getSupportFragmentManager();
+                if (manager.findFragmentById(R.id.post_event_create_shim_fragment_container) != null)
+                    manager.beginTransaction()
+                            .replace(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
+                            .addToBackStack(null).commit();
+
+                else
+                    manager.beginTransaction()
+                            .add(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
+                            .addToBackStack(null).commit();
+
+
+                ImageButton back = new ImageButton(getContext());
+                back.setLayoutParams(new AppBarLayout.LayoutParams(AppBarLayout.LayoutParams.WRAP_CONTENT, AppBarLayout.LayoutParams.WRAP_CONTENT));
+                back.setImageResource(R.drawable.ic_arrow_back_black_24dp);
+                back.setBackgroundColor(Color.TRANSPARENT);
+                back.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //if back button clicked, pop the back fragment
+                        manager.popBackStack();
+                        //delete the created view on the bottom
+                        View namebar = getView().findViewById(R.id.post_event_create);
+                        layoutToAdd.removeView(namebar);
+                        inflateButtons++;
+                    }
+                });
+                //add the back button to the layout
+                FrameLayout frameLayout = (FrameLayout) getView().findViewById(R.id.post_event_create_shim_fragment_container);
+                frameLayout.addView(back);
+
+            }
+        });
+        createEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final FragmentManager manager = getActivity().getSupportFragmentManager();
+                if (manager.findFragmentById(R.id.post_event_create_shim_fragment_container) != null)
+                    manager.beginTransaction()
+                            .replace(R.id.post_event_create_shim_fragment_container, new CreateEventFragment())
+                            .addToBackStack(null)
+                            .commit();
+                else
+                    manager.beginTransaction()
+                            .add(R.id.post_event_create_shim_fragment_container, new CreateEventFragment())
+                            .addToBackStack(null)
+                            .commit();
+
+                ImageButton backButton = new ImageButton(getActivity());
+                backButton.setLayoutParams(new AppBarLayout.LayoutParams(AppBarLayout.LayoutParams.WRAP_CONTENT, AppBarLayout.LayoutParams.WRAP_CONTENT));
+                backButton.setImageResource(R.drawable.ic_arrow_back_black_24dp);
+                backButton.setBackgroundColor(Color.TRANSPARENT);
+                backButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getContext(),"HEREEEEE",Toast.LENGTH_SHORT).show();
+                        //if back button clicked, pop the back fragment
+                        manager.popBackStack();
+                        //delete the created view on the bottom
+                        View namebar = getView().findViewById(R.id.post_event_create);
+                        layoutToAdd.removeView(namebar);
+                        inflateButtons++;
+                    }
+                });
+                //add the back button to the layout
+                FrameLayout frameLayout = (FrameLayout) getView().findViewById(R.id.post_event_create_shim_fragment_container);
+                frameLayout.addView(backButton);
+            }
+        });
+    }
 }

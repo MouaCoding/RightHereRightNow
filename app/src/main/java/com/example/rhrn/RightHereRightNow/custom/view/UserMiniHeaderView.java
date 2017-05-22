@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -107,10 +108,30 @@ public class UserMiniHeaderView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (curUserID != null && curUserID != otherUserID) {
-                            Toast.makeText(getApplicationContext(),"Followed!", Toast.LENGTH_SHORT).show();
-                            FirebaseDatabase.getInstance().getReference("User").child(curUserID).child("Following")
-                                    .child(otherUserID).setValue(new FollowingUser());
+                    Toast.makeText(getApplicationContext(),"Followed!", Toast.LENGTH_SHORT).show();
+                    FirebaseDatabase.getInstance().getReference("User").child(curUserID).child("Following")
+                            .child(otherUserID).setValue(new FollowingUser());
+                    incrementFollowers(otherUserID);
                    }
+            }
+        });
+    }
+
+    public void incrementFollowers(String otherID)
+    {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(otherID);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User follow = dataSnapshot.getValue(User.class);
+                int followerNumber = follow.NumberFollowers;
+                followerNumber++;
+                ref.child("NumberFollowers").setValue(followerNumber);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
