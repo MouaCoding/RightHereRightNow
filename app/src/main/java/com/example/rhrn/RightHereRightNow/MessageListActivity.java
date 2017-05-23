@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -20,7 +23,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
@@ -33,10 +38,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -47,18 +59,27 @@ public class MessageListActivity extends AppCompatActivity {
     private ListView mListView; //List of messages
     private ArrayList<User> mUsers;
     private UserAdapter mAdapter;
-    private ImageButton backButton;
+    private ImageButton backButton, menuButton;
     public App mApp;
     Bundle extra;
     TextView messageView;
     private TextWatcher searchFriendsFilter;
     public EditText search;
     private static final int NEW_MESSAGE = 0;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.message_list);
+        setContentView(R.layout.messaging_list);
+
+        menuButton = (ImageButton) findViewById(R.id.menu);
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu();
+            }
+        });
 
         searchFriendsFilter = new TextWatcher() {
             @Override
@@ -191,9 +212,11 @@ public class MessageListActivity extends AppCompatActivity {
 
         private ArrayList<User> mUsers;
         private ArrayList<User> mUsersFilter;
+        public TextView messageView;
+        public TextView date;
 
         UserAdapter(Context context, ArrayList<User> users) {
-            super(context, R.layout.user_item, R.id.user, users);
+            super(context, R.layout.conversation, R.id.username, users);
             mUsers = users;
             mUsersFilter = users;
             getFilter();
@@ -225,13 +248,13 @@ public class MessageListActivity extends AppCompatActivity {
             FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
             convertView = super.getView(position, convertView, parent);
             User user = getItem(position);
-            TextView nameView = (TextView) convertView.findViewById(R.id.user);
-            TextView messageView = (TextView) convertView.findViewById(R.id.message_preview);
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
+            TextView nameView = (TextView) convertView.findViewById(R.id.username);
+            messageView = (TextView) convertView.findViewById(R.id.message_conversation_preview);
+            date = (TextView) convertView.findViewById(R.id.date);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_user_profile_picture);
             nameView.setText(user.DisplayName);
-            //TODO: Populate the message preview with the most recent message
-            //messageView.setText(user.FirstName); // placeholder for now...
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameView.getLayoutParams();
+            setExtraValues(user.uid, fbuser.getUid());
+            //LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameView.getLayoutParams();
 
             try {
                 if (user.ProfilePicture != null)
@@ -243,7 +266,7 @@ public class MessageListActivity extends AppCompatActivity {
 
             } catch (Exception e) {
             }
-            nameView.setLayoutParams(layoutParams);
+            //nameView.setLayoutParams(layoutParams);
             //previewMessage(user.uid);
             return convertView;
         }
@@ -296,6 +319,214 @@ public class MessageListActivity extends AppCompatActivity {
                 }
             };
         }
+
+        public void setExtraValues(final String receiverID, final String senderID)
+        {
+            String[] ids = {senderID, receiverID};
+            Arrays.sort(ids);
+            String conversationKey = ids[0] + ids[1];
+            Log.d("MESSAGEKEY", conversationKey);
+            DatabaseReference msgRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(conversationKey);
+            msgRef.orderByChild("Sender ID").equalTo(senderID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                        Messages msg = messageSnapshot.getValue(Messages.class);
+                        messageView.setText((String) messageSnapshot.child("Message").getValue());
+//                        Calendar calendar = Calendar.getInstance();
+//                        calendar.setTime(msg.getDate());
+//                        SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+//                        String month_name = month_date.format(calendar.getTime());
+//                        date.setText(month_name + " " + calendar.DAY_OF_MONTH);
+                        //Calendar myCal = new GregorianCalendar();
+                        //myCal.setTime(msg.getDate());
+                        date.setText((String) messageSnapshot.child("Date").getValue());
+                    }
+
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+        }
+
     }
+
+    private void popupMenu()
+    {
+        PopupMenu popup = new PopupMenu(MessageListActivity.this, menuButton);
+        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.action1) {
+                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action2){
+                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action3) {
+                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action4) {
+                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.logout) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
+    }
+
+
+    /*
+    public static class ConversationAdapter extends ArrayAdapter<Messages> implements Filterable {
+
+        private ArrayList<Messages> mUsers;
+        private ArrayList<Messages> mUsersFilter;
+
+        ConversationAdapter(Context context, ArrayList<Messages> users) {
+            super(context, R.layout.conversation, R.id.username, users);
+            mUsers = users;
+            mUsersFilter = users;
+            getFilter();
+        }
+
+        @Override
+        public int getCount() {
+
+            return mUsers.size();
+        }
+
+        //Get the data item associated with the specified position in the data set.
+        @Override
+        public Messages getItem(int position) {
+
+            return mUsers.get(position);
+        }
+
+        //Get the row id associated with the specified position in the list.
+        @Override
+        public long getItemId(int position) {
+
+            return position;
+        }
+
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+            convertView = super.getView(position, convertView, parent);
+            Messages msg = getItem(position);
+            setExtraValues(msg.getReceiver(),msg.getSender());
+            TextView nameView = (TextView) convertView.findViewById(R.id.user);
+            TextView messageView = (TextView) convertView.findViewById(R.id.message_preview);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
+            nameView.setText(msg.DisplayName);
+            //TODO: Populate the message preview with the most recent message
+            //messageView.setText(user.FirstName); // placeholder for now...
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameView.getLayoutParams();
+
+            try {
+                if (msg.ProfilePicture != null)
+                    Picasso.with(getContext()).load(msg.ProfilePicture).into(imageView);
+                    //imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                else
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(imageView);
+                //imageView.setImageResource(R.mipmap.ic_launcher);
+
+            } catch (Exception e) {
+            }
+            nameView.setLayoutParams(layoutParams);
+            //previewMessage(user.uid);
+            return convertView;
+        }
+
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    FilterResults results = new FilterResults();
+
+                    //If there's nothing to filter on, return the original data for your list
+                    if (charSequence != null && charSequence.length() > 0) {
+                        ArrayList<Messages> filterList = new ArrayList<Messages>();
+                        for (int i = 0; i < mUsersFilter.size(); i++) {
+
+                            if (mUsersFilter.get(i).DisplayName.contains(charSequence)) {
+                                filterList.add(mUsersFilter.get(i));
+                            }
+                        }
+
+
+                        results.count = filterList.size();
+
+                        results.values = filterList;
+
+                    } else {
+
+                        results.count = mUsersFilter.size();
+
+                        results.values = mUsersFilter;
+
+                    }
+
+                    return results;
+                }
+
+
+                //Invoked in the UI thread to publish the filtering results in the user interface.
+                @SuppressWarnings("unchecked")
+                @Override
+                protected void publishResults(CharSequence constraint,
+                                              FilterResults results) {
+
+                    mUsers = (ArrayList<Messages>) results.values;
+
+                    notifyDataSetChanged();
+
+
+                }
+            };
+        }
+
+        public void setExtraValues(final String receiverID, final String senderID)
+        {
+            String[] ids = {senderID, receiverID};
+            Arrays.sort(ids);
+            final String conversationKey = ids[0] + ids[1];
+            final DatabaseReference msgRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(conversationKey);
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User").child(receiverID);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User receiver = dataSnapshot.getValue(User.class);
+                    msgRef.child("Messages").child(conversationKey).child("DisplayName").setValue(receiver.DisplayName);
+                    msgRef.child("Messages").child(conversationKey).child("handle").setValue(receiver.handle);
+                    try{
+                        msgRef.child("Messages").child(conversationKey).child("ProfilePicture").setValue(receiver.ProfilePicture);
+                    }catch (Exception e){}
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+        }
+    }*/
+
+
+
 
 }

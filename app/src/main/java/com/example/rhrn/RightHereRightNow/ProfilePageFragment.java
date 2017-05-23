@@ -101,8 +101,6 @@ public class ProfilePageFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View r = inflater.inflate(R.layout.profile_page_layout, container, false);
-//        FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-        // restore any state here if necessary
 
         //The below code is for handling exception of querying the profile picture:
         //exception is thrown when application attempts to perform a networking operation in the main thread.
@@ -128,6 +126,7 @@ public class ProfilePageFragment extends Fragment {
             }
         });
         changeProfile = (ImageButton) r.findViewById(R.id.change_profile_picture);
+        changeProfile.requestFocus();
         changeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

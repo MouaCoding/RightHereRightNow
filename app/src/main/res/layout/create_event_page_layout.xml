@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -21,13 +22,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageButton
+                android:id="@+id/event_choose_theme"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignStart="@+id/editStartTime"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="11dp"
+                android:visibility="invisible"
+                android:src="@drawable/picture" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose a Theme      or"
+                android:layout_marginTop="15dp"
+                android:id="@+id/event_choose_theme_text"
+                android:visibility="invisible"
+                android:layout_toRightOf="@id/event_choose_theme"/>
+
+            <ImageButton
+                android:id="@+id/event_upload_image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignStart="@+id/event_name"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="11dp"
+                android:src="@drawable/ic_camera_alt_black_24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Photo"
+                android:layout_marginTop="15dp"
+                android:id="@+id/event_upload_image_text"
+                android:layout_toRightOf="@id/event_upload_image"/>
+
             <TextView
                 android:id="@+id/event_sd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/event_n"
                 android:layout_below="@+id/event_name"
-                android:layout_marginTop="19dp"
+                android:layout_marginTop="30dp"
                 android:text="@string/event_start_date"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp" />
@@ -71,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/editStartTime"
-                android:layout_below="@+id/editStartTime"
+                android:layout_below="@+id/filter"
                 android:layout_marginTop="32dp"
                 android:text="@string/event_address"
                 android:textColor="@color/colorTextDark"
@@ -82,7 +121,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/event_addr"
-                android:layout_below="@+id/editAddress"
+                android:layout_below="@+id/editStartTime"
                 android:layout_marginTop="16dp"
                 android:text="@string/event_private"
                 android:textColor="@color/colorTextDark"
@@ -93,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/event_private"
-                android:layout_alignBottom="@+id/event_private"
+                android:layout_alignBottom="@+id/editEndTime"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="51dp"
                 android:checked="false" />
@@ -104,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/event_private"
                 android:layout_below="@+id/event_private"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="25dp"
                 android:text="@string/event_type"
                 android:textColor="@color/colorTextDark"
                 android:textSize="20sp" />
@@ -124,21 +163,20 @@
                 android:id="@+id/event_n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="41dp"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="46dp"
                 android:text="@string/event_name"
                 android:textColor="@color/colorTextDark"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_below="@+id/event_choose_theme"
+                android:layout_toStartOf="@+id/event_et" />
 
             <TextView
                 android:id="@+id/event_loc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/event_addr"
-                android:layout_below="@+id/filter"
-                android:layout_marginTop="16dp"
+                android:layout_below="@+id/event_addr"
+                android:layout_marginTop="25dp"
                 android:text="@string/event_location"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp" />
@@ -163,7 +201,10 @@
                 android:layout_marginTop="13dp"
                 android:ems="10"
                 android:hint="@string/event_description_box"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:layout_toStartOf="@+id/filter_button"
+                android:layout_alignEnd="@+id/event_location_map_view"
+                android:layout_marginBottom="50dp"/>
 
             <EditText
                 android:id="@+id/event_name"
@@ -230,7 +271,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/event_addr"
-                android:layout_alignBottom="@+id/event_addr"
+                android:layout_alignBottom="@+id/filter_button"
+                android:layout_below="@+id/filter"
                 android:layout_alignEnd="@+id/create_event_confirm"
                 android:ems="10"
                 android:hint="@string/addressEvent"
@@ -258,6 +300,17 @@
                 android:layout_below="@+id/event_loc"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="14dp" />
+
+            <ImageView
+                android:id="@+id/event_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:visibility="invisible"
+                android:layout_above="@+id/event_name"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
 
             <!-- android:onClick="createEvent" -->
 
