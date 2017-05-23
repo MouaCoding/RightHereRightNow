@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.text.Text;
@@ -271,7 +272,8 @@ public class ProfilePageFragment extends Fragment {
                             try {
                                 //Convert the URL to aa Bitmap using function, then set the profile picture
                                 if(temp.ProfilePicture != null)
-                                    Picasso.with(getContext()).load(temp.ProfilePicture).into(profilePicture);
+                                    Picasso.with(getContext()).load(temp.ProfilePicture).transform(new CircleTransform()).into(profilePicture);
+                                    //Picasso.with(getContext()).load(temp.ProfilePicture).into(profilePicture);
                                     //profilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
                                 //else
                                     //profilePicture.setImageResource(R.mipmap.ic_launcher);

@@ -42,7 +42,7 @@
                 android:id ="@+id/post_list"
                 android:layout_weight="100"
                 android:layout_width="match_parent"
-                android:layout_height="450dp" />
+                android:layout_height="wrap_content" />
 
             <View
                 android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                 android:id ="@+id/event_list"
                 android:layout_weight="100"
                 android:layout_width="match_parent"
-                android:layout_height="550dp"
+                android:layout_height="wrap_content"
                 android:divider="@null" />
 
 

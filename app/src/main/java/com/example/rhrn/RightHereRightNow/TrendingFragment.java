@@ -22,6 +22,7 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.City;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -152,14 +153,14 @@ public class TrendingFragment extends Fragment {
             userHandleView.setText(event.handle);
 
             setButtons(convertView, event.eventID, event.ownerID);
-            setExtraValues(event.eventID, event.ownerID);
+            try{setExtraValues(event.eventID, event.ownerID);}catch (Exception e){}
 
             try {
                 if (event.userProfilePicture != null)
-                    Picasso.with(getContext()).load(event.userProfilePicture).into(profilePicture);
+                    Picasso.with(getContext()).load(event.userProfilePicture).transform(new CircleTransform()).into(profilePicture);
                     //profilePicture.setImageBitmap(getBitmapFromURL(event.userProfilePicture));
                 else
-                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(profilePicture);
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(profilePicture);
                 //profilePicture.setImageResource(R.mipmap.ic_launcher);
             }catch (Exception e){}
             try{
