@@ -41,6 +41,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
+ * Edited by Matt
  */
 
 public class UserMiniHeaderView extends FrameLayout {
@@ -66,6 +67,7 @@ public class UserMiniHeaderView extends FrameLayout {
     public void createView() {
         inflate(getContext(), R.layout.user_mini_header_layout, this);
         miniProfilePicView = (ImageView) findViewById(R.id.mini_profile_picture);
+        miniProfilePicView.clearFocus();
         //Clicking either user's profile picture or their name will start a view user activity
         miniProfilePicView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,8 +145,6 @@ public class UserMiniHeaderView extends FrameLayout {
             public void onUserReceived(User...users) {
                 User usr = users[0];
                 setUser(usr);
-
-
             }
         });
     }

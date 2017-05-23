@@ -1,7 +1,9 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -10,7 +12,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
@@ -58,12 +62,20 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
     //User (Sender)
     public User sender;
     public FirebaseUser user;
+    public ImageButton options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messages_thread);
 
+        options = (ImageButton) findViewById(R.id.profile_app_bar_options);
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu();
+            }
+        });
         receiverName = (TextView) findViewById(R.id.profile_name_chat);
         if(getIntent().getExtras()!=null)
             receiverName.setText(getIntent().getExtras().getString("ReceiverName"));
@@ -183,5 +195,44 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
             }
         });
 
+    }
+
+    private void popupMenu()
+    {
+        PopupMenu popup = new PopupMenu(ChatActivity.this, options);
+        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.action1) {
+                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action2){
+                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action3) {
+                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action4) {
+                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.logout) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
     }
 }

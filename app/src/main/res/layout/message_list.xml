@@ -45,7 +45,6 @@
         android:layout_marginLeft="100dp">
 
 
-
         <!-- Clickable imageview = imagebutton (: -->
         <ImageView
             android:id="@+id/create_new_message"
@@ -60,6 +59,7 @@
             android:layout_height="36dp"
             android:text="@string/new_message"
             android:textSize="20dp" />
+
 
     </LinearLayout>
 

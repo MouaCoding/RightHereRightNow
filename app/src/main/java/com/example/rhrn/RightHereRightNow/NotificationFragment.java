@@ -108,20 +108,6 @@ public class NotificationFragment extends Fragment {
         search = (EditText) r.findViewById(R.id.search_friends);
         search.addTextChangedListener(searchFriendsFilter);
         search.addTextChangedListener(searchPostsByFriends);
-        /*search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    search.clearFocus();
-                    InputMethodManager in = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    in.hideSoftInputFromWindow(search.getWindowToken(), 0);
-                    String searchedTerm = search.getText().toString().trim();
-                    performSearch(searchedTerm);
-                    return true;
-                }
-                return false;
-            }
-        });*/
 
         mAdapter = new PostAdapter(getContext(),mPosts);
         mPosts = new ArrayList<Post>();
@@ -132,8 +118,6 @@ public class NotificationFragment extends Fragment {
         //getPosts();
         getUsersFollowed();
         getPostsNotifications();
-
-
 
         return r;
     }
@@ -164,9 +148,6 @@ public class NotificationFragment extends Fragment {
             final Post post = getItem(position);
 
             TextView postBodyTextView = (TextView) convertView.findViewById(R.id.user_post_body);
-            ImageButton likeButton = (ImageButton) convertView.findViewById(R.id.user_post_like_button);
-            ImageButton commentButton = (ImageButton) convertView.findViewById(R.id.user_post_comment_button);
-            ImageButton shareButton = (ImageButton) convertView.findViewById(R.id.user_post_share_button);
             ImageView miniProfilePicView = (ImageView) convertView.findViewById(R.id.mini_profile_picture);;
             TextView displayNameView= (TextView) convertView.findViewById(R.id.mini_name);
             TextView userHandleView= (TextView) convertView.findViewById(R.id.mini_user_handle);
@@ -174,6 +155,7 @@ public class NotificationFragment extends Fragment {
             TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
 
             setButtons(convertView, post.postID, post.ownerID);
+            setExtraValues(post.postID, post.ownerID);
 
             displayNameView.setText(post.DisplayName);
             userHandleView.setText(post.handle);
@@ -183,10 +165,8 @@ public class NotificationFragment extends Fragment {
             try {
                 if (post.ProfilePicture != null)
                     Picasso.with(getContext()).load(post.ProfilePicture).into(miniProfilePicView);
-                    //miniProfilePicView.setImageBitmap(getBitmapFromURL(post.ProfilePicture));
                 else
                     Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(miniProfilePicView);
-                //miniProfilePicView.setImageResource(R.mipmap.ic_launcher);
             } catch(Exception e){}
             displayNameView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -209,7 +189,7 @@ public class NotificationFragment extends Fragment {
 
         public void setButtons(View view, final String EventID, final String currUsr)
         {
-            likeButton = (ImageButton) view.findViewById(R.id.user_event_like_button);
+            likeButton = (ImageButton) view.findViewById(R.id.user_post_like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -228,7 +208,7 @@ public class NotificationFragment extends Fragment {
                 }
             });
 
-            commentButton = (ImageButton) view.findViewById(R.id.user_event_comment_button);
+            commentButton = (ImageButton) view.findViewById(R.id.user_post_comment_button);
             commentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -241,7 +221,7 @@ public class NotificationFragment extends Fragment {
                 }
             });
 
-            shareButton = (ImageButton) view.findViewById(R.id.user_event_share_button);
+            shareButton = (ImageButton) view.findViewById(R.id.user_post_share_button);
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -307,21 +287,43 @@ public class NotificationFragment extends Fragment {
             };
         }
 
-
+        public void setExtraValues(final String postID, final String ownerID)
+        {
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            ref.child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User owner = dataSnapshot.getValue(User.class);
+                    ref.child("Post").child(postID).child("DisplayName").setValue(owner.DisplayName);
+                    ref.child("Post").child(postID).child("handle").setValue(owner.handle);
+                    try{
+                        ref.child("Post").child(postID).child("ProfilePicture").setValue(owner.ProfilePicture);
+                    }catch (Exception e){}
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+        }
     }
 
     public void getPosts(String following)
     {
+        if(following == null)
+            return;
+
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference().child("Post");
         postRef.orderByChild("ownerID").equalTo(following).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Post posts = dataSnapshot.getValue(Post.class);
-                //TODO: since this saves all posts by each user, it might be inefficient... MM
-                DatabaseReference notifyRequest = FirebaseDatabase.getInstance().getReference().child("NotificationRequest");
-                DatabaseReference curUser = notifyRequest.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                curUser.child(posts.postID).setValue(posts);
-
+                if(!dataSnapshot.exists())
+                    return;
+                else {
+                    Post posts = dataSnapshot.getValue(Post.class);
+                    //TODO: since this saves all posts by each user, it might be inefficient... MM
+                    DatabaseReference notifyRequest = FirebaseDatabase.getInstance().getReference().child("NotificationRequest");
+                    DatabaseReference curUser = notifyRequest.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    curUser.child(posts.postID).setValue(posts);
+                }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
@@ -341,10 +343,14 @@ public class NotificationFragment extends Fragment {
                 .orderByChild("filler").getRef().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(notifyFlag == 0)
-                    getPosts(dataSnapshot.getKey().toString());
-                else if(notifyFlag == 1)
-                    getUsers(dataSnapshot.getKey().toString());
+                if(!dataSnapshot.exists())
+                    return;
+                else {
+                    if (notifyFlag == 0)
+                        getPosts(dataSnapshot.getKey().toString());
+                    else if (notifyFlag == 1)
+                        getUsers(dataSnapshot.getKey().toString());
+                }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
@@ -358,28 +364,33 @@ public class NotificationFragment extends Fragment {
     }
     public void getUsers(final String following)
     {
-        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User");
-        userRef.child(following).addValueEventListener(new ValueEventListener() {
+        if(following == null)
+            return;
 
+        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User");
+        userRef.child(following).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final User usr = dataSnapshot.getValue(User.class);
-                mUsers.add(usr);
+                if (!dataSnapshot.exists()) return;
+                else {
+                    final User usr = dataSnapshot.getValue(User.class);
+                    mUsers.add(usr);
 
-                mmAdapter = new MessageListActivity.UserAdapter(getContext(),mUsers);
-                list.setAdapter(mmAdapter);
-                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getContext(), ViewUserActivity.class);
-                        intent.putExtra("otherUserID",mUsers.get(position).uid);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getContext().startActivity(intent);
-                    }
-                });
-                userRef.child("NumberFollowing").setValue(mUsers.size());
+                    mmAdapter = new MessageListActivity.UserAdapter(getContext(), mUsers);
+                    list.setAdapter(mmAdapter);
+                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                            intent.putExtra("otherUserID", mUsers.get(position).uid);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getContext().startActivity(intent);
+                        }
+                    });
+                    userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("NumberFollowing").setValue(mUsers.size());
+
+                }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
@@ -394,12 +405,15 @@ public class NotificationFragment extends Fragment {
                 .limitToLast(10).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Post posts = dataSnapshot.getValue(Post.class);
-                try {
-                    mPosts.add(0,posts);
-                    mAdapter = new PostAdapter(getContext(), mPosts);
-                    list.setAdapter(mAdapter);
-                }catch (Exception e){}
+                if(!dataSnapshot.exists()) return;
+                else {
+                    Post posts = dataSnapshot.getValue(Post.class);
+                    try {
+                        mPosts.add(0, posts);
+                        mAdapter = new PostAdapter(getContext(), mPosts);
+                        list.setAdapter(mAdapter);
+                    } catch (Exception e) {}
+                }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {}

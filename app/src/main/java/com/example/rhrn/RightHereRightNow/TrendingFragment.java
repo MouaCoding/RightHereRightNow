@@ -152,7 +152,7 @@ public class TrendingFragment extends Fragment {
             userHandleView.setText(event.handle);
 
             setButtons(convertView, event.eventID, event.ownerID);
-
+            setExtraValues(event.eventID, event.ownerID);
 
             try {
                 if (event.userProfilePicture != null)
@@ -255,7 +255,26 @@ public class TrendingFragment extends Fragment {
 
         }
 
-    }
+        public void setExtraValues(final String eventID, final String ownerID)
+        {
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            ref.child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User owner = dataSnapshot.getValue(User.class);
+                    ref.child("Event").child(eventID).child("DisplayName").setValue(owner.DisplayName);
+                    ref.child("Event").child(eventID).child("handle").setValue(owner.handle);
+                    try{
+                        ref.child("Event").child(eventID).child("userProfilePicture").setValue(owner.ProfilePicture);
+                    }catch (Exception e){}
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+        }
+
+
+}
 
 
 

@@ -46,10 +46,7 @@ public class Messages {
     //public int getStatus(){return status;}
     public String getReceiver() {    return receiver;}
     public void setReceiver(String receiver){ this.receiver=receiver;}
-    public String getSender()
-    {
-        return sender;
-    }
+    public String getSender() {return sender;}
     public void setSender(String sender){ this.sender=sender;}
     public Date getDate() {return date;}
     public void setDate(Date date) {this.date = date;}
