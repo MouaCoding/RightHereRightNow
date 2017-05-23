@@ -18,6 +18,7 @@ import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -137,9 +138,9 @@ public class ViewUserActivity extends AppCompatActivity {
                         try {
                             //Convert the URL to aa Bitmap using function, then set the profile picture
                             if( temp.ProfilePicture != null)
-                                Picasso.with(getBaseContext()).load(temp.ProfilePicture).into(profilePicture);
+                                Picasso.with(getBaseContext()).load(temp.ProfilePicture).transform(new CircleTransform()).into(profilePicture);
                             else
-                                Picasso.with(getBaseContext()).load(R.mipmap.ic_launcher).into(profilePicture);
+                                Picasso.with(getBaseContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(profilePicture);
                             Log.d("photoURL", temp.ProfilePicture);
                         } catch (Exception e) {}
                     }

@@ -23,18 +23,19 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id ="@+id/new_message"
+            android:id="@+id/new_message"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:layout_weight="100"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:background="@drawable/rect_edittext" />
 
         <Button
-            android:id ="@+id/send_message"
-            android:text ="send"
-            android:background="@color/colorAccent"
-            android:textColor="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:id="@+id/send_message"
+            android:layout_width="75dp"
+            android:layout_height="35dp"
+            android:background="@drawable/send_button"
+            android:text="send"
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 

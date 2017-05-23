@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Messages;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -73,7 +74,7 @@ public class MessageListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messaging_list);
 
-        menuButton = (ImageButton) findViewById(R.id.menu);
+        menuButton = (ImageButton) findViewById(R.id.profile_app_bar_options);
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,6 +217,160 @@ public class MessageListActivity extends AppCompatActivity {
         public TextView date;
 
         UserAdapter(Context context, ArrayList<User> users) {
+            super(context, R.layout.user_item, R.id.user, users);
+            mUsers = users;
+            mUsersFilter = users;
+            getFilter();
+        }
+
+        @Override
+        public int getCount() {
+
+            return mUsers.size();
+        }
+
+        //Get the data item associated with the specified position in the data set.
+        @Override
+        public User getItem(int position) {
+
+            return mUsers.get(position);
+        }
+
+        //Get the row id associated with the specified position in the list.
+        @Override
+        public long getItemId(int position) {
+
+            return position;
+        }
+
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+            convertView = super.getView(position, convertView, parent);
+            User user = getItem(position);
+            TextView nameView = (TextView) convertView.findViewById(R.id.user);
+            messageView = (TextView) convertView.findViewById(R.id.message_preview);
+            date = (TextView) convertView.findViewById(R.id.date);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
+            nameView.setText(user.DisplayName);
+            //setExtraValues(user.uid, fbuser.getUid());
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameView.getLayoutParams();
+
+            try {
+                if (user.ProfilePicture != null)
+                    Picasso.with(getContext()).load(user.ProfilePicture).transform(new CircleTransform()).into(imageView);
+                    //imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+                else
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(imageView);
+                //imageView.setImageResource(R.mipmap.ic_launcher);
+
+            } catch (Exception e) {
+            }
+            nameView.setLayoutParams(layoutParams);
+            //previewMessage(user.uid);
+            return convertView;
+        }
+
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    FilterResults results = new FilterResults();
+
+                    //If there's nothing to filter on, return the original data for your list
+                    if (charSequence != null && charSequence.length() > 0) {
+                        ArrayList<User> filterList = new ArrayList<User>();
+                        for (int i = 0; i < mUsersFilter.size(); i++) {
+
+                            if (mUsersFilter.get(i).DisplayName.contains(charSequence)) {
+                                filterList.add(mUsersFilter.get(i));
+                            }
+                        }
+
+
+                        results.count = filterList.size();
+
+                        results.values = filterList;
+
+                    } else {
+
+                        results.count = mUsersFilter.size();
+
+                        results.values = mUsersFilter;
+
+                    }
+
+                    return results;
+                }
+
+
+                //Invoked in the UI thread to publish the filtering results in the user interface.
+                @SuppressWarnings("unchecked")
+                @Override
+                protected void publishResults(CharSequence constraint,
+                                              FilterResults results) {
+
+                    mUsers = (ArrayList<User>) results.values;
+
+                    notifyDataSetChanged();
+
+
+                }
+            };
+        }
+
+    }
+
+    private void popupMenu()
+    {
+        PopupMenu popup = new PopupMenu(MessageListActivity.this, menuButton);
+        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.action1) {
+                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action2){
+                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action3) {
+                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action4) {
+                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.logout) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    startActivity(intent);
+                    finish();
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
+    }
+
+
+    public static class MessageListAdapter extends ArrayAdapter<User> implements Filterable {
+
+        private ArrayList<User> mUsers;
+        private ArrayList<User> mUsersFilter;
+        public TextView messageView;
+        public TextView date;
+
+        MessageListAdapter(Context context, ArrayList<User> users) {
             super(context, R.layout.conversation, R.id.username, users);
             mUsers = users;
             mUsersFilter = users;
@@ -258,10 +413,10 @@ public class MessageListActivity extends AppCompatActivity {
 
             try {
                 if (user.ProfilePicture != null)
-                    Picasso.with(getContext()).load(user.ProfilePicture).into(imageView);
+                    Picasso.with(getContext()).load(user.ProfilePicture).transform(new CircleTransform()).into(imageView);
                     //imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
                 else
-                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(imageView);
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(imageView);
                 //imageView.setImageResource(R.mipmap.ic_launcher);
 
             } catch (Exception e) {
@@ -320,8 +475,7 @@ public class MessageListActivity extends AppCompatActivity {
             };
         }
 
-        public void setExtraValues(final String receiverID, final String senderID)
-        {
+        public void setExtraValues(final String receiverID, final String senderID) {
             String[] ids = {senderID, receiverID};
             Arrays.sort(ids);
             String conversationKey = ids[0] + ids[1];
@@ -330,7 +484,7 @@ public class MessageListActivity extends AppCompatActivity {
             msgRef.orderByChild("Sender ID").equalTo(senderID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                    for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
                         Messages msg = messageSnapshot.getValue(Messages.class);
                         messageView.setText((String) messageSnapshot.child("Message").getValue());
 //                        Calendar calendar = Calendar.getInstance();
@@ -344,187 +498,13 @@ public class MessageListActivity extends AppCompatActivity {
                     }
 
                 }
+
                 @Override
-                public void onCancelled(DatabaseError databaseError) {}
+                public void onCancelled(DatabaseError databaseError) {
+                }
             });
         }
-
     }
-
-    private void popupMenu()
-    {
-        PopupMenu popup = new PopupMenu(MessageListActivity.this, menuButton);
-        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                int i = item.getItemId();
-                if (i == R.id.action1) {
-                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action2){
-                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action3) {
-                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action4) {
-                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.logout) {
-                    FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
-                    startActivity(intent);
-                    finish();
-                    return true;
-                }
-                else {
-                    return onMenuItemClick(item);
-                }
-            }
-        });
-        popup.show();
-    }
-
-
-    /*
-    public static class ConversationAdapter extends ArrayAdapter<Messages> implements Filterable {
-
-        private ArrayList<Messages> mUsers;
-        private ArrayList<Messages> mUsersFilter;
-
-        ConversationAdapter(Context context, ArrayList<Messages> users) {
-            super(context, R.layout.conversation, R.id.username, users);
-            mUsers = users;
-            mUsersFilter = users;
-            getFilter();
-        }
-
-        @Override
-        public int getCount() {
-
-            return mUsers.size();
-        }
-
-        //Get the data item associated with the specified position in the data set.
-        @Override
-        public Messages getItem(int position) {
-
-            return mUsers.get(position);
-        }
-
-        //Get the row id associated with the specified position in the list.
-        @Override
-        public long getItemId(int position) {
-
-            return position;
-        }
-
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-            convertView = super.getView(position, convertView, parent);
-            Messages msg = getItem(position);
-            setExtraValues(msg.getReceiver(),msg.getSender());
-            TextView nameView = (TextView) convertView.findViewById(R.id.user);
-            TextView messageView = (TextView) convertView.findViewById(R.id.message_preview);
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
-            nameView.setText(msg.DisplayName);
-            //TODO: Populate the message preview with the most recent message
-            //messageView.setText(user.FirstName); // placeholder for now...
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameView.getLayoutParams();
-
-            try {
-                if (msg.ProfilePicture != null)
-                    Picasso.with(getContext()).load(msg.ProfilePicture).into(imageView);
-                    //imageView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
-                else
-                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(imageView);
-                //imageView.setImageResource(R.mipmap.ic_launcher);
-
-            } catch (Exception e) {
-            }
-            nameView.setLayoutParams(layoutParams);
-            //previewMessage(user.uid);
-            return convertView;
-        }
-
-        @Override
-        public Filter getFilter() {
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence charSequence) {
-                    FilterResults results = new FilterResults();
-
-                    //If there's nothing to filter on, return the original data for your list
-                    if (charSequence != null && charSequence.length() > 0) {
-                        ArrayList<Messages> filterList = new ArrayList<Messages>();
-                        for (int i = 0; i < mUsersFilter.size(); i++) {
-
-                            if (mUsersFilter.get(i).DisplayName.contains(charSequence)) {
-                                filterList.add(mUsersFilter.get(i));
-                            }
-                        }
-
-
-                        results.count = filterList.size();
-
-                        results.values = filterList;
-
-                    } else {
-
-                        results.count = mUsersFilter.size();
-
-                        results.values = mUsersFilter;
-
-                    }
-
-                    return results;
-                }
-
-
-                //Invoked in the UI thread to publish the filtering results in the user interface.
-                @SuppressWarnings("unchecked")
-                @Override
-                protected void publishResults(CharSequence constraint,
-                                              FilterResults results) {
-
-                    mUsers = (ArrayList<Messages>) results.values;
-
-                    notifyDataSetChanged();
-
-
-                }
-            };
-        }
-
-        public void setExtraValues(final String receiverID, final String senderID)
-        {
-            String[] ids = {senderID, receiverID};
-            Arrays.sort(ids);
-            final String conversationKey = ids[0] + ids[1];
-            final DatabaseReference msgRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(conversationKey);
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User").child(receiverID);
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    User receiver = dataSnapshot.getValue(User.class);
-                    msgRef.child("Messages").child(conversationKey).child("DisplayName").setValue(receiver.DisplayName);
-                    msgRef.child("Messages").child(conversationKey).child("handle").setValue(receiver.handle);
-                    try{
-                        msgRef.child("Messages").child(conversationKey).child("ProfilePicture").setValue(receiver.ProfilePicture);
-                    }catch (Exception e){}
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {}
-            });
-        }
-    }*/
 
 
 

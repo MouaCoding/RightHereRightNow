@@ -28,6 +28,7 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -164,9 +165,9 @@ public class NotificationFragment extends Fragment {
             numComments.setText(Integer.toString(post.comments));
             try {
                 if (post.ProfilePicture != null)
-                    Picasso.with(getContext()).load(post.ProfilePicture).into(miniProfilePicView);
+                    Picasso.with(getContext()).load(post.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicView);
                 else
-                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(miniProfilePicView);
+                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(miniProfilePicView);
             } catch(Exception e){}
             displayNameView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -187,24 +188,13 @@ public class NotificationFragment extends Fragment {
             return convertView;
         }
 
-        public void setButtons(View view, final String EventID, final String currUsr)
+        public void setButtons(View view, final String PostID, final String currUsr)
         {
             likeButton = (ImageButton) view.findViewById(R.id.user_post_like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(Likes.hasLiked(2, EventID, currUsr )){
-                        likeButton.setColorFilter(R.color.colorTextDark);
-                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                        FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
-                        Event.changeCount("likes", EventID, false);
-                    }
-                    else{
-                        likeButton.setColorFilter(R.color.crimson);
-                        Likes.Like(2, EventID, currUsr);
-                        Event.changeCount("likes", EventID, true);
-                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                    }
+
                 }
             });
 
@@ -212,11 +202,6 @@ public class NotificationFragment extends Fragment {
             commentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = getContext();
-                    Bundle params = new Bundle();
-                    Intent intent = new Intent(context, CommentsListActivity.class);
-                    intent.putExtra("postID", EventID.toString());
-                    context.startActivity(intent);
 
                 }
             });
