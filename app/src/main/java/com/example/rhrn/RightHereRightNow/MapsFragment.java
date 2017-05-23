@@ -372,7 +372,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onResult(PlacePhotoMetadataResult placePhotoMetadataResult) {
                 if (placePhotoMetadataResult.getStatus().isSuccess()) {
-                    Log.d("HEREEEE", "Photo  loaded");
                     PlacePhotoMetadataBuffer photoMetadata = placePhotoMetadataResult.getPhotoMetadata();
                     PlacePhotoMetadata placePhotoMetadata = photoMetadata.get(0);
                     final String photoDetail = placePhotoMetadata.toString();
@@ -380,9 +379,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                         @Override
                         public void onResult(PlacePhotoResult placePhotoResult) {
                             if (placePhotoResult.getStatus().isSuccess()) {
-                                Log.d("HEREEEE", "Photo "+photoDetail+" loaded");
+                                Log.d("loaded", "Photo "+photoDetail+" loaded");
                             } else {
-                                Log.d("HEREEEE", "Photo "+photoDetail+" failed to load");
+                                Log.d("nope", "Photo "+photoDetail+" failed to load");
                             }
                         }
                     });
@@ -470,7 +469,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                             //city does not exist, so create new
                             City city = new City(addresses.get(0).getLocality(),
                                     addresses.get(0).getAdminArea(),
-                                    addresses.get(0).getCountryName(), null, "0");
+                                    addresses.get(0).getCountryName(), " ", "0");
                             cityRef.setValue(city);
                         }
                     }
@@ -1020,7 +1019,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 backButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),"HEREEEEE",Toast.LENGTH_SHORT).show();
                         //if back button clicked, pop the back fragment
                         manager.popBackStack();
                         //delete the created view on the bottom

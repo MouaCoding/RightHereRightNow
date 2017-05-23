@@ -2,14 +2,22 @@ package com.example.rhrn.RightHereRightNow;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +25,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -34,12 +45,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -48,9 +64,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LOCATION_SERVICE;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class CreateEventFragment extends Fragment implements OnMapReadyCallback {
+
+    private ImageButton     chooseTheme,
+                            uploadPhoto;
+    private ImageView       eventImage;
+    private TextView        uploadPhotoText,
+                            chooseThemeText;
 
     private EditText        event_name,
                             event_description,
@@ -78,6 +102,14 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
 
     private MapView event_location;
 
+    //globals for image uploading
+    private static final int SELECT_PICTURE = 100;
+    //request int for using camera
+    private static final int CAPTURE_PICTURE = 200;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReferenceFromUrl("gs://righthererightnow-72e20.appspot.com");
+    Uri filePath;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View r = inflater.inflate(R.layout.create_event_page_layout, container, false);
@@ -92,6 +124,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         });
 
         //Initializes each text view to the class's objects
+        eventImage = (ImageView) r.findViewById(R.id.event_image);
         event_name = (EditText)r.findViewById(R.id.event_name);
         event_description = (EditText)r.findViewById(R.id.event_description);
         startDate = (EditText)r.findViewById(R.id.editStartDate);
@@ -99,6 +132,8 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         startTime = (EditText)r.findViewById(R.id.editStartTime);
         endTime = (EditText)r.findViewById(R.id.editEndTime);
         address = (EditText)r.findViewById(R.id.editAddress);
+        chooseThemeText = (TextView) r.findViewById(R.id.event_choose_theme_text) ;
+        uploadPhotoText = (TextView) r.findViewById(R.id.event_upload_image_text);
 
         Calendar c = Calendar.getInstance();
         currDay = c.get(Calendar.DAY_OF_MONTH);
@@ -223,8 +258,109 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         Location loc = LocationUtils.getBestAvailableLastKnownLocation(getContext());
         createLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
 
+        uploadPhoto = (ImageButton) r.findViewById(R.id.event_upload_image);
+        uploadPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //MM: I decided to use an alert dialog to display a popup which has 3 clickable buttons
+                // For changing profile picture.
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getActivity());
+                dlgAlert.setMessage("Capture New Image or Upload an Image");
+                dlgAlert.setTitle("Give your event an image!");
+
+                //type doesnt matter, but order of buttons do
+                //If user wants to upload from gallery
+                dlgAlert.setNegativeButton("Upload", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Opens the gallery of the phone if user clicked "Upload"
+                        Toast.makeText(getApplicationContext(), "Upload a Picture", Toast.LENGTH_LONG).show();
+                        Intent i = new Intent();
+                        i.setType("image/*");
+                        i.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
+                    }
+                });
+                //if user decides to take a new picture
+                dlgAlert.setNeutralButton("Capture", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "Capture", Toast.LENGTH_LONG).show();
+                        Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(imageIntent, CAPTURE_PICTURE);
+                    }
+                });
+                //if user cancels
+                dlgAlert.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+                });
+
+                dlgAlert.setCancelable(true);
+                dlgAlert.create();
+                dlgAlert.show();
+
+            }
+        });
+
+        chooseTheme = (ImageButton) r.findViewById(R.id.event_choose_theme);
+        chooseTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return r;
     }
+
+    //Handles finished activity when a user has clicked an image from gallery
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // When an Image is picked, the image is called back
+        if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK
+                && null != data) {
+            // Get the Image from data
+            filePath = data.getData();
+            //Upload to firebase
+            //uploadToFirebase();
+            //Then set the photo from the chosen gallery
+            try {
+                Bitmap bitmap = MediaStore.Images.Media
+                        .getBitmap(getApplicationContext().getContentResolver(), filePath);
+                //Picasso.with(getContext()).load(filePath).into(profilePicture);
+                eventImage.setImageBitmap(bitmap);
+                eventImage.setVisibility(View.VISIBLE);
+                uploadPhoto.setVisibility(View.INVISIBLE);
+                chooseTheme.setVisibility(View.INVISIBLE);
+                uploadPhotoText.setVisibility(View.INVISIBLE);
+                chooseThemeText.setVisibility(View.INVISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //Else user did not pick an image
+        } else if (requestCode == CAPTURE_PICTURE && resultCode == RESULT_OK && data != null) {
+            // Get the Image from data
+            filePath = data.getData();
+            //Upload to firebase
+            //uploadToFirebase();
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            eventImage.setImageBitmap(imageBitmap);
+            eventImage.setVisibility(View.VISIBLE);
+            uploadPhoto.setVisibility(View.INVISIBLE);
+            chooseTheme.setVisibility(View.INVISIBLE);
+            uploadPhotoText.setVisibility(View.INVISIBLE);
+            chooseThemeText.setVisibility(View.INVISIBLE);
+            //Else user did not pick an image
+        }else {
+            Toast.makeText(getApplicationContext(), "You haven't picked Image",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
@@ -311,13 +447,12 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         try {
-//            Location location = LocationUtils.getBestAvailableLastKnownLocation(getContext());
-
             Toast.makeText(getContext(), "Creating Event...", Toast.LENGTH_SHORT).show();
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference gettingKey = RootRef.child("Event").push();
             DatabaseReference createdEvent = RootRef.child("Event").child("Event_" + gettingKey.getKey());
             String eventKey = "Event_"+gettingKey.getKey();
+            uploadToFirebase(eventKey);
             gettingKey.setValue(null);
 
             DatabaseReference eventLocation = RootRef.child("EventLocations");
@@ -469,6 +604,39 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         editor.commit();
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         item.setActionView(new View(getContext()));
+    }
+
+    public void uploadToFirebase(final String eventID)
+    {
+        //create the profile picture name using their uid + .jpg
+        String childFile = eventID + ".jpg";
+
+        //If the file was chosen from gallery then != null
+        if(filePath != null) {
+            //Create child using the above string
+            StorageReference fileRef = storageRef.child(childFile);
+            //Create the upload using built-in UploadTask
+            UploadTask uploadTask = fileRef.putFile(filePath);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getApplicationContext(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                    //Set the download URL
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    //Store URL under the event
+                    FirebaseDatabase.getInstance().getReference().child("Event")
+                            .child(eventID).child("ProfilePicture").setValue(downloadUrl.toString());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(getApplicationContext(), "Upload Failed!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Select an image", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
