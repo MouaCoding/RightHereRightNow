@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 
@@ -50,6 +51,8 @@ public class UserEventView extends FrameLayout {
     private TextView commentsCount;
     private TextView sharesCount;
     int usrLikes;
+
+    private static final int RC = 1;
 
 
     private Spinner eventRSVPStateSpinner;
@@ -126,6 +129,7 @@ public class UserEventView extends FrameLayout {
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", EventID.toString());
                 intent.putExtra("type", 2);
+                //context.startActivityForResult(intent, RC);
                 context.startActivity(intent);
                 updateCounts(EventID);
 
@@ -165,6 +169,8 @@ public class UserEventView extends FrameLayout {
                     likesCount.setText(Integer.toString(ev.likes));
                     commentsCount.setText(Integer.toString(ev.comments));
                     sharesCount.setText(String.valueOf(ev.shares));
+
+
                 } catch(Exception e){}
             }
         });

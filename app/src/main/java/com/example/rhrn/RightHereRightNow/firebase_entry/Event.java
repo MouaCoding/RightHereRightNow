@@ -219,7 +219,7 @@ public class Event {
 
     }
 
-    public static void Comment(final String userID, final String eventID, final String Content, final int Order, final String responseID, final boolean Anon){
+    public static void Comment(final String eventID){
         android.util.Log.d("nat", "inComment");
         FirebaseDatabase.getInstance().getReference("Event").child(eventID).child("comments").runTransaction(new Transaction.Handler() {
             @Override

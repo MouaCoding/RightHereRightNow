@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.rhrn.RightHereRightNow.custom.view.UserEventView;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.firebase.client.ServerValue;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,7 +44,6 @@ import java.util.ArrayList;
 
 public class CommentsListActivity extends FragmentActivity {
 
-    private Button newComment;
     private Button backButton;
     private Button postButton;
     private CheckBox anon;
@@ -96,7 +96,19 @@ public class CommentsListActivity extends FragmentActivity {
                             createdComment.setValue(cmmnt);
                             mComments.add(cmmnt);
                             mAdapter.notifyDataSetChanged();
-                            Event.Comment(currUsr,ID, temp, 0, null, anon.isChecked());
+                            Event.Comment(ID);
+
+                        }
+                        if(type == 1){
+                            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Comments");
+                            DatabaseReference reference = rootRef.child(ID).push();
+                            String key = reference.getKey();
+                            DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(ID).child(key);
+                            Comments cmmnt = new Comments(currUsr, key, temp, ID, 0, 0, 0, Anon, ServerValue.TIMESTAMP);
+                            createdComment.setValue(cmmnt);
+                            mComments.add(cmmnt);
+                            mAdapter.notifyDataSetChanged();
+                            Post.Comment(ID);
                         }
 
 
