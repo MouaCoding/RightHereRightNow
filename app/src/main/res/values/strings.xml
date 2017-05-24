@@ -21,8 +21,8 @@
     <string name="handle">Handle* (@handle)</string>
     <string name="prompt_phone">Phone (Optional)</string>
     <string name="prompt_address">Address (Optional)</string>
-    <string name="prompt_city">City (Optional)</string>
-    <string name="prompt_state">State (Optional)</string>
+    <string name="prompt_city">City</string>
+    <string name="prompt_state">State</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_register">Register</string>
@@ -34,6 +34,10 @@
     <string name="facebook_app_id">1862159977386608</string>
     <string name="error_signin">Error logging in.</string>
     <string name="forgot_password">Forgot?</string>
+    <string name="keep_logged_in">Keep me logged in</string>
+    <string name="zipcode">Zip*</string>
+    <string name="forgot_password_description">Forgot your password? Don\'t worry, we can help.</string>
+    <string name="enter_password">Enter Email</string>
 
     <!-- Strings relates to events -->
     <string name="event_rsvp_not_going">Not Going</string>
@@ -107,9 +111,9 @@
     <string name="new_comment">New Comment</string>
     <string name="reply">Reply</string>
     <string name="like">Like</string>
-    <string name="zipcode">Zip*</string>
-    <string name="forgot_password_description">Forgot your password? Don\'t worry, we can help.</string>
-    <string name="enter_password">Enter Email</string>
+
+
+
     <string name="cancel">Cancel</string>
     <string name="almost_done">You are almost done! Add the following to complete your profile.</string>
     <string name="logout">Logout</string>
@@ -121,10 +125,11 @@
     <string name="filter4">Club Event</string>
     <string name="filter5">Other</string>
     <string name="done_filter">Done</string>
-    <string name="keep_logged_in">Keep me logged in</string>
-    <string name="event_type">Event Type</string>
     <string name="choose_filter">Choose Type</string>
     <string name="filterByHandle">Or Choose User</string>
+
+    <string name="event_type">Event Type</string>
     <string name="view_event_content">Event Content...</string>
     <string name="refresh">Refresh</string>
+    <string name="comments_section">Comments</string>
 </resources>

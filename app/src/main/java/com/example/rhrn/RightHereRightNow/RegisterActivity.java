@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
@@ -52,6 +53,7 @@ public class RegisterActivity extends LoginActivity {
             activity_points,
             numLikes;
     String firstName, lastName, displayName, handle_, fullname, email, password, phone, city, state, id, uid;
+    ImageButton back;
 
     //Button for when user fills in the texts and then clicks on button
     private Button button;
@@ -63,7 +65,7 @@ public class RegisterActivity extends LoginActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.register_with_ui);
         //When user clicks the button, calls function registerUser();
         button = (Button) findViewById(R.id.register);
         button.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +85,14 @@ public class RegisterActivity extends LoginActivity {
         user_phone = (EditText) findViewById(R.id.register_phone);
         user_city = (EditText) findViewById(R.id.register_city);
         user_state = (EditText) findViewById(R.id.register_state);
+        back = (ImageButton) findViewById(R.id.back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
         firebaseAuth = FirebaseAuth.getInstance();
     }

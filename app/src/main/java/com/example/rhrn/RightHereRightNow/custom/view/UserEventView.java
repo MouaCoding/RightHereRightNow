@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -21,6 +22,7 @@ import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -102,7 +104,7 @@ public class UserEventView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if(Likes.hasLiked(2, EventID, currUsr )){
-                    likeButton.setColorFilter(R.color.colorTextDark);
+                    likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
                     Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
                     FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
                     Event.changeCount("likes", EventID, false);
@@ -110,7 +112,7 @@ public class UserEventView extends FrameLayout {
 
                 }
                 else{
-                    likeButton.setColorFilter(R.color.crimson);
+                    likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
                     Likes.Like(2, EventID, currUsr);
                     Event.changeCount("likes", EventID, true);
                     Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
@@ -168,9 +170,9 @@ public class UserEventView extends FrameLayout {
 
                 try {
                     if(ev.ProfilePicture != null)
-                        Picasso.with(getContext()).load(ev.ProfilePicture).into(eventMiniImageView);
+                        Picasso.with(getContext()).load(ev.ProfilePicture).transform(new CircleTransform()).into(eventMiniImageView);
                     else
-                        Picasso.with(getContext()).load(R.drawable.images).into(eventMiniImageView);
+                        Picasso.with(getContext()).load(R.drawable.images).transform(new CircleTransform()).into(eventMiniImageView);
                 }catch (Exception e){}
             }
 

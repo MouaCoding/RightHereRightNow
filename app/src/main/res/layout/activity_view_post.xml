@@ -19,24 +19,32 @@
             <!-- Optional if user posted an image, it should display at the top-->
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/view_user_postimage"
+                android:visibility="gone"
+                android:layout_marginBottom="15dp"
                 android:src="@drawable/ic_media_route_connecting_00_light"
                 />
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_height="2dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="30dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/event_description"
+                android:layout_marginTop="15dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/view_post_content"
                 android:text="Content"
                 android:textSize="20sp"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="2dp"
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
@@ -68,12 +76,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
 
                     <ImageButton
                         android:id="@+id/user_post_like_button"
@@ -183,10 +193,26 @@
                 android:layout_height="1dp"
                 android:background="?android:attr/listDivider" />
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/comments_section"
+                android:layout_marginTop="15dp"/>
+
             <ListView
                 android:id ="@+id/view_post_comment_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"/>
+
+            <include
+                layout="@layout/comment_post_make"
+                android:layout_weight="4.70"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="40dp"
+                />
 
         </LinearLayout>
     </ScrollView>
