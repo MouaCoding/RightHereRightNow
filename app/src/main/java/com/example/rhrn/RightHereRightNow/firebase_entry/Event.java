@@ -230,7 +230,7 @@ public class Event {
                 }
                 else{
                     android.util.Log.d("nat", "data not being created?");
-                        Comments.Comment(userID, eventID, Content, 0, null, Anon);
+                      //  Comments.Comment(userID, eventID, Content, 0, null, Anon);
                         int count = mutableData.getValue(Integer.class);
                         mutableData.setValue(count + 1);
                     }

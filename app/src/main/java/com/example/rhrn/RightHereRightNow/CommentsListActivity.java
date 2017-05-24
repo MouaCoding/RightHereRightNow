@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rhrn.RightHereRightNow.custom.view.UserEventView;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 public class CommentsListActivity extends FragmentActivity {
 
     private Button newComment;
-    private ImageButton backButton;
+    private Button backButton;
     private Button postButton;
     private CheckBox anon;
     private EditText content;
@@ -80,11 +81,21 @@ public class CommentsListActivity extends FragmentActivity {
             postButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mAdapter.clear();
+                    //mAdapter.clear();
+                    boolean Anon = anon.isChecked();
                     String temp = content.getText().toString();
                     temp = temp.trim();
                     if(temp.length() > 0) {
                         if(type == 2){
+
+                            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Comments");
+                            DatabaseReference reference = rootRef.child(ID).push();
+                            String key = reference.getKey();
+                            DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(ID).child(key);
+                            Comments cmmnt = new Comments(currUsr, key, temp, ID, 0, 0, 0, Anon, ServerValue.TIMESTAMP);
+                            createdComment.setValue(cmmnt);
+                            mComments.add(cmmnt);
+                            mAdapter.notifyDataSetChanged();
                             Event.Comment(currUsr,ID, temp, 0, null, anon.isChecked());
                         }
 
@@ -95,10 +106,10 @@ public class CommentsListActivity extends FragmentActivity {
 
                     }
                     content.setText("");
-                    getComments(ID);
+                   // getComments(ID);
                 }
             });
-            backButton = (ImageButton) findViewById(R.id.comment_back_button);
+            backButton = (Button) findViewById(R.id.comment_back_button);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
