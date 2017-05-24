@@ -87,6 +87,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -715,6 +716,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 }
                 else if (i == R.id.logout) {
                     logout = 1;
+                    // TODO delete token
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("Messages_"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
