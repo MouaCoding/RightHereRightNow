@@ -104,17 +104,15 @@ public class UserEventView extends FrameLayout {
                 if(Likes.hasLiked(2, EventID, currUsr )){
                     likeButton.setColorFilter(R.color.colorTextDark);
                     Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                    FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
-                    Event.changeCount("likes", EventID, false);
-                    getEvent(EventID);
+                    Event.Unlike(EventID, currUsr);
+                    updateCounts(EventID);
 
                 }
                 else{
                     likeButton.setColorFilter(R.color.crimson);
-                    Likes.Like(2, EventID, currUsr);
-                    Event.changeCount("likes", EventID, true);
                     Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                    getEvent(EventID);
+                    Event.Like(EventID, currUsr);
+                    updateCounts(EventID);
                 }
             }
         });
@@ -127,7 +125,9 @@ public class UserEventView extends FrameLayout {
                 Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", EventID.toString());
+                intent.putExtra("type", 2);
                 context.startActivity(intent);
+                updateCounts(EventID);
 
             }
         });
@@ -135,7 +135,8 @@ public class UserEventView extends FrameLayout {
         shareButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: increment shares, implement sharing
+                Event.Share(EventID, currUsr);
+                updateCounts(EventID);
             }
         });
     }
@@ -151,6 +152,20 @@ public class UserEventView extends FrameLayout {
                     EventID = eventID;
                 }catch(Exception e){}
 
+            }
+        });
+    }
+
+    public void updateCounts(final String eventID){
+        Event.requestEvent(eventID, "authToken", new Event.EventReceivedListener() {
+            @Override
+            public void onEventReceived(Event... events) {
+                Event ev = events[0];
+                try{
+                    likesCount.setText(Integer.toString(ev.likes));
+                    commentsCount.setText(Integer.toString(ev.comments));
+                    sharesCount.setText(String.valueOf(ev.shares));
+                } catch(Exception e){}
             }
         });
     }

@@ -3,9 +3,11 @@ package com.example.rhrn.RightHereRightNow.firebase_entry;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.firebase.client.ServerValue;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
@@ -163,6 +165,108 @@ public class Event {
 
         });
 
+    }
+
+    public static void Like(final String eventID, final String currUsr){
+        FirebaseDatabase.getInstance().getReference("Event").child(eventID).child("likes").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    if(!Likes.hasLiked(2, eventID, currUsr)) {
+                        Likes.Like(2, eventID, currUsr);
+                        int count = mutableData.getValue(Integer.class);
+                        mutableData.setValue(count + 1);
+                    }
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+    }
+
+    public static void Unlike(final String eventID, final String currUsr){
+        FirebaseDatabase.getInstance().getReference("Event").child(eventID).child("likes").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    if(Likes.hasLiked(2, eventID, currUsr)){
+                        Likes.Unlike(2, eventID, currUsr);
+                        int count = mutableData.getValue(Integer.class);
+                        mutableData.setValue(count - 1);
+                    }
+
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+
+    }
+
+    public static void Comment(final String userID, final String eventID, final String Content, final int Order, final String responseID, final boolean Anon){
+        android.util.Log.d("nat", "inComment");
+        FirebaseDatabase.getInstance().getReference("Event").child(eventID).child("comments").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    android.util.Log.d("nat", "data not being recognized?");
+                    mutableData.setValue(0);
+                }
+                else{
+                    android.util.Log.d("nat", "data not being created?");
+                        Comments.Comment(userID, eventID, Content, 0, null, Anon);
+                        int count = mutableData.getValue(Integer.class);
+                        mutableData.setValue(count + 1);
+                    }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+
+    }
+    public static void Share(final String eventID, final String currUsr){
+        FirebaseDatabase.getInstance().getReference("Event").child(eventID).child("shares").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    Shares.Share(2, eventID, currUsr);
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count + 1);
+
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
     }
 
 }
