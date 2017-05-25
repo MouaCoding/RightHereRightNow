@@ -58,8 +58,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class MessageListActivity extends AppCompatActivity {
     private ImageView addMessage; // treating this as a button
     private ListView mListView; //List of messages
-    private ArrayList<User> mUsers;
-    private UserAdapter mAdapter;
+    public ArrayList<User> mUsers;
+    public UserAdapter mAdapter;
     private ImageButton backButton, menuButton;
     public App mApp;
     Bundle extra;
@@ -116,6 +116,8 @@ public class MessageListActivity extends AppCompatActivity {
                 finish();
             }
         });
+        mAdapter = new UserAdapter(MessageListActivity.this, mUsers);
+        mListView.setAdapter(mAdapter);
 
         //Should display all the messages the user has
         extra = getIntent().getBundleExtra("extra");
@@ -129,10 +131,15 @@ public class MessageListActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
+        MessageListActivity.this.invalidateOptionsMenu();
         if(requestCode == NEW_MESSAGE && resultCode == Activity.RESULT_OK) {
-            //TODO: Update message list after user finishes chat activity
-            //mAdapter = new UserAdapter(MessageListActivity.this, mUsers);
-            //mAdapter.notifyDataSetChanged();
+            if (data != null) {
+                User a=new User(null,null,data.getStringExtra("name"),data.getStringExtra("handle"),null,null,null,null,null,null,0,0,0);
+                try{a.ProfilePicture = data.getStringExtra("profile");}catch (Exception e){}
+                mUsers.add(a);
+                mAdapter.notifyDataSetChanged();
+            }
+
         }
     }
 
@@ -507,6 +514,8 @@ public class MessageListActivity extends AppCompatActivity {
     }
 
 
-
+    public interface UserCallback{
+        void onUsersMessaged(User user);
+    }
 
 }

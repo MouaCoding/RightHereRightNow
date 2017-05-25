@@ -15,6 +15,10 @@
         app:itemTextColor="@color/colorAccent"
         app:menu="@menu/top_navigation_menu"
         />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/testimage"/>
 
 
     <com.google.android.gms.maps.MapView

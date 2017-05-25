@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -35,7 +36,7 @@ import java.util.Map;
  * Created by Matt on 3/8/2017.
  */
 
-public class NewMessageActivity extends ChatActivity{
+public class NewMessageActivity extends MessageListActivity {
     public Button send;
     public ImageButton backButton;
     public EditText sendTo,
@@ -46,6 +47,7 @@ public class NewMessageActivity extends ChatActivity{
     public ArrayList<User> userArray;
     AutoCompleteTextView autoCompleteTextView;
     UserAdapter userAdapter;
+    String mConvoId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,9 +121,9 @@ public class NewMessageActivity extends ChatActivity{
         msg.setMessage(contentOfMessage);
 
         //set the sender to the sender's id
-        msg.setSender(mRecipient);
+        msg.setSender(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userKey = user.getUid();
         final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
         //query based on the receiver's handle
@@ -142,10 +144,14 @@ public class NewMessageActivity extends ChatActivity{
                                 //get the conversation id through here!
                                 msg.setReceiver(receiver.uid);
                                 mConvoId = userKey + receiver.uid;
-                                String[] ids = {mRecipient, receiver.uid};
+                                String[] ids = {user.getUid(), receiver.uid};
                                 Arrays.sort(ids);
                                 mConvoId = ids[0] + ids[1];
-                                mUsers.add(receiver);
+                                Intent i =new Intent();
+                                i.putExtra("name", receiver.DisplayName);
+                                i.putExtra("handle", receiver.handle);
+                                try{i.putExtra("profile", receiver.ProfilePicture);}catch (Exception e){}
+                                setResult(RESULT_OK, i);
                             }
                             if (receiverID != null)
                                 rootRef.child(userKey).child("UsersMessaged").child(receiverID).setValue(true);
@@ -170,6 +176,7 @@ public class NewMessageActivity extends ChatActivity{
                 });
 
     }
+
 
 
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.util.Log;
@@ -59,10 +61,14 @@ import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
@@ -79,6 +85,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -88,6 +96,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -127,19 +138,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     public static final String TAG = MapsFragment.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private int radius = 1000;
+    public int radius = 1000;
     private FloatingActionButton button;
     private Menu menu;
 
     private double kmToMiles = 0.621371;
-    private double curLatitude;
-    private double curLongitude;
+    public double curLatitude;
+    public double curLongitude;
     private boolean first = true;
 
     private String curUserID;
     private GeoLocation curLocation;
 
-    private DatabaseReference   eventsOnMap,
+    public DatabaseReference   eventsOnMap,
                                 postsOnMap;
 
     public BottomNavigationView topNavigationView;
@@ -149,19 +160,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     Marker ourLoc;
     Circle removeCircle;
 
-    GeoQuery eventQuery;
-    GeoQuery postQuery;
+    public GeoQuery eventQuery;
+    public GeoQuery postQuery;
 
-    private Bitmap Marker;
+    public Bitmap Marker;
 
-    private HashMap<Marker, String> eventMarkerKeys = new HashMap<Marker, String>();
-    private HashMap<String, Marker> eventKeyMarkers = new HashMap<String, Marker>();
-    private HashMap<Marker, String> postMarkerKeys  = new HashMap<Marker, String>();
-    private HashMap<String, Marker> postKeyMarkers  = new HashMap<String, Marker>();
+    public HashMap<Marker, String> eventMarkerKeys = new HashMap<Marker, String>();
+    public HashMap<String, Marker> eventKeyMarkers = new HashMap<String, Marker>();
+    public HashMap<Marker, String> postMarkerKeys  = new HashMap<Marker, String>();
+    public HashMap<String, Marker> postKeyMarkers  = new HashMap<String, Marker>();
 
     //Globals related to on map long click
     private LinearLayout layoutToAdd;
     private int inflateButtons = 0;
+
+    //Uploading to fb
+    // creating an instance of Firebase Storage
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    //creating a storage reference.
+    StorageReference storageRef = storage.getReferenceFromUrl("gs://righthererightnow-72e20.appspot.com");
+    Uri filePath;
 
 
     @Override
@@ -369,20 +387,44 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         });
 
 
-        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, "ChIJ81PH6Kw3hYARqfmp8MV8-mk").setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+
+
+        /*
+        //////Save an image of the city using Google's Metadata
+
+        PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
+        result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
-            public void onResult(PlacePhotoMetadataResult placePhotoMetadataResult) {
+            public void onResult(PlaceLikelihoodBuffer placeLikelihoods) {
+                for (PlaceLikelihood placeLikelihood : placeLikelihoods) {
+                    Place place = placeLikelihood.getPlace();
+                    Log.d("idddd", place.getId());
+                }
+                placeLikelihoods.release();
+            }
+        });
+
+
+
+        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, "ChIJIQBpAG2ahYAR_6128GcTUEo").setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+            @Override
+            public void onResult(final PlacePhotoMetadataResult placePhotoMetadataResult) {
                 if (placePhotoMetadataResult.getStatus().isSuccess()) {
-                    PlacePhotoMetadataBuffer photoMetadata = placePhotoMetadataResult.getPhotoMetadata();
-                    PlacePhotoMetadata placePhotoMetadata = photoMetadata.get(0);
+                    final PlacePhotoMetadataBuffer photoMetadata = placePhotoMetadataResult.getPhotoMetadata();
+                    final PlacePhotoMetadata placePhotoMetadata = photoMetadata.get(0);
                     final String photoDetail = placePhotoMetadata.toString();
                     placePhotoMetadata.getPhoto(mGoogleApiClient).setResultCallback(new ResultCallback<PlacePhotoResult>() {
                         @Override
                         public void onResult(PlacePhotoResult placePhotoResult) {
                             if (placePhotoResult.getStatus().isSuccess()) {
-                                Log.d("loaded", "Photo "+photoDetail+" loaded");
+                                Log.d("Photo", "Photo "+photoDetail+" loaded");
+                                try {
+                                    //converts the bitmap to uri,
+                                    filePath = getImageUri(getApplicationContext(), placePhotoResult.getBitmap());
+                                    uploadToFirebase(photoDetail);
+                                } catch(Exception e){}
                             } else {
-                                Log.d("nope", "Photo "+photoDetail+" failed to load");
+                                Log.d("Photo", "Photo "+photoDetail+" failed to load");
                             }
                         }
                     });
@@ -392,8 +434,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         });
+*/
+
+
+
+
+
+
+
+
 
     }
+
+
+
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -407,6 +462,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 //if it cannot, then it requests for the location from client
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             } else {
+
+
+
                 //set the map to the current location
                 handleNewLocation(location);
             }
@@ -699,7 +757,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             public boolean onMenuItemClick(MenuItem item) {
                 int i = item.getItemId();
                 if (i == R.id.action1) {
-                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Local Post and Events in a List.",Toast.LENGTH_LONG).show();
+                    listView();
                     return true;
                 }
                 else if (i == R.id.action2){
@@ -1036,4 +1095,63 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             }
         });
     }
+
+    public void listView()
+    {
+        final FragmentManager manager = getActivity().getSupportFragmentManager();
+        if (manager.findFragmentById(R.id.map_as_list) != null)
+            manager.beginTransaction()
+                    .replace(R.id.map_as_list, new MapListFragment())
+                    .addToBackStack(null)
+                    .commit();
+        else
+            manager.beginTransaction()
+                    .add(R.id.map_as_list, new MapListFragment())
+                    .addToBackStack(null)
+                    .commit();
+    }
+
+
+    public void uploadToFirebase(String photoDetail){
+        //create the profile picture name using their uid + .jpg
+        String childFile = photoDetail + ".jpg";
+
+        //If the file was chosen from gallery then != null
+        if(filePath != null) {
+            //Create child using the above string
+            StorageReference fileRef = storageRef.child(childFile);
+            //Create the upload using built-in UploadTask
+            UploadTask uploadTask = fileRef.putFile(filePath);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //Toast.makeText(getApplicationContext(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                    //Set the download URL
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    //Store URL under the current user
+                    FirebaseDatabase.getInstance().getReference().child("City")
+                            .child("Davis").child("Picture").setValue(downloadUrl.toString());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    //failed to upload
+
+               }
+            });
+        }
+        else {
+            //no image to upload
+        }
+    }
+
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        if(path != null) return Uri.parse(path);
+        else return null;
+    }
+
 }

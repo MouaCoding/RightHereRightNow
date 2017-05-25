@@ -9,6 +9,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/send_button"
         android:id="@+id/newMessageHeader">
 
         <ImageButton
@@ -62,12 +63,15 @@
             android:hint="@string/send_to"
             android:ems="10"
             android:id="@+id/send_to_handle"
+            android:visibility="gone"
             android:layout_weight="1" />
+
         <AutoCompleteTextView
             android:id="@+id/autoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
+            android:background="@drawable/rect_edittext"
             android:hint="@string/filterByHandle"
             />
     </LinearLayout>

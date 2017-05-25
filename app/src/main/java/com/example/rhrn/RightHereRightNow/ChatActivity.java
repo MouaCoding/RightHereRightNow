@@ -235,4 +235,5 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
         });
         popup.show();
     }
+
 }

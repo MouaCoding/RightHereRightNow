@@ -361,19 +361,20 @@ public class NotificationFragment extends Fragment {
                     final User usr = dataSnapshot.getValue(User.class);
                     mUsers.add(usr);
 
-                    mmAdapter = new MessageListActivity.UserAdapter(getContext(), mUsers);
-                    list.setAdapter(mmAdapter);
-                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent(getContext(), ViewUserActivity.class);
-                            intent.putExtra("otherUserID", mUsers.get(position).uid);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            getContext().startActivity(intent);
-                        }
-                    });
-                    userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("NumberFollowing").setValue(mUsers.size());
-
+                    try{
+                        mmAdapter = new MessageListActivity.UserAdapter(getContext(), mUsers);
+                        list.setAdapter(mmAdapter);
+                        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                                intent.putExtra("otherUserID", mUsers.get(position).uid);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                getContext().startActivity(intent);
+                            }
+                        });
+                        userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("NumberFollowing").setValue(mUsers.size());
+                    }catch(Exception e){}
                 }
             }
             @Override
