@@ -126,10 +126,12 @@
     <string name="filter5">Other</string>
     <string name="done_filter">Done</string>
     <string name="choose_filter">Choose Type</string>
-    <string name="filterByHandle">Or Choose User</string>
+    <string name="filterByHandle">Choose User</string>
 
     <string name="event_type">Event Type</string>
     <string name="view_event_content">Event Content...</string>
     <string name="refresh">Refresh</string>
     <string name="comments_section">Comments</string>
+    <string name="hyperlocale">HyperLocale List</string>
+    <string name="map_event">Events</string>
 </resources>

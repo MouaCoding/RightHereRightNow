@@ -6,7 +6,7 @@
     <stroke android:width="2dp"
         android:color="@color/MainRed"/>
 
-    <corners android:radius="3dp" />
+    <corners android:radius="1dp" />
 
     <gradient   android:startColor="#C8C8C8"
         android:endColor="#FFFFFF"
