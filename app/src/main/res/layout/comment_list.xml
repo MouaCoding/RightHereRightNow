@@ -7,16 +7,12 @@
     android:orientation="vertical"
     tools:context=".ChatActivity">
 
-    <ImageButton
+    <Button
         android:id="@+id/comment_back_button"
-        android:layout_width="70dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
         android:layout_weight="4.70"
-        android:padding="8dp"
-        app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+        android:text="Back" />
 
     <ListView
         android:id="@+id/comment_list_view"

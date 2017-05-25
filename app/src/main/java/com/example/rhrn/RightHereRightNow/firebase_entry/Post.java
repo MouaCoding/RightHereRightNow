@@ -5,6 +5,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 /**
@@ -75,6 +77,108 @@ public class Post {
     public static interface PostReceivedListener {
         public void onPostReceived(Post... posts);
     }
+
+    public static void Like(final String postID, final String currUsr){
+        FirebaseDatabase.getInstance().getReference("Post").child(postID).child("likes").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    if(!Likes.hasLiked(1, postID, currUsr)) {
+                        Likes.Like(1, postID, currUsr);
+                        int count = mutableData.getValue(Integer.class);
+                        mutableData.setValue(count + 1);
+                    }
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+    }
+
+    public static void Unlike(final String postID, final String currUsr){
+        FirebaseDatabase.getInstance().getReference("Post").child(postID).child("likes").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    if(Likes.hasLiked(1, postID, currUsr)){
+                        Likes.Unlike(1, postID, currUsr);
+                        int count = mutableData.getValue(Integer.class);
+                        mutableData.setValue(count - 1);
+                    }
+
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+
+    }
+
+    public static void Comment(final String postID){
+        android.util.Log.d("nat", "inComment");
+        FirebaseDatabase.getInstance().getReference("Post").child(postID).child("comments").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    android.util.Log.d("nat", "data not being recognized?");
+                    mutableData.setValue(0);
+                }
+                else{
+                    android.util.Log.d("nat", "data not being created?");
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count + 1);
+                }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+
+    }
+    public static void Share(final String postID, final String currUsr){
+        FirebaseDatabase.getInstance().getReference("Post").child(postID).child("shares").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    Shares.Share(1, postID, currUsr);
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count + 1);
+
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
 
 
     public void setComments(int comments) {

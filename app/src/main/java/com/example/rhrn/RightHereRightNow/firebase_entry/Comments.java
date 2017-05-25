@@ -1,8 +1,10 @@
 package com.example.rhrn.RightHereRightNow.firebase_entry;
 
 
+import com.firebase.client.ServerValue;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
@@ -103,35 +105,12 @@ public class Comments {
         this.order = order;
     }
 
-    public static void changeCount(String type, String commentID, String PostID, final boolean inc) {
-
-        FirebaseDatabase.getInstance().getReference("Comments").child(PostID).child(commentID).child(type).runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                if(mutableData.getValue() == null){
-                    mutableData.setValue(0);
-
-                }
-                else {
-                    int count = mutableData.getValue(Integer.class);
-                    if(inc){
-                        mutableData.setValue(count + 1);
-                    }
-                    else{
-                        mutableData.setValue(count - 1);
-                    }
-
-
-                }
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-            }
-
-        });
+    public static void Comment(String userID, String postID, String Content, int Order, String responseID, boolean Anon) {
+        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Comments");
+        DatabaseReference reference = rootRef.child(postID).push();
+        String key = reference.getKey();
+        DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child(key);
+        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, Anon, ServerValue.TIMESTAMP));
 
     }
 }

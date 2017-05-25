@@ -27,8 +27,8 @@ public class Likes {
         rootref.setValue(new Likes());
 
     }
-    public static void unlike(int type, String id, String user) {
-
+    public static void Unlike(int type, String id, String user) {
+        FirebaseDatabase.getInstance().getReference("Likes").child(id).child(user).removeValue();
 
     }
 

@@ -1,5 +1,7 @@
 package com.example.rhrn.RightHereRightNow.firebase_entry;
 
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -105,7 +107,19 @@ public class User {
         public void onUserReceived(User... users);
     }
 
+    public static void incLike(final String Usr){
+        FirebaseDatabase.getInstance().getReference("User").child(Usr).child("LikesReceived").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                return null;
+            }
 
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
     /*public String getFirstName() {
         return FirstName;
     }
