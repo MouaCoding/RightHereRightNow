@@ -23,6 +23,7 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.firebase.client.ServerValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -212,7 +214,7 @@ public class CommentsListActivity extends FragmentActivity {
                         handle.setText(usr.handle);
                         try {
                             //Convert the URL to aa Bitmap using function, then set the profile picture
-                            miniProfilePicture.setImageBitmap(getBitmapFromURL(usr.ProfilePicture));
+                            Picasso.with(getContext()).load(usr.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicture);
                         }catch (Exception e){}
                     }
                 });

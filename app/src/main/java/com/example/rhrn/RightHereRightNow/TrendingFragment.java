@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -219,13 +220,13 @@ public class TrendingFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if(Likes.hasLiked(2, EventID, currUsr )){
-                        likeButton.setColorFilter(R.color.colorTextDark);
+                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
                         Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
                         FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
                         Event.changeCount("likes", EventID, false);
                     }
                     else{
-                        likeButton.setColorFilter(R.color.crimson);
+                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
                         Likes.Like(2, EventID, currUsr);
                         Event.changeCount("likes", EventID, true);
                         Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();

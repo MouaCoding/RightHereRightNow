@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +69,7 @@ public class ProfilePageFragment extends Fragment {
             about;
     public EditText profileMain;
     public ImageView profilePicture, edit,editDisplay;
-    public ImageButton changeProfile;
+    public ImageButton changeProfile, options;
 
     //Posts
     public ImageView miniProfilePicture;
@@ -119,6 +121,13 @@ public class ProfilePageFragment extends Fragment {
         numberFollowing = (TextView) r.findViewById(R.id.profile_number_following);
         numLikes = (TextView) r.findViewById(R.id.profile_karma_value);
         about = (TextView) r.findViewById(R.id.profile_about_text);
+        options = (ImageButton) r.findViewById(R.id.profile_app_bar_options);
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu();
+            }
+        });
         profilePicture = (ImageView) r.findViewById(R.id.profile_picture);
         profilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,4 +377,44 @@ public class ProfilePageFragment extends Fragment {
                     }
                 });
     }
+
+    private void popupMenu()
+    {
+        PopupMenu popup = new PopupMenu(getActivity(), options);
+        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.action1) {
+                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action2){
+                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action3) {
+                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.action4) {
+                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                else if (i == R.id.logout) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
+    }
+
 }

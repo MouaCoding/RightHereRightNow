@@ -4,22 +4,8 @@
     android:layout_height="match_parent"
     android:layout_gravity="bottom|center_horizontal"
     android:id="@+id/post_event_create"
+    android:background="@drawable/top_nav_color"
     android:orientation="vertical">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/post_event_create_shim_fragment_container">
-
-        <!--
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/primary_map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-            -->
-
-    </FrameLayout>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -40,5 +26,20 @@
             android:id="@+id/create_event_button"
             android:layout_weight="1" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/post_event_create_shim_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!--
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/primary_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+            -->
+
+    </FrameLayout>
 
 </LinearLayout>

@@ -16,7 +16,8 @@
         android:layout_gravity="left|center_vertical"
         android:padding="8dp"
         android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp" />
+        android:layout_marginRight="4dp"
+        />
 
 
     <ScrollView
@@ -31,21 +32,30 @@
             <!-- Optional if user evented an image, it should display at the top-->
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/view_user_eventimage"
+                android:visibility="gone"
                 android:src="@drawable/ic_media_route_connecting_00_light"
-                />
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                /><requestFocus />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="?android:attr/listDivider" />
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/event_description"
+                android:layout_marginTop="15dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/view_event_content"
                 android:text="Content"
                 android:textSize="20sp"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="15dp"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -88,9 +98,13 @@
                         />
 
                 </LinearLayout>
-
-
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="15dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -210,16 +224,24 @@
                 android:layout_height="1dp"
                 android:background="?android:attr/listDivider" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/comments_section"
+                android:layout_marginTop="15dp"/>
+
             <ListView
                 android:id ="@+id/view_event_comment_list"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"/>
 
             <include
                 layout="@layout/comment_post_make"
                 android:layout_weight="4.70"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="50dp"
                  />
 
         </LinearLayout>

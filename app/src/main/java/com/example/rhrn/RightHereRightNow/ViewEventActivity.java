@@ -15,6 +15,7 @@ import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.example.rhrn.RightHereRightNow.util.LocationUtils;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -58,7 +59,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_event);
+        setContentView(R.layout.framed_view_event);
         content = (TextView) findViewById(R.id.view_event_content);
         likes = (TextView) findViewById(R.id.user_event_like_count);
         comments = (TextView) findViewById(R.id.user_event_comment_count);
@@ -66,6 +67,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         shares = (TextView) findViewById(R.id.user_event_share_count);
         displayName = (TextView) findViewById(R.id.view_user_displayname);
         eventImage = (ImageView) findViewById(R.id.view_user_eventimage);
+        eventImage.requestFocus();
         commentList = (ListView) findViewById(R.id.view_event_comment_list);
         handle = (TextView) findViewById(R.id.view_user_handle);
         commentArray = new ArrayList<>();
@@ -111,13 +113,15 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                 handle.setText(event.handle);
                 try{
                     if(event.userProfilePicture != null)
-                        Picasso.with(getBaseContext()).load(event.userProfilePicture).into(profile);
+                        Picasso.with(getBaseContext()).load(event.userProfilePicture).transform(new CircleTransform()).into(profile);
                     else
                         Picasso.with(getBaseContext()).load(R.mipmap.ic_launcher).into(profile);
                 } catch(Exception e){}
                 try{
-                    if(event.ProfilePicture != null)
+                    if(event.ProfilePicture != null){
                         Picasso.with(getBaseContext()).load(event.ProfilePicture).into(eventImage);
+                        eventImage.setVisibility(View.VISIBLE);
+                    }
                     else
                         Picasso.with(getBaseContext()).load(R.drawable.images).into(eventImage);
                 } catch(Exception e){}

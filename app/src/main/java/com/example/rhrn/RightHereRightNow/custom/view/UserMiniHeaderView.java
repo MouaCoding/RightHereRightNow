@@ -182,4 +182,3 @@ public class UserMiniHeaderView extends FrameLayout {
     }
 
 }
-// TODO use params to get user data and fill fields.
