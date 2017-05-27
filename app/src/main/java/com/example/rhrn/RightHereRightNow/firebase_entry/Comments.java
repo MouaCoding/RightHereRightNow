@@ -113,4 +113,36 @@ public class Comments {
         createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, Anon, ServerValue.TIMESTAMP));
 
     }
+
+    public static void changeCount(String type, String commentID, String PostID, final boolean inc) {
+
+        FirebaseDatabase.getInstance().getReference("Comments").child(PostID).child(commentID).child(type).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+
+                }
+                else {
+                    int count = mutableData.getValue(Integer.class);
+                    if(inc){
+                        mutableData.setValue(count + 1);
+                    }
+                    else{
+                        mutableData.setValue(count - 1);
+                    }
+
+
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+
+        });
+
+    }
 }

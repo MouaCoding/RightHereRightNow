@@ -189,7 +189,7 @@ public class UserEventView extends FrameLayout {
         });
     }
 
-    public void setEvent(Event ev){
+    public void setEvent(final Event ev){
                 eventMakerHeader.getUser(ev.ownerID);
                 eventTitleView.setText(ev.eventName);
                 eventStartTimeView.setText(ev.startTime);

@@ -18,10 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rhrn.RightHereRightNow.custom.view.UserEventView;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
-import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.firebase.client.ServerValue;
@@ -46,6 +44,7 @@ import java.util.ArrayList;
 
 public class CommentsListActivity extends FragmentActivity {
 
+    private Button newComment;
     private Button backButton;
     private Button postButton;
     private CheckBox anon;
@@ -54,8 +53,9 @@ public class CommentsListActivity extends FragmentActivity {
     private ArrayList<Comments> mComments;
     private commentsAdapter mAdapter;
     public App mApp;
-    public String currUsr = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+    String postID;
+    int CommentCount;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -63,85 +63,59 @@ public class CommentsListActivity extends FragmentActivity {
 
 
 
-        final String ID = getIntent().getStringExtra("postID");
-        final int type = getIntent().getIntExtra("type", 0);
+        postID = getIntent().getStringExtra("postID");
+        CommentCount = getIntent().getIntExtra("numComments", 0);
 
 
 
-            setContentView(R.layout.comment_list);
+        setContentView(R.layout.comment_list);
 
 
-            mApp = (App)getApplicationContext();
-            mComments = new ArrayList<>();
-            mListView = (ListView)findViewById(R.id.comment_list_view);
-            mAdapter = new commentsAdapter(getBaseContext(),mComments);
-            mListView.setAdapter(mAdapter);
-            anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
-            content = (EditText) findViewById(R.id.Comment_content);
+        mApp = (App)getApplicationContext();
+        mComments = new ArrayList<>();
+        mListView = (ListView)findViewById(R.id.comment_list_view);
+        mAdapter = new commentsAdapter(getBaseContext(),mComments);
+        mListView.setAdapter(mAdapter);
+        anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
+        content = (EditText) findViewById(R.id.Comment_content);
 
-            postButton = (Button) findViewById(R.id.Comment_post_button);
-            postButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //mAdapter.clear();
-                    boolean Anon = anon.isChecked();
-                    String temp = content.getText().toString();
-                    temp = temp.trim();
-                    if(temp.length() > 0) {
-                        if(type == 2){
-
-                            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Comments");
-                            DatabaseReference reference = rootRef.child(ID).push();
-                            String key = reference.getKey();
-                            DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(ID).child(key);
-                            Comments cmmnt = new Comments(currUsr, key, temp, ID, 0, 0, 0, Anon, ServerValue.TIMESTAMP);
-                            createdComment.setValue(cmmnt);
-                            mComments.add(cmmnt);
-                            mAdapter.notifyDataSetChanged();
-                            Event.Comment(ID);
-
-                        }
-                        if(type == 1){
-                            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Comments");
-                            DatabaseReference reference = rootRef.child(ID).push();
-                            String key = reference.getKey();
-                            DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(ID).child(key);
-                            Comments cmmnt = new Comments(currUsr, key, temp, ID, 0, 0, 0, Anon, ServerValue.TIMESTAMP);
-                            createdComment.setValue(cmmnt);
-                            mComments.add(cmmnt);
-                            mAdapter.notifyDataSetChanged();
-                            Post.Comment(ID);
-                        }
-
-
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), "Please Enter Comment", Toast.LENGTH_SHORT).show();
-
-                    }
-                    content.setText("");
-                   // getComments(ID);
+        postButton = (Button) findViewById(R.id.Comment_post_button);
+        postButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapter.clear();
+                String temp = content.getText().toString();
+                temp = temp.trim();
+                if(temp.length() > 0) {
+                    createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID, temp, 0, null);
+                    Event.changeCount("comments", postID, true);
+                    getComments(postID, true);
                 }
-            });
-            backButton = (Button) findViewById(R.id.comment_back_button);
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
+                else{
+                    Toast.makeText(getApplicationContext(), "Please Enter Comment", Toast.LENGTH_SHORT).show();
                 }
-            });
-            getComments(ID);
-        }
+            }
+        });
+        backButton = (Button) findViewById(R.id.comment_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        getComments(postID, true);
+    }
 
 
 
 
 
 
-    public void getComments(String postID){
+    public void getComments(String postID, boolean first){
+        Toast.makeText(getApplicationContext(), "Got here", Toast.LENGTH_LONG).show();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments").child(postID);
         ref.orderByChild("timestamp_create");
-
+        if(first) {
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -162,6 +136,40 @@ public class CommentsListActivity extends FragmentActivity {
 
 
             });
+
+        }
+        else{
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Comments comment = dataSnapshot.getValue(Comments.class);
+                    mAdapter.add(comment);
+
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
     }
 
     public void createComment(String userID, String postID, String Content, int Order, String responseID) {
@@ -207,22 +215,22 @@ public class CommentsListActivity extends FragmentActivity {
             }
             else {
                 try{
-                User.requestUser(comment.ownerID.toString(), "auth", new User.UserReceivedListener() {
-                    @Override
-                    public void onUserReceived(User... users) {
-                        User usr = users[0];
+                    User.requestUser(comment.ownerID.toString(), "auth", new User.UserReceivedListener() {
+                        @Override
+                        public void onUserReceived(User... users) {
+                            User usr = users[0];
 
                             displayName.setText(usr.DisplayName);
                             handle.setText(usr.handle);
-                        try {
-                            if(usr.ProfilePicture != null)
-                                //Convert the URL to aa Bitmap using function, then set the profile picture
-                                Picasso.with(getContext()).load(usr.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicture);
-                            else
-                                Picasso.with(getContext()).load(R.drawable.happy).transform(new CircleTransform()).into(miniProfilePicture);
-                        }catch (Exception e){}
-                    }
-                });
+                            try {
+                                if(usr.ProfilePicture != null)
+                                    //Convert the URL to aa Bitmap using function, then set the profile picture
+                                    Picasso.with(getContext()).load(usr.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicture);
+                                else
+                                    Picasso.with(getContext()).load(R.drawable.happy).transform(new CircleTransform()).into(miniProfilePicture);
+                            }catch (Exception e){}
+                        }
+                    });
                 }catch (Exception e){}
             }
 
