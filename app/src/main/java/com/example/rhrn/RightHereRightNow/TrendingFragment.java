@@ -1,10 +1,12 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -56,11 +58,22 @@ public class TrendingFragment extends Fragment {
     public ArrayList<City> cityArray;
     public CityAdapter cityAdapter;
     public ProgressDialog pd;
+    public FloatingActionButton filterCity;
+    private static final int FILTER_CITY = 0;
+    public int filteredCity = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View r = (View) inflater.inflate(R.layout.trending_posts, container, false);
 
+        filterCity = (FloatingActionButton) r.findViewById(R.id.filter_city);
+        filterCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), FilterCityActivity.class);
+                startActivityForResult(intent,FILTER_CITY);
+            }
+        });
         global = (Button) r.findViewById(R.id.global_button);
         global.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +81,7 @@ public class TrendingFragment extends Fragment {
                 eventList = new ArrayList<>();
                 eventAdapter = new EventAdapter(getContext(), eventList);
                 trendingList.setAdapter(eventAdapter);
+                filterCity.setVisibility(View.GONE);
                 queryAllEvents();
             }
         });
@@ -79,9 +93,11 @@ public class TrendingFragment extends Fragment {
                 //eventAdapter = new EventAdapter(getContext(), eventList);
                 //trendingList.setAdapter(eventAdapter);
                 cityArray = new ArrayList<>();
-                showProgressDialog();
-                queryCityEvents();
-                pd.dismiss();
+                filterCity.setVisibility(View.VISIBLE);
+                //if(filteredCity == 0)
+                //    queryCityEvents();
+                //else
+                    queryFilteredCities();
             }
         });
 
@@ -97,6 +113,21 @@ public class TrendingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == FILTER_CITY && resultCode == Activity.RESULT_OK) {
+
+            filteredCity = 1;
+            Toast.makeText(getContext(),"City Settings Changed.",Toast.LENGTH_SHORT).show();
+
+            cityArray = new ArrayList<>();
+            queryFilteredCities();
+            cityAdapter.notifyDataSetChanged();
+
+        }
     }
 
     public void queryAllEvents()
@@ -411,12 +442,6 @@ public class TrendingFragment extends Fragment {
         }
 
 
-
-
-
-
-
-
 }
 
 
@@ -469,6 +494,26 @@ public class TrendingFragment extends Fragment {
     {
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         RootRef.child("City").orderByChild("CityName").startAt("A").endAt("Z").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot1) {
+                for (DataSnapshot dataSnapshot : dataSnapshot1.getChildren()) {
+                    City cty = dataSnapshot.getValue(City.class);
+                    cityArray.add(cty);
+                }
+                cityAdapter = new CityAdapter(getContext(),cityArray);
+                cityList.setAdapter(cityAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    public void queryFilteredCities()
+    {
+        DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference().child("CityFilters");
+        RootRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .orderByChild("CityName").startAt("A").endAt("Z").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot1) {
