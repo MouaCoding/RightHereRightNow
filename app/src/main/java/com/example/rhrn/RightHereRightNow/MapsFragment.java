@@ -508,28 +508,34 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
             if (addresses.size() > 0 & addresses != null) {
 
-
-
-
-
-
-
-
-
                 MenuItem cityMenuItem = topNavigationView.getMenu().findItem(R.id.current_city);
                 cityMenuItem.setTitle(addresses.get(0).getLocality());
                 final DatabaseReference cityRef = FirebaseDatabase.getInstance().getReference().child("City").child(addresses.get(0).getLocality());
-                cityRef.child(addresses.get(0).getLocality()).addListenerForSingleValueEvent(new ValueEventListener() {
+                cityRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) //if city is already in the database
-                            ;//do nothing
+                        if (dataSnapshot.exists()) { //if city is already in the database
+                            //TODO: If you can think of a better way to do city pictures, then implement it
+                            if((dataSnapshot.child("CityName").getValue()).equals("Davis"))
+                                cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/davis.jpg?alt=media&token=9a201385-b9e7-400c-9e63-dee572aebce3");
+                            if((dataSnapshot.child("CityName").getValue()).equals("Sacramento"))
+                                cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/sacramento.jpg?alt=media&token=1beabb71-309a-4661-8456-73403c27c933");
+                            if((dataSnapshot.child("CityName").getValue()).equals("Galt"))
+                                cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/galt.jpg?alt=media&token=967f71cf-8a6c-4025-b9bd-62ac03f798ec");
+                            if((dataSnapshot.child("CityName").getValue()).equals("Dixon"))
+                                cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/dixon.jpg?alt=media&token=b4d67a69-4016-405c-9a91-1c8d94195440");
+                            if((dataSnapshot.child("CityName").getValue()).equals("Vacaville"))
+                                cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/vacaville.jpg?alt=media&token=89ec6f85-edb5-4428-8384-ceb554e14113");
+
+                        }
                         else {
                             //city does not exist, so create new
-                            City city = new City(addresses.get(0).getLocality(),
-                                    addresses.get(0).getAdminArea(),
-                                    addresses.get(0).getCountryName(), " ", "0");
-                            cityRef.setValue(city);
+                            try { //Sometimes, the city doesnt exist on google maps, so try.
+                                City city = new City(addresses.get(0).getLocality(),
+                                        addresses.get(0).getAdminArea(),
+                                        addresses.get(0).getCountryName(), " ", "0");
+                                cityRef.setValue(city);
+                            } catch(Exception e){}
                         }
                     }
 

@@ -246,7 +246,6 @@ public class MessageListActivity extends AppCompatActivity {
         //Get the row id associated with the specified position in the list.
         @Override
         public long getItemId(int position) {
-
             return position;
         }
 
@@ -333,27 +332,11 @@ public class MessageListActivity extends AppCompatActivity {
     private void popupMenu()
     {
         PopupMenu popup = new PopupMenu(MessageListActivity.this, menuButton);
-        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+        popup.getMenuInflater().inflate(R.menu.other_options_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 int i = item.getItemId();
-                if (i == R.id.action1) {
-                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action2){
-                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action3) {
-                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action4) {
-                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.logout) {
+                if (i == R.id.logout) {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
