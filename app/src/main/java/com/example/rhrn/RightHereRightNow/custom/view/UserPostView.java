@@ -17,6 +17,8 @@ import com.example.rhrn.RightHereRightNow.App;
 import com.example.rhrn.RightHereRightNow.CommentsListActivity;
 import com.example.rhrn.RightHereRightNow.NotificationFragment;
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+
 
 /**
  * Created by Bradley Wang on 3/6/2017.
@@ -47,6 +50,8 @@ public class UserPostView extends FrameLayout {
     private ImageButton shareButton;
     private ImageButton options;
 
+    private String PostID;
+    private String currUsr = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
 
     public UserPostView(Context context) {
         super(context);
@@ -70,14 +75,52 @@ public class UserPostView extends FrameLayout {
 
         likeButton = (ImageButton) findViewById(R.id.user_post_like_button);
         commentButton = (ImageButton) findViewById(R.id.user_post_comment_button);
+        shareButton = (ImageButton) findViewById(R.id.user_post_share_button);
+        likeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Likes.hasLiked(1, PostID, currUsr )){
+                    likeButton.setColorFilter(R.color.colorTextDark);
+                    Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                    Post.Unlike(PostID, currUsr);
+                    updateCounts(PostID);
+
+                }
+                else{
+                    likeButton.setColorFilter(R.color.crimson);
+                    Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                    Post.Like(PostID, currUsr);
+                    updateCounts(PostID);
+                }
+
+            }
+        });
         commentButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Context context = getContext();
+                Bundle params = new Bundle();
+                Intent intent = new Intent(context, CommentsListActivity.class);
+                intent.putExtra("postID", PostID.toString());
+                intent.putExtra("type", 1);
+                //context.startActivityForResult(intent, RC);
+                context.startActivity(intent);
+                updateCounts(PostID);
+
 
             }
         });
         shareButton = (ImageButton) findViewById(R.id.user_post_share_button);
         options = (ImageButton) findViewById(R.id.mini_profile_more_button);
+        shareButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Post.Share(PostID, currUsr);
+                updateCounts(PostID);
+            }
+        });
+
+
 
 
     }
@@ -87,6 +130,7 @@ public class UserPostView extends FrameLayout {
           @Override
           public void onPostReceived(Post... posts) {
               Post pst = posts[0];
+              PostID = postID;
               setPost(pst);
           }
       });
@@ -225,4 +269,19 @@ public class UserPostView extends FrameLayout {
     }
 
 
+    public void updateCounts(final String postID){
+        Post.requestPost(postID, "authToken", new Post.PostReceivedListener() {
+            @Override
+            public void onPostReceived(Post... posts) {
+                Post pst = posts[0];
+                try{
+                    likesCount.setText(Integer.toString(pst.likes));
+                    commentsCount.setText(Integer.toString(pst.comments));
+                    sharesCount.setText(String.valueOf(pst.shares));
+
+
+                } catch(Exception e){}
+            }
+        });
+    }
 }

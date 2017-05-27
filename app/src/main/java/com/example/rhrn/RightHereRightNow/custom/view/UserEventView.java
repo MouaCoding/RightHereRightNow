@@ -38,6 +38,7 @@ import com.squareup.picasso.Picasso;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -58,6 +59,8 @@ public class UserEventView extends FrameLayout {
     private TextView commentsCount;
     private TextView sharesCount;
     int usrLikes;
+
+    private static final int RC = 1;
 
 
     private Spinner eventRSVPStateSpinner;
@@ -111,17 +114,18 @@ public class UserEventView extends FrameLayout {
                 if(Likes.hasLiked(2, EventID, currUsr )){
                     likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
                     Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                    FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
-                    Event.changeCount("likes", EventID, false);
-                    getEvent(EventID);
+                    Event.Unlike(EventID, currUsr);
+                    updateCounts(EventID);
 
                 }
                 else{
                     likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
                     Likes.Like(2, EventID, currUsr);
                     Event.changeCount("likes", EventID, true);
+
                     Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                    getEvent(EventID);
+                    Event.Like(EventID, currUsr);
+                    updateCounts(EventID);
                 }
             }
         });
@@ -134,7 +138,10 @@ public class UserEventView extends FrameLayout {
                 Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", EventID.toString());
+                intent.putExtra("type", 2);
+                //context.startActivityForResult(intent, RC);
                 context.startActivity(intent);
+                updateCounts(EventID);
 
             }
         });
@@ -142,7 +149,8 @@ public class UserEventView extends FrameLayout {
         shareButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: increment shares, implement sharing
+                Event.Share(EventID, currUsr);
+                updateCounts(EventID);
             }
         });
 
@@ -164,8 +172,24 @@ public class UserEventView extends FrameLayout {
         });
     }
 
-    public void setEvent(final Event ev){
 
+    public void updateCounts(final String eventID){
+        Event.requestEvent(eventID, "authToken", new Event.EventReceivedListener() {
+            @Override
+            public void onEventReceived(Event... events) {
+                Event ev = events[0];
+                try{
+                    likesCount.setText(Integer.toString(ev.likes));
+                    commentsCount.setText(Integer.toString(ev.comments));
+                    sharesCount.setText(String.valueOf(ev.shares));
+
+
+                } catch(Exception e){}
+            }
+        });
+    }
+
+    public void setEvent(Event ev){
                 eventMakerHeader.getUser(ev.ownerID);
                 eventTitleView.setText(ev.eventName);
                 eventStartTimeView.setText(ev.startTime);
