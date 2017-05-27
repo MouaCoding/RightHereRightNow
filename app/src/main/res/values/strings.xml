@@ -136,4 +136,6 @@
     <string name="map_event">Events</string>
     <string name="DeletePost">Delete Post</string>
     <string name="ReportPost">Report This Post</string>
+    <string name="DeleteEvent">Delete This Event</string>
+    <string name="ReportEvent">Report This Event</string>
 </resources>
