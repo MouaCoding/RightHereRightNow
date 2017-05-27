@@ -134,4 +134,6 @@
     <string name="comments_section">Comments</string>
     <string name="hyperlocale">HyperLocale List</string>
     <string name="map_event">Events</string>
+    <string name="DeletePost">Delete Post</string>
+    <string name="ReportPost">Report This Post</string>
 </resources>

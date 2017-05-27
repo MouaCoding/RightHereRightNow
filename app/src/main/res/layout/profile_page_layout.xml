@@ -21,7 +21,11 @@
 
             <include layout="@layout/profile_main_layout" />
 
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                />
 
             <TextView
                 android:text="Posts"
@@ -38,8 +42,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
-
-            <!--450-->
 
             <View
                 android:layout_width="match_parent"
