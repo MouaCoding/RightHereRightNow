@@ -202,22 +202,28 @@ public class CommentsListActivity extends FragmentActivity {
             if(comment.isAnon == true){
                 displayName.setText("Anonymous");
                 handle.setText("");
-                miniProfilePicture.setImageResource(R.drawable.happy);
+                Picasso.with(getContext()).load(R.drawable.happy).transform(new CircleTransform()).into(miniProfilePicture);
                 miniProfilePicture.setClickable(false);
             }
             else {
+                try{
                 User.requestUser(comment.ownerID.toString(), "auth", new User.UserReceivedListener() {
                     @Override
                     public void onUserReceived(User... users) {
                         User usr = users[0];
-                        displayName.setText(usr.DisplayName);
-                        handle.setText(usr.handle);
+
+                            displayName.setText(usr.DisplayName);
+                            handle.setText(usr.handle);
                         try {
-                            //Convert the URL to aa Bitmap using function, then set the profile picture
-                            Picasso.with(getContext()).load(usr.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicture);
+                            if(usr.ProfilePicture != null)
+                                //Convert the URL to aa Bitmap using function, then set the profile picture
+                                Picasso.with(getContext()).load(usr.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicture);
+                            else
+                                Picasso.with(getContext()).load(R.drawable.happy).transform(new CircleTransform()).into(miniProfilePicture);
                         }catch (Exception e){}
                     }
                 });
+                }catch (Exception e){}
             }
 
             commentText.setText(comment.content);

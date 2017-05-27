@@ -1,14 +1,20 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -21,6 +27,7 @@ import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,19 +48,20 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Matt on 4/2/2017.
  */
 
 public class NotificationFragment extends Fragment {
-
+    static App app = (App) getApplicationContext();
     public Button following, you;
     public EditText search;
     private TextWatcher searchFriendsFilter, searchPostsByFriends;
     private ArrayList<Post> mPosts;
     private ArrayList<User> mUsers;
-    private PostAdapter mAdapter;
+    private static PostAdapter mAdapter;
     private MessageListActivity.UserAdapter mmAdapter;
     private ListView list, userList;
     NotificationManager notificationManager;
@@ -136,6 +144,8 @@ public class NotificationFragment extends Fragment {
         private ImageButton likeButton;
         private ImageButton commentButton;
         private ImageButton shareButton;
+        private ImageButton options;
+        int postDeleted = 0;
 
         PostAdapter(Context context, ArrayList<Post> users){
             super(context, R.layout.user_post_framed_layout/*user_item*/, R.id.mini_name, users);
@@ -156,7 +166,8 @@ public class NotificationFragment extends Fragment {
             TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
 
             setButtons(convertView, post.postID, post.ownerID);
-            setExtraValues(post.postID, post.ownerID);
+            if(postDeleted == 0)
+                setExtraValues(post.postID, post.ownerID);
 
             displayNameView.setText(post.DisplayName);
             userHandleView.setText(post.handle);
@@ -188,7 +199,7 @@ public class NotificationFragment extends Fragment {
             return convertView;
         }
 
-        public void setButtons(View view, final String PostID, final String currUsr)
+        public void setButtons(final View view, final String postID, final String ownerID)
         {
             likeButton = (ImageButton) view.findViewById(R.id.user_post_like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
@@ -211,6 +222,14 @@ public class NotificationFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     //TODO: increment shares, implement sharing
+                }
+            });
+
+            options = (ImageButton) view.findViewById(R.id.mini_profile_more_button);
+            options.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupMenu(view, ownerID, postID);
                 }
             });
 
@@ -289,6 +308,120 @@ public class NotificationFragment extends Fragment {
                 public void onCancelled(DatabaseError databaseError) {}
             });
         }
+
+        private void popupMenu(View view, final String ownerID, final String postID)
+        {
+//            MenuItem menuItem = (MenuItem) view.findViewById(R.id.delete);
+            options = (ImageButton) view.findViewById(R.id.mini_profile_more_button);
+            final PopupMenu popup = new PopupMenu(view.getContext(), options);
+            popup.getMenuInflater().inflate(R.menu.post_options, popup.getMenu());
+            if(String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getUid()).equals(ownerID))
+                popup.getMenu().findItem(R.id.delete).setVisible(true);
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    int i = item.getItemId();
+                    if (i == R.id.delete) {
+                        promptDelete(ownerID, postID);
+                        return true;
+                    }
+                    if (i == R.id.report_post) {
+                        Toast.makeText(getApplicationContext(),"Reporting Post...",Toast.LENGTH_SHORT).show();
+                        reportPost(ownerID, postID);
+                        return true;
+                    }
+                    else {
+                        return onMenuItemClick(item);
+                    }
+                }
+            });
+            popup.show();
+        }
+
+        private void promptDelete(final String ownerID, final String postID)
+        {
+            android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getContext());
+            dlgAlert.setMessage("Are you sure you want to delete this post? This action cannot be undone!");
+            dlgAlert.setTitle("Delete Post?");
+
+            dlgAlert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    //Perform delete
+                    Toast.makeText(getContext(), "Deleting Post...", Toast.LENGTH_SHORT).show();
+                    FirebaseDatabase.getInstance().getReference().child("Post").child(postID).removeValue();
+                    FirebaseDatabase.getInstance().getReference().child("PostLocations").child(postID).removeValue();
+                    FirebaseDatabase.getInstance().getReference().child("NotificationRequest").child(ownerID).child(postID).removeValue();
+                    Toast.makeText(getContext(), "Post Deleted!", Toast.LENGTH_SHORT).show();
+
+                    postDeleted = 1;
+                    mAdapter.notifyDataSetChanged();
+                    //TODO: update likes received...
+                }
+            });
+
+            //if user cancels
+            dlgAlert.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                }
+            });
+
+            dlgAlert.setCancelable(true);
+            dlgAlert.create();
+            dlgAlert.show();
+        }
+
+        private void reportPost(final String ownerID, final String postID)
+        {
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Post");
+            ref.child(postID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if((String) dataSnapshot.child("content").getValue() == null) return;
+                    else{
+                        if(!dataSnapshot.child("numberOfReports").exists())
+                            ref.child(postID).child("numberOfReports").setValue(0);
+                        else {
+                            long numberOfReports = (long) dataSnapshot.child("numberOfReports").getValue();
+                            //parse whitespace
+                            String[] content = ((String) dataSnapshot.child("content").getValue()).split("\\s+");
+                            if (hasBadWord(content)) {
+                                numberOfReports++;
+                                ref.child(postID).child("numberOfReports").setValue(numberOfReports);
+                                //TODO: set the amount of reports before a post is deleted
+                                if(numberOfReports > 5) {
+
+                                    FirebaseDatabase.getInstance().getReference().child("Post").child(postID).removeValue();
+                                    FirebaseDatabase.getInstance().getReference().child("PostLocations").child(postID).removeValue();
+                                    FirebaseDatabase.getInstance().getReference().child("NotificationRequest").child(ownerID).child(postID).removeValue();
+                                }
+                            } //Has bad word
+                        }//else number of reports exists
+                    }//else post has content
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        private boolean hasBadWord(String[] content)
+        {
+            int i = 0;
+            for(String badWord : app.badWords){
+                content[i] = content[i].toLowerCase();
+                if(content[i].contains(badWord)) {
+                    Toast.makeText(getContext(), "Post has been reported.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                i++;
+            }
+            Toast.makeText(getContext(), "There is nothing to report.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
     }
 
     public void getPosts(String following)
@@ -398,6 +531,16 @@ public class NotificationFragment extends Fragment {
                         mPosts.add(0, posts);
                         mAdapter = new PostAdapter(getContext(), mPosts);
                         list.setAdapter(mAdapter);
+                        //TODO Not working....... - MM
+                        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent(getActivity(),ViewPostActivity.class);
+                                intent.putExtra("postid",mPosts.get(position).postID);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                getContext().startActivity(intent);
+                            }
+                        });
                     } catch (Exception e) {}
                 }
             }
