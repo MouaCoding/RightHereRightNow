@@ -309,7 +309,7 @@ public class NotificationFragment extends Fragment {
             });
         }
 
-        private void popupMenu(View view, final String ownerID, final String postID)
+        public void popupMenu(View view, final String ownerID, final String postID)
         {
 //            MenuItem menuItem = (MenuItem) view.findViewById(R.id.delete);
             options = (ImageButton) view.findViewById(R.id.mini_profile_more_button);
@@ -337,7 +337,7 @@ public class NotificationFragment extends Fragment {
             popup.show();
         }
 
-        private void promptDelete(final String ownerID, final String postID)
+        public void promptDelete(final String ownerID, final String postID)
         {
             android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getContext());
             dlgAlert.setMessage("Are you sure you want to delete this post? This action cannot be undone!");
@@ -371,7 +371,7 @@ public class NotificationFragment extends Fragment {
             dlgAlert.show();
         }
 
-        private void reportPost(final String ownerID, final String postID)
+        public void reportPost(final String ownerID, final String postID)
         {
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Post");
             ref.child(postID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -390,7 +390,6 @@ public class NotificationFragment extends Fragment {
                                 ref.child(postID).child("numberOfReports").setValue(numberOfReports);
                                 //TODO: set the amount of reports before a post is deleted
                                 if(numberOfReports > 5) {
-
                                     FirebaseDatabase.getInstance().getReference().child("Post").child(postID).removeValue();
                                     FirebaseDatabase.getInstance().getReference().child("PostLocations").child(postID).removeValue();
                                     FirebaseDatabase.getInstance().getReference().child("NotificationRequest").child(ownerID).child(postID).removeValue();
@@ -407,7 +406,7 @@ public class NotificationFragment extends Fragment {
             });
         }
 
-        private boolean hasBadWord(String[] content)
+        public boolean hasBadWord(String[] content)
         {
             int i = 0;
             for(String badWord : app.badWords){

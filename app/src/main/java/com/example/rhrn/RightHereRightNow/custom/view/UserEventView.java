@@ -1,22 +1,26 @@
 package com.example.rhrn.RightHereRightNow.custom.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.rhrn.RightHereRightNow.App;
 import com.example.rhrn.RightHereRightNow.CommentsListActivity;
 import com.example.rhrn.RightHereRightNow.R;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
@@ -26,6 +30,7 @@ import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
@@ -35,14 +40,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Bradley Wang on 3/6/2017.
  */
 
 public class UserEventView extends FrameLayout {
+    public App app = (App) getApplicationContext();
     private UserMiniHeaderView eventMakerHeader;
-
     private ImageView eventMiniImageView;
     private TextView eventTitleView;
     private TextView eventStartTimeView;
@@ -61,11 +67,10 @@ public class UserEventView extends FrameLayout {
     private String currUsr = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
 
 
-
-
     private ImageButton likeButton;
     private ImageButton commentButton;
     private ImageButton shareButton;
+    private ImageButton options;
 
     public UserEventView(Context context) {
         super(context);
@@ -140,6 +145,8 @@ public class UserEventView extends FrameLayout {
                 //TODO: increment shares, implement sharing
             }
         });
+
+        options = (ImageButton) findViewById(R.id.mini_profile_more_button);
     }
 
     public void getEvent(final String eventID) {
@@ -157,7 +164,7 @@ public class UserEventView extends FrameLayout {
         });
     }
 
-    public void setEvent(Event ev){
+    public void setEvent(final Event ev){
 
                 eventMakerHeader.getUser(ev.ownerID);
                 eventTitleView.setText(ev.eventName);
@@ -174,7 +181,136 @@ public class UserEventView extends FrameLayout {
                     else
                         Picasso.with(getContext()).load(R.drawable.images).transform(new CircleTransform()).into(eventMiniImageView);
                 }catch (Exception e){}
+
+        options.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu(getRootView(),ev.ownerID,ev.eventID);
             }
+        });
+    }
+
+
+    public void popupMenu(View view, final String ownerID, final String eventID)
+    {
+        options = (ImageButton) view.findViewById(R.id.mini_profile_more_button);
+        final PopupMenu popup = new PopupMenu(view.getContext(), options);
+        popup.getMenuInflater().inflate(R.menu.event_options, popup.getMenu());
+        if(String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getUid()).equals(ownerID))
+            popup.getMenu().findItem(R.id.delete_event).setVisible(true);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.delete_event) {
+                    promptDelete(ownerID, eventID);
+                    return true;
+                }
+                if (i == R.id.report_event) {
+                    Toast.makeText(getApplicationContext(),"Reporting Event...",Toast.LENGTH_SHORT).show();
+                    reportEvent(ownerID, eventID);
+                    return true;
+                }
+                else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
+    }
+
+    public void promptDelete(final String ownerID, final String eventID)
+    {
+        android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getContext());
+        dlgAlert.setMessage("Are you sure you want to delete this event? This action cannot be undone!");
+        dlgAlert.setTitle("Delete Event?");
+
+        dlgAlert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //Perform delete
+                Toast.makeText(getContext(), "Deleting Event...", Toast.LENGTH_SHORT).show();
+                FirebaseDatabase.getInstance().getReference().child("Event").child(eventID).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("EventLocations").child(eventID).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("OtherEventLocations").child(eventID).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("PartyEventLocations").child(eventID).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("SportEventLocations").child(eventID).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("EducationEventLocations").child(eventID).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("ClubEventEventLocations").child(eventID).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("Likes").child(eventID).removeValue();
+
+
+                Toast.makeText(getContext(), "Event Deleted!", Toast.LENGTH_SHORT).show();
+                //TODO: update likes received...
+            }
+        });
+
+        //if user cancels
+        dlgAlert.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+
+        dlgAlert.setCancelable(true);
+        dlgAlert.create();
+        dlgAlert.show();
+    }
+
+    public void reportEvent(final String ownerID, final String eventID)
+    {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Event");
+        ref.child(eventID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if((String) dataSnapshot.child("description").getValue() == null) return;
+                else{
+                    if(!dataSnapshot.child("numberOfReports").exists())
+                        ref.child(eventID).child("numberOfReports").setValue(0);
+                    else {
+                        long numberOfReports = (long) dataSnapshot.child("numberOfReports").getValue();
+                        //parse whitespace
+                        String[] content = ((String) dataSnapshot.child("description").getValue()).split("\\s+");
+                        if (hasBadWord(content)) {
+                            numberOfReports++;
+                            ref.child(eventID).child("numberOfReports").setValue(numberOfReports);
+                            //TODO: set the amount of reports before a event is deleted
+                            if(numberOfReports > 5) {
+                                FirebaseDatabase.getInstance().getReference().child("Event").child(eventID).removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("EventLocations").child(eventID).removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("OtherEventLocations").child(eventID).removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("PartyEventLocations").child(eventID).removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("SportEventLocations").child(eventID).removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("EducationEventLocations").child(eventID).removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("ClubEventEventLocations").child(eventID).removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("Likes").child(eventID).removeValue();
+                            }
+                        } //Has bad word
+                    }//else number of reports exists
+                }//else event has content
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public boolean hasBadWord(String[] content)
+    {
+        int i = 0;
+        for(String badWord : app.badWords){
+            content[i] = content[i].toLowerCase();
+            if(content[i].contains(badWord)) {
+                Toast.makeText(getContext(), "Event has been reported.", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            i++;
+        }
+        Toast.makeText(getContext(), "There is nothing to report.", Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
 
 
     public static Bitmap getBitmapFromURL(String src) {
