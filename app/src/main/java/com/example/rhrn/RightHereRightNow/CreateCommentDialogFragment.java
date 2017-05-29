@@ -38,27 +38,22 @@ public class CreateCommentDialogFragment extends DialogFragment {
 
 
     @Override
-    public View onCreateView (LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View r = inflater.inflate(R.layout.comment_post_make, container, false);
 
         Button postComment = (Button) r.findViewById(R.id.Comment_post_button);
         CheckBox anon = (CheckBox) r.findViewById(R.id.comment_anonymous_check);
         commentContent = (EditText) r.findViewById(R.id.Comment_content);
         firebaseAuth = FirebaseAuth.getInstance();
-        //User = firebaseAuth.getCurrentUser().getUid();
-
         postComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String temp = commentContent.getText().toString();
-                createComment(firebaseAuth.getCurrentUser().getUid(), PostID,  temp, Order, ResponseID);
+                createComment(firebaseAuth.getCurrentUser().getUid(), PostID, temp, Order, ResponseID);
                 Event.changeCount("comments", PostID, true);
                 dismiss();
             }
         });
-
-
-
         return r;
 
 
@@ -69,10 +64,9 @@ public class CreateCommentDialogFragment extends DialogFragment {
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference rootreference = FirebaseDatabase.getInstance().getReference("Comments").child(postID);
         DatabaseReference reference;
-        if(Order == 0){
+        if (Order == 0) {
             reference = rootRef.child("comment").push();
-        }
-        else{
+        } else {
             reference = rootRef.child("comment").child(postID).child(responseID).push();
         }
         String key = reference.getKey();
@@ -87,6 +81,12 @@ public class CreateCommentDialogFragment extends DialogFragment {
     public void getPostID(String postID) {
         PostID = postID;
     }
-    public void getOrder(int order){Order = order;}
-    public void getResponseID(String respid){ResponseID = respid;}
+
+    public void getOrder(int order) {
+        Order = order;
+    }
+
+    public void getResponseID(String respid) {
+        ResponseID = respid;
+    }
 }

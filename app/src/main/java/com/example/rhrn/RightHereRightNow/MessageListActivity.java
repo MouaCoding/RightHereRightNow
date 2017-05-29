@@ -84,19 +84,28 @@ public class MessageListActivity extends AppCompatActivity {
 
         searchFriendsFilter = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {try{mAdapter.getFilter().filter(s);}catch (Exception e){}}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    mAdapter.getFilter().filter(s);
+                } catch (Exception e) {
+                }
+            }
+
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         };
         search = (EditText) findViewById(R.id.search_friends);
         search.addTextChangedListener(searchFriendsFilter);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); // hide keyboard until clicked
 
-        mApp = (App)getApplicationContext();
+        mApp = (App) getApplicationContext();
         mUsers = new ArrayList<>();
-        mListView = (ListView)findViewById(R.id.message_list_view);
+        mListView = (ListView) findViewById(R.id.message_list_view);
 
 //        mListView.setAdapter(mAdapter);
         addMessage = (ImageView) findViewById(R.id.create_new_message);
@@ -104,7 +113,7 @@ public class MessageListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), NewMessageActivity.class);
-                startActivityForResult(intent,NEW_MESSAGE);
+                startActivityForResult(intent, NEW_MESSAGE);
                 //startActivity(intent);
             }
         });
@@ -121,7 +130,7 @@ public class MessageListActivity extends AppCompatActivity {
 
         //Should display all the messages the user has
         extra = getIntent().getBundleExtra("extra");
-        if(extra != null)
+        if (extra != null)
             getUsersMessaged();
         //TODO: Refresh list after messaging someone
         // else if(extra == null){
@@ -132,10 +141,13 @@ public class MessageListActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
         MessageListActivity.this.invalidateOptionsMenu();
-        if(requestCode == NEW_MESSAGE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == NEW_MESSAGE && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                User a=new User(null,null,data.getStringExtra("name"),data.getStringExtra("handle"),null,null,null,null,null,null,0,0,0);
-                try{a.ProfilePicture = data.getStringExtra("profile");}catch (Exception e){}
+                User a = new User(null, null, data.getStringExtra("name"), data.getStringExtra("handle"), null, null, null, null, null, null, 0, 0, 0);
+                try {
+                    a.ProfilePicture = data.getStringExtra("profile");
+                } catch (Exception e) {
+                }
                 mUsers.add(a);
                 mAdapter.notifyDataSetChanged();
             }
@@ -143,8 +155,7 @@ public class MessageListActivity extends AppCompatActivity {
         }
     }
 
-    public void getUsersMessaged()
-    {
+    public void getUsersMessaged() {
         final ArrayList<String> keys = (ArrayList<String>) extra.getSerializable("objects");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userKey = user.getUid();
@@ -156,8 +167,8 @@ public class MessageListActivity extends AppCompatActivity {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     User other = userSnapshot.getValue(User.class);
                     //iterate through UsersMessaged list, if matched then add to list of users messaged
-                    for(int i = 0; i < keys.size();i++){
-                        if(TextUtils.equals(other.uid, keys.get(i))) {
+                    for (int i = 0; i < keys.size(); i++) {
+                        if (TextUtils.equals(other.uid, keys.get(i))) {
                             mUsers.add(other);
                         }
                     }
@@ -167,9 +178,9 @@ public class MessageListActivity extends AppCompatActivity {
                 mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getApplicationContext(),ChatActivity.class);
-                        intent.putExtra(ChatActivity.RECEIVER_ID,mUsers.get(position).uid);
-                        intent.putExtra("ReceiverName",mUsers.get(position).DisplayName);
+                        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                        intent.putExtra(ChatActivity.RECEIVER_ID, mUsers.get(position).uid);
+                        intent.putExtra("ReceiverName", mUsers.get(position).DisplayName);
                         //TODO: Add message preview
                         //intent.putExtra("MessageContent", messageContentHere);
                         startActivity(intent);
@@ -177,6 +188,7 @@ public class MessageListActivity extends AppCompatActivity {
                 });
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Unable to retrieve the users.
@@ -185,8 +197,7 @@ public class MessageListActivity extends AppCompatActivity {
 
     } //getAllUsers()
 
-    public void getCurrentUserInfo()
-    {
+    public void getCurrentUserInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userKey = user.getUid();
         final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
@@ -202,7 +213,7 @@ public class MessageListActivity extends AppCompatActivity {
                 Bundle extra = new Bundle();
                 extra.putSerializable("objects", keys);
                 Intent intent = new Intent(getApplicationContext(), MessageListActivity.class);
-                intent.putExtra("extra",extra);
+                intent.putExtra("extra", extra);
 
                 startActivity(intent);
 
@@ -329,8 +340,7 @@ public class MessageListActivity extends AppCompatActivity {
 
     }
 
-    private void popupMenu()
-    {
+    private void popupMenu() {
         PopupMenu popup = new PopupMenu(MessageListActivity.this, menuButton);
         popup.getMenuInflater().inflate(R.menu.other_options_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -339,12 +349,11 @@ public class MessageListActivity extends AppCompatActivity {
                 if (i == R.id.logout) {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear all activities above it
                     startActivity(intent);
                     finish();
                     return true;
-                }
-                else {
+                } else {
                     return onMenuItemClick(item);
                 }
             }
@@ -497,7 +506,7 @@ public class MessageListActivity extends AppCompatActivity {
     }
 
 
-    public interface UserCallback{
+    public interface UserCallback {
         void onUsersMessaged(User user);
     }
 

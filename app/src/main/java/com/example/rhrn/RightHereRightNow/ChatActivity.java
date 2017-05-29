@@ -31,15 +31,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-//import static com.example.rhrn.RightHereRightNow.firebaseEntry.Messages.STATUS_SENT;
-
-
 /**
  * Created by Matt on 3/2/2017.
  */
 
 public class ChatActivity extends MessageListActivity implements View.OnClickListener,
-        MessageSource.MessagesCallbacks{
+        MessageSource.MessagesCallbacks {
 
     public static final String USER_EXTRA = "USER";
     public static final String TAG = "ChatActivity";
@@ -77,20 +74,20 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
             }
         });
         receiverName = (TextView) findViewById(R.id.profile_name_chat);
-        if(getIntent().getExtras()!=null)
+        if (getIntent().getExtras() != null)
             receiverName.setText(getIntent().getExtras().getString("ReceiverName"));
-        mListView = (ListView)findViewById(R.id.message_list);
+        mListView = (ListView) findViewById(R.id.message_list);
         sender = new User();
         mMessages = new ArrayList<>();
         mUsers = new ArrayList<>();
         mAdapter = new MessagesAdapter(mMessages);
         mListView.setAdapter(mAdapter);
         //setTitle(mRecipient);
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        ImageButton backButton = (ImageButton)findViewById(R.id.back_button);
+        ImageButton backButton = (ImageButton) findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,25 +95,25 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
                 finish();
             }
         });
-        Button sendMessage = (Button)findViewById(R.id.send_message);
+        Button sendMessage = (Button) findViewById(R.id.send_message);
         sendMessage.setOnClickListener(this);
 
         FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
         mRecipient = fbuser.getUid();
 
         //Establish a link between two ids, this link will not only be unique
-        String receiverKey="";
+        String receiverKey = "";
         Bundle extras = getIntent().getExtras();
-        if(extras != null)
+        if (extras != null)
             receiverKey = extras.getString(RECEIVER_ID); // get the extra (receiver id) from previous activity
         String[] ids = {mRecipient, receiverKey};
         Arrays.sort(ids);
-        mConvoId = ids[0]+ids[1];
+        mConvoId = ids[0] + ids[1];
         mListener = MessageSource.addMessagesListener(mConvoId, this);
     }
 
     public void onClick(View v) {
-        EditText newMessageView = (EditText)findViewById(R.id.new_message);
+        EditText newMessageView = (EditText) findViewById(R.id.new_message);
         String newMessage = newMessageView.getText().toString();
         newMessageView.setText("");
         msg = new Messages();
@@ -134,6 +131,7 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
         mMessages.add(message);
         mAdapter.notifyDataSetChanged();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -141,64 +139,63 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
     }
 
     public class MessagesAdapter extends ArrayAdapter<Messages> {
-        MessagesAdapter(ArrayList<Messages> messages){
+        MessagesAdapter(ArrayList<Messages> messages) {
 
             super(ChatActivity.this, R.layout.msg_item, R.id.msg, messages);
         }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
             convertView = super.getView(position, convertView, parent);
             Messages message = getItem(position);
-            TextView nameView = (TextView)convertView.findViewById(R.id.msg);
+            TextView nameView = (TextView) convertView.findViewById(R.id.msg);
             nameView.setText(message.getMessage());
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)nameView.getLayoutParams();
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameView.getLayoutParams();
             int sdk = android.os.Build.VERSION.SDK_INT;
             //if the sender matches the id of the sender, then bubble appears right side and green
-            if ( message.getSender().equals(fbuser.getUid())){
-                    nameView.setBackground(getDrawable(R.drawable.bubble_right_green));
-                    layoutParams.gravity = Gravity.END;
-            //else it appears left side and gray
-                }else{
-                    nameView.setBackground(getDrawable(R.drawable.bubble_left_gray));
-                    layoutParams.gravity = Gravity.LEFT;
-                }
+            if (message.getSender().equals(fbuser.getUid())) {
+                nameView.setBackground(getDrawable(R.drawable.bubble_right_green));
+                layoutParams.gravity = Gravity.END;
+                //else it appears left side and gray
+            } else {
+                nameView.setBackground(getDrawable(R.drawable.bubble_left_gray));
+                layoutParams.gravity = Gravity.LEFT;
+            }
             nameView.setLayoutParams(layoutParams);
             return convertView;
         }
     }
 
-    public void getKeyFromFB()
-    {
+    public void getKeyFromFB() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         users = FirebaseDatabase.getInstance().getReference("User");
         //found user and link the message to their sender id
         users.getRef().getRef().orderByChild("Sender ID").equalTo(user.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    Messages m = userSnapshot.getValue(Messages.class);
-                    String[] ids = {mRecipient, m.getReceiver()};
-                    Arrays.sort(ids);
-                    mConvoId = ids[0]+ids[1];
-                    //Log.d(sender.id,"SENDER ID!");
-                    //Log.d(key,"key !");
-                }
-                    MessageSource.saveMessage(msg, mConvoId);
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            Messages m = userSnapshot.getValue(Messages.class);
+                            String[] ids = {mRecipient, m.getReceiver()};
+                            Arrays.sort(ids);
+                            mConvoId = ids[0] + ids[1];
+                            //Log.d(sender.id,"SENDER ID!");
+                            //Log.d(key,"key !");
+                        }
+                        MessageSource.saveMessage(msg, mConvoId);
 
-            }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        System.out.println("The read failed: " + databaseError.getCode());
+                    }
+                });
 
     }
 
-    private void popupMenu()
-    {
+    private void popupMenu() {
         PopupMenu popup = new PopupMenu(ChatActivity.this, options);
         popup.getMenuInflater().inflate(R.menu.other_options_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -207,12 +204,11 @@ public class ChatActivity extends MessageListActivity implements View.OnClickLis
                 if (i == R.id.logout) {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear all activities above it
                     startActivity(intent);
                     finish();
                     return true;
-                }
-                else {
+                } else {
                     return onMenuItemClick(item);
                 }
             }

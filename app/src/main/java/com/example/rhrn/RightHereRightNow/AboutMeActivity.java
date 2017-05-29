@@ -23,10 +23,11 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Matt on 3/27/2017.
  */
 
-public class AboutMeActivity extends AppCompatActivity{
+public class AboutMeActivity extends AppCompatActivity {
     public ImageButton back;
     public Button done;
     public EditText content;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,10 +68,10 @@ public class AboutMeActivity extends AppCompatActivity{
         });
 
     }
-    void populateContent()
-    {
+
+    void populateContent() {
         FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference users= FirebaseDatabase.getInstance().getReference("User");
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("User");
         users.orderByChild("Email").equalTo(fbuser.getEmail())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -80,6 +81,7 @@ public class AboutMeActivity extends AppCompatActivity{
                             content.setText(temp.AboutMe);
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());

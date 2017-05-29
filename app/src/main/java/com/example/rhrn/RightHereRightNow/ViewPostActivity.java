@@ -66,7 +66,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
         //post_location.getMapAsync(this);
         //post_location.onCreate(savedInstanceState);
         String postid = null;
-        if(getIntent().getExtras()!=null) {
+        if (getIntent().getExtras() != null) {
             postid = getIntent().getExtras().getString("postid");
             populate(postid);
             populateComments(postid);
@@ -74,7 +74,6 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
             //getPostLocation(postid);
         }
         //createLoc = new LatLng(0,0);
-
 
 
     }
@@ -95,12 +94,13 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
                 comments.setText(Integer.toString(post.comments));
                 shares.setText(Integer.toString(post.shares));
                 displayName.setText(post.DisplayName);
-                try{
-                    if(post.ProfilePicture != null)
+                try {
+                    if (post.ProfilePicture != null)
                         Picasso.with(getBaseContext()).load(post.ProfilePicture).into(profile);
                     else
                         Picasso.with(getBaseContext()).load(R.mipmap.ic_launcher).into(profile);
-                } catch(Exception e){}
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -132,20 +132,19 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
-    public void populateComments(String postid)
-    {
+    public void populateComments(String postid) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comments").child(postid);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists())
+                if (!dataSnapshot.exists())
                     ;
-                else{
-                    for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
+                else {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Comments comments = dataSnapshot1.getValue(Comments.class);
                         commentArray.add(comments);
                     }
-                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(),commentArray);
+                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(), commentArray);
                     commentList.setAdapter(commentsAdapter);
                 }
             }

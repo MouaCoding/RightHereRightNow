@@ -60,21 +60,14 @@ public class CommentsListActivity extends FragmentActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         postID = getIntent().getStringExtra("postID");
         CommentCount = getIntent().getIntExtra("numComments", 0);
-
-
-
         setContentView(R.layout.comment_list);
 
-
-        mApp = (App)getApplicationContext();
+        mApp = (App) getApplicationContext();
         mComments = new ArrayList<>();
-        mListView = (ListView)findViewById(R.id.comment_list_view);
-        mAdapter = new commentsAdapter(getBaseContext(),mComments);
+        mListView = (ListView) findViewById(R.id.comment_list_view);
+        mAdapter = new commentsAdapter(getBaseContext(), mComments);
         mListView.setAdapter(mAdapter);
         anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
         content = (EditText) findViewById(R.id.Comment_content);
@@ -86,12 +79,11 @@ public class CommentsListActivity extends FragmentActivity {
                 mAdapter.clear();
                 String temp = content.getText().toString();
                 temp = temp.trim();
-                if(temp.length() > 0) {
+                if (temp.length() > 0) {
                     createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID, temp, 0, null);
                     Event.changeCount("comments", postID, true);
                     getComments(postID, true);
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Please Enter Comment", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -107,15 +99,11 @@ public class CommentsListActivity extends FragmentActivity {
     }
 
 
-
-
-
-
-    public void getComments(String postID, boolean first){
+    public void getComments(String postID, boolean first) {
         Toast.makeText(getApplicationContext(), "Got here", Toast.LENGTH_LONG).show();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments").child(postID);
         ref.orderByChild("timestamp_create");
-        if(first) {
+        if (first) {
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -123,49 +111,31 @@ public class CommentsListActivity extends FragmentActivity {
                         Comments comment = commentSnapshot.getValue(Comments.class);
                         mComments.add(comment);
                         mAdapter.notifyDataSetChanged();
-
                     }
-
-
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-
-
+                public void onCancelled(DatabaseError databaseError) {}
             });
 
-        }
-        else{
+        } else {
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Comments comment = dataSnapshot.getValue(Comments.class);
                     mAdapter.add(comment);
-
                 }
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
 
                 @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
+                public void onChildRemoved(DataSnapshot dataSnapshot) {}
 
                 @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
+                public void onCancelled(DatabaseError databaseError) {}
             });
         }
 
@@ -177,10 +147,9 @@ public class CommentsListActivity extends FragmentActivity {
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference rootreference = FirebaseDatabase.getInstance().getReference("Comments").child(postID);
         DatabaseReference reference;
-        if(Order == 0){
+        if (Order == 0) {
             reference = rootRef.child("comment").push();
-        }
-        else{
+        } else {
             reference = rootRef.child("comment").child(postID).child(responseID).push();
         }
         String key = reference.getKey();
@@ -188,33 +157,29 @@ public class CommentsListActivity extends FragmentActivity {
         DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child(key);
         createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, false, ServerValue.TIMESTAMP));
         createdComment.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
-
-
-
     }
 
     public static class commentsAdapter extends ArrayAdapter<Comments> {
-        commentsAdapter(Context context, ArrayList<Comments> commentses){
-            super (context, R.layout.comment_post_display, R.id.comment_text, commentses);
+        commentsAdapter(Context context, ArrayList<Comments> commentses) {
+            super(context, R.layout.comment_post_display, R.id.comment_text, commentses);
         }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(int position, View convertView, ViewGroup parent) {
             convertView = super.getView(position, convertView, parent);
             final Comments comment = getItem(position);
             TextView commentText = (TextView) convertView.findViewById(R.id.comment_text);
             final TextView displayName = (TextView) convertView.findViewById(R.id.comment_simp_user_name);
             final TextView handle = (TextView) convertView.findViewById(R.id.comment_simp_user_handle);
-            final ImageView miniProfilePicture  = (ImageView) convertView.findViewById(R.id.comment_simp_user_image);
+            final ImageView miniProfilePicture = (ImageView) convertView.findViewById(R.id.comment_simp_user_image);
 
-
-            if(comment.isAnon == true){
+            if (comment.isAnon == true) {
                 displayName.setText("Anonymous");
                 handle.setText("");
                 Picasso.with(getContext()).load(R.drawable.happy).transform(new CircleTransform()).into(miniProfilePicture);
                 miniProfilePicture.setClickable(false);
-            }
-            else {
-                try{
+            } else {
+                try {
                     User.requestUser(comment.ownerID.toString(), "auth", new User.UserReceivedListener() {
                         @Override
                         public void onUserReceived(User... users) {
@@ -223,37 +188,21 @@ public class CommentsListActivity extends FragmentActivity {
                             displayName.setText(usr.DisplayName);
                             handle.setText(usr.handle);
                             try {
-                                if(usr.ProfilePicture != null)
+                                if (usr.ProfilePicture != null)
                                     //Convert the URL to aa Bitmap using function, then set the profile picture
                                     Picasso.with(getContext()).load(usr.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicture);
                                 else
                                     Picasso.with(getContext()).load(R.drawable.happy).transform(new CircleTransform()).into(miniProfilePicture);
-                            }catch (Exception e){}
+                            } catch (Exception e) {
+                            }
                         }
                     });
-                }catch (Exception e){}
+                } catch (Exception e) {
+                }
             }
 
             commentText.setText(comment.content);
             return convertView;
         }
-
-        //stackoverflow function
-        public Bitmap getBitmapFromURL(String src) {
-            try {
-                URL url = new URL(src);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
-            } catch( Exception e) {
-                return null;
-            }
-        }
-
     }
-
-
 }

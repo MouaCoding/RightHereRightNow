@@ -60,8 +60,6 @@ public class RegisterActivity extends LoginActivity {
     //create firebase auth object to store into database
     private FirebaseAuth firebaseAuth;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,7 +158,7 @@ public class RegisterActivity extends LoginActivity {
         //if handle does not have @, then append it and save to database
         if (!isValid(firstName, lastName, displayName, handle_, phone, email, password, city, state))
             return;
-        if(!handle_.contains("@"))
+        if (!handle_.contains("@"))
             handle_ = "@" + handle_;
 
 
@@ -218,7 +216,7 @@ public class RegisterActivity extends LoginActivity {
             setFocus(user_email);
             return false;
         }
-        if(password1.isEmpty()){
+        if (password1.isEmpty()) {
             user_password.setError(getString(R.string.error_field_required));
             setFocus(user_password);
             return false;
@@ -253,7 +251,10 @@ public class RegisterActivity extends LoginActivity {
         }
         checkIfHandleExists(handle1);
         //TODO: Password Check
-        if(password1.length() <= 4) {user_password.setError("At least 4 characters, 1 of which is a Number"); return false;}
+        if (password1.length() <= 4) {
+            user_password.setError("At least 4 characters, 1 of which is a Number");
+            return false;
+        }
         /*
         if(!city.matches(".*[a-zA-Z]+.*")) {user_city.setError("Invalid City"); return false;}
         if(!state.matches(".*[a-zA-Z]+.*") ) {user_state.setError("Invalid State"); return false;}
@@ -269,7 +270,7 @@ public class RegisterActivity extends LoginActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //if handle already exists in the database, then show error
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     handle.setError("Handle exists! Use a different handle.");
                     setFocus(handle);
                     //TODO: Return false when a handle exists in database already
@@ -285,8 +286,7 @@ public class RegisterActivity extends LoginActivity {
 
     }
 
-    public void setFocus(EditText editText)
-    {
+    public void setFocus(EditText editText) {
         if (editText.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }

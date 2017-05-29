@@ -1,6 +1,7 @@
 package com.example.rhrn.RightHereRightNow;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.firebase.client.Firebase;
 import com.crashlytics.android.Crashlytics;
@@ -18,7 +19,7 @@ public class App extends Application {
     private static final String TWITTER_KEY = "8Tyr4BWoGSNK1ezT2ifu21tkx";
     private static final String TWITTER_SECRET = "	8NxGsJeGtQEdKWrQJ5F5KCyd99Ciau1i79seMJcCyJE0jQ5veL";
 
-    public String[] badWords = {"b"};
+    public String[] badWords;
 
     @Override
     public void onCreate() {
@@ -27,6 +28,8 @@ public class App extends Application {
 
         Fabric.with(this, new Crashlytics(), new Twitter(authConfig));
         Firebase.setAndroidContext(this);
+
+        badWords = getResources().getStringArray(R.array.badwords);
     }
 
 }

@@ -41,7 +41,7 @@ public class MessageSource {
         sRef.child("Messages").child(conversationId).child(key).setValue(msg);
     }
 
-    public static MessagesListener addMessagesListener(String convoId,  MessagesCallbacks messagesCallbacks) {
+    public static MessagesListener addMessagesListener(String convoId, MessagesCallbacks messagesCallbacks) {
         MessagesListener listener = new MessagesListener(messagesCallbacks);
         sRef.child("Messages").child(convoId).addChildEventListener(listener);
         return listener;
@@ -50,7 +50,6 @@ public class MessageSource {
     public static void stop(MessagesListener listener) {
         sRef.removeEventListener(listener);
     }
-
 
 
     public static class MessagesListener implements ChildEventListener {
@@ -77,7 +76,7 @@ public class MessageSource {
                 e.printStackTrace();
             }
 
-            if(messagesCallbacks != null) {
+            if (messagesCallbacks != null) {
                 messagesCallbacks.onMessageAdded(message);
             }
         }

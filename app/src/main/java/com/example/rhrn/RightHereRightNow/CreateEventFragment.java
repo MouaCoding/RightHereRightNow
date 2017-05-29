@@ -70,25 +70,25 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class CreateEventFragment extends Fragment implements OnMapReadyCallback {
 
-    private ImageButton     chooseTheme,
-                            uploadPhoto;
-    private ImageView       eventImage;
-    private TextView        uploadPhotoText,
-                            chooseThemeText;
+    private ImageButton chooseTheme,
+            uploadPhoto;
+    private ImageView eventImage;
+    private TextView uploadPhotoText,
+            chooseThemeText;
 
-    private EditText        event_name,
-                            event_description,
-                            startDate,
-                            endDate,
-                            startTime,
-                            endTime,
-                            address;
+    private EditText event_name,
+            event_description,
+            startDate,
+            endDate,
+            startTime,
+            endTime,
+            address;
 
-    private TimePickerDialog   sTime,
-                               eTime;
+    private TimePickerDialog sTime,
+            eTime;
 
-    private DatePickerDialog   sDate,
-                                 eDate;
+    private DatePickerDialog sDate,
+            eDate;
 
 
     int currDay, currMonth, currYear, currHour, currMinute;
@@ -125,14 +125,14 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
 
         //Initializes each text view to the class's objects
         eventImage = (ImageView) r.findViewById(R.id.event_image);
-        event_name = (EditText)r.findViewById(R.id.event_name);
-        event_description = (EditText)r.findViewById(R.id.event_description);
-        startDate = (EditText)r.findViewById(R.id.editStartDate);
-        endDate = (EditText)r.findViewById(R.id.editEndDate);
-        startTime = (EditText)r.findViewById(R.id.editStartTime);
-        endTime = (EditText)r.findViewById(R.id.editEndTime);
-        address = (EditText)r.findViewById(R.id.editAddress);
-        chooseThemeText = (TextView) r.findViewById(R.id.event_choose_theme_text) ;
+        event_name = (EditText) r.findViewById(R.id.event_name);
+        event_description = (EditText) r.findViewById(R.id.event_description);
+        startDate = (EditText) r.findViewById(R.id.editStartDate);
+        endDate = (EditText) r.findViewById(R.id.editEndDate);
+        startTime = (EditText) r.findViewById(R.id.editStartTime);
+        endTime = (EditText) r.findViewById(R.id.editEndTime);
+        address = (EditText) r.findViewById(R.id.editAddress);
+        chooseThemeText = (TextView) r.findViewById(R.id.event_choose_theme_text);
         uploadPhotoText = (TextView) r.findViewById(R.id.event_upload_image_text);
 
         Calendar c = Calendar.getInstance();
@@ -148,33 +148,30 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               sTime = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
-                   @Override
-                   public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                sTime = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         String amPm;
                         String min;
-                        if(hourOfDay >= 12 ){
+                        if (hourOfDay >= 12) {
                             amPm = "PM";
-                        }
-                        else{
+                        } else {
                             amPm = "AM";
                         }
-                        if(hourOfDay == 0) {
+                        if (hourOfDay == 0) {
                             hourOfDay = 12;
                         }
-                        if(hourOfDay > 12){
+                        if (hourOfDay > 12) {
                             hourOfDay = hourOfDay - 12;
                         }
-                       if(minute < 10){
-                           min = "0"+minute;
-                       }
-                       else
-                       {
-                           min = Integer.toString(minute);
-                       }
-                        startTime.setText(hourOfDay+":"+min+amPm);
-                   }
-               }, currHour, currMinute, DateFormat.is24HourFormat(getActivity()));
+                        if (minute < 10) {
+                            min = "0" + minute;
+                        } else {
+                            min = Integer.toString(minute);
+                        }
+                        startTime.setText(hourOfDay + ":" + min + amPm);
+                    }
+                }, currHour, currMinute, DateFormat.is24HourFormat(getActivity()));
                 sTime.show();
             }
         });
@@ -187,26 +184,23 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         String amPm;
                         String min;
-                        if(hourOfDay >= 12 ){
+                        if (hourOfDay >= 12) {
                             amPm = "PM";
-                        }
-                        else{
+                        } else {
                             amPm = "AM";
                         }
-                        if(hourOfDay == 0) {
+                        if (hourOfDay == 0) {
                             hourOfDay = 12;
                         }
-                        if(hourOfDay > 12){
+                        if (hourOfDay > 12) {
                             hourOfDay = hourOfDay - 12;
                         }
-                        if(minute < 10){
-                            min = "0"+minute;
-                        }
-                        else
-                        {
+                        if (minute < 10) {
+                            min = "0" + minute;
+                        } else {
                             min = Integer.toString(minute);
                         }
-                        endTime.setText(hourOfDay+":"+min+amPm);
+                        endTime.setText(hourOfDay + ":" + min + amPm);
                     }
                 }, currHour, currMinute, DateFormat.is24HourFormat(getActivity()));
                 eTime.show();
@@ -220,7 +214,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                        startDate.setText((month+1)+"/"+dayOfMonth+"/"+year);
+                        startDate.setText((month + 1) + "/" + dayOfMonth + "/" + year);
                         firstDate.set(year, month, dayOfMonth);
                     }
                 }, currYear, currMonth, currDay);
@@ -235,7 +229,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                 eDate = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        endDate.setText((month+1)+"/"+dayOfMonth+"/"+year);
+                        endDate.setText((month + 1) + "/" + dayOfMonth + "/" + year);
                     }
                 }, currYear, currMonth, currDay);
                 eDate.getDatePicker().setMinDate(firstDate.getTimeInMillis() - 1000);
@@ -262,13 +256,10 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         uploadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //MM: I decided to use an alert dialog to display a popup which has 3 clickable buttons
-                // For changing profile picture.
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getActivity());
                 dlgAlert.setMessage("Capture New Image or Upload an Image");
                 dlgAlert.setTitle("Give your event an image!");
 
-                //type doesnt matter, but order of buttons do
                 //If user wants to upload from gallery
                 dlgAlert.setNegativeButton("Upload", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -354,7 +345,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
             uploadPhotoText.setVisibility(View.INVISIBLE);
             chooseThemeText.setVisibility(View.INVISIBLE);
             //Else user did not pick an image
-        }else {
+        } else {
             Toast.makeText(getApplicationContext(), "You haven't picked Image",
                     Toast.LENGTH_LONG).show();
         }
@@ -400,7 +391,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                 .draggable(true)
                 .title("Event Location");
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(createLoc,16));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(createLoc, 16));
 
         mMap.addMarker(x).showInfoWindow();
     }
@@ -434,6 +425,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         super.onDestroy();
         event_location.onDestroy();
     }
+
     public void createEvent() {
 
         String str_event_name = event_name.getText().toString().trim();
@@ -442,7 +434,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         String str_eventEDate = endDate.getText().toString();
         String str_eventSTime = startTime.getText().toString();
         String str_eventETime = endTime.getText().toString();
-        String str_eventAddr  = address.getText().toString();
+        String str_eventAddr = address.getText().toString();
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
@@ -451,7 +443,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
             DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference gettingKey = RootRef.child("Event").push();
             DatabaseReference createdEvent = RootRef.child("Event").child("Event_" + gettingKey.getKey());
-            String eventKey = "Event_"+gettingKey.getKey();
+            String eventKey = "Event_" + gettingKey.getKey();
             uploadToFirebase(eventKey);
             gettingKey.setValue(null);
 
@@ -462,7 +454,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                     str_eventEDate, str_eventSTime, str_eventETime, str_eventAddr,
                     str_event_description, 10, 0, 0, 0));
             createdEvent.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
-            createdEvent.child("eventID").setValue("Event_"+gettingKey.getKey());
+            createdEvent.child("eventID").setValue("Event_" + gettingKey.getKey());
             try {
                 for (String key : map.keySet()) {
                     createdEvent.child(key).setValue(map.get(key));
@@ -493,14 +485,15 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                         geoFire.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
                     }
                 }
-            }catch(Exception e){}
+            } catch (Exception e) {
+            }
 
             // public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
             //              String aEndTime, String aAddress, String aDescription,
             //              double aViewRadius, int aLikes, int aComments, int aRSVPs)
 
             geoFireLocation.setLocation(createdEvent.getKey(), new GeoLocation(createLoc.latitude, createLoc.longitude));
-            setExtraValues(eventKey,FirebaseAuth.getInstance().getCurrentUser().getUid());
+            setExtraValues(eventKey, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             //Saves the city of created event
             Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
@@ -511,19 +504,19 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                     RootRef.child("Event").child("Event_" + gettingKey.getKey()).child("City")
                             .setValue(addresses.get(0).getLocality());
                 }
-            }catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
             //progressDialog.dismiss();
             Toast.makeText(getContext(), "Event Created!", Toast.LENGTH_SHORT).show();
-        } catch (SecurityException e) {}
+        } catch (SecurityException e) {
+        }
 
         getActivity().getSupportFragmentManager().popBackStack();
     }
 
-    public void setExtraValues(final String eventID, final String ownerID)
-    {
+    public void setExtraValues(final String eventID, final String ownerID) {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("User").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -531,9 +524,10 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                 User owner = dataSnapshot.getValue(User.class);
                 ref.child("Event").child(eventID).child("DisplayName").setValue(owner.DisplayName);
                 ref.child("Event").child(eventID).child("handle").setValue(owner.handle);
-                try{
+                try {
                     ref.child("Event").child(eventID).child("userProfilePicture").setValue(owner.ProfilePicture);
-                }catch (Exception e){}
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -544,8 +538,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
     }
 
 
-    public void filterMenu(View r)
-    {
+    public void filterMenu(View r) {
         PopupMenu popup = new PopupMenu(getActivity(), r);
         popup.getMenuInflater().inflate(R.menu.filter_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -555,28 +548,23 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                     checkboxFilter(item);
                     isEducation = 1;
                     return false;
-                }
-                else if (i == R.id.filter2){
+                } else if (i == R.id.filter2) {
                     checkboxFilter(item);
                     isSports = 1;
                     return false;
-                }
-                else if (i == R.id.filter3) {
+                } else if (i == R.id.filter3) {
                     checkboxFilter(item);
                     isParty = 1;
                     return false;
-                }
-                else if (i == R.id.filter4) {
+                } else if (i == R.id.filter4) {
                     checkboxFilter(item);
                     isClubEvent = 1;
                     return false;
-                }
-                else if (i == R.id.filter5) {
+                } else if (i == R.id.filter5) {
                     checkboxFilter(item);
                     isOther = 1;
                     return false;
-                }
-                else if (i == R.id.done_filter) {
+                } else if (i == R.id.done_filter) {
                     map = new HashMap<String, Integer>();
                     map.put("isEducation", isEducation);
                     map.put("isSports", isSports);
@@ -586,8 +574,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
 
 
                     return true;
-                }
-                else {
+                } else {
                     return onMenuItemClick(item);
                 }
             }
@@ -595,8 +582,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         popup.show();
     }
 
-    public void checkboxFilter(MenuItem item)
-    {
+    public void checkboxFilter(MenuItem item) {
         item.setChecked(!item.isChecked());
         SharedPreferences settings = getActivity().getSharedPreferences("settings", 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -606,13 +592,12 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
         item.setActionView(new View(getContext()));
     }
 
-    public void uploadToFirebase(final String eventID)
-    {
+    public void uploadToFirebase(final String eventID) {
         //create the profile picture name using their uid + .jpg
         String childFile = eventID + ".jpg";
 
         //If the file was chosen from gallery then != null
-        if(filePath != null) {
+        if (filePath != null) {
             //Create child using the above string
             StorageReference fileRef = storageRef.child(childFile);
             //Create the upload using built-in UploadTask
@@ -633,8 +618,7 @@ public class CreateEventFragment extends Fragment implements OnMapReadyCallback 
                     Toast.makeText(getApplicationContext(), "Upload Failed!", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "Select an image", Toast.LENGTH_SHORT).show();
         }
     }
