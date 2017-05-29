@@ -41,6 +41,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.City;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -181,6 +183,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     StorageReference storageRef = storage.getReferenceFromUrl("gs://righthererightnow-72e20.appspot.com");
     Uri filePath;
 
+    public ArrayList<Event> eventArrayList;
+    public TrendingFragment.EventAdapter eventAdapter;
+    public ListView eventListView;
+    public int listview = 0;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -261,8 +268,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
         Marker = drawMarkerWithSize(100,100);
-
-        //button = (Button) findViewById(R.id.message_button);
+        eventArrayList = new ArrayList<>();
     }
 
 
@@ -463,8 +469,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             } else {
 
-
-
                 //set the map to the current location
                 handleNewLocation(location);
             }
@@ -619,6 +623,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                         //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 eventMarkerKeys.put(m, s);
                 eventKeyMarkers.put(s, m);
+
+                //if(listview == 1)
+                  //  storeEventToList(s);
             }  // have discovered an event, so put it in hashmap and put a marker for it
 
             @Override
@@ -694,6 +701,31 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         });
     }
 
+
+//    public void storeEventToList(String eventKey)
+//    {
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Event");
+//        ref.orderByChild("eventID").equalTo(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(!dataSnapshot.exists()) return;
+//                else{
+//                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+//                    eventArrayList.add(dataSnapshot1.getValue(Event.class));
+//                    Log.d("EVENTTT", eventArrayList.get(0).eventID);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+
+
     public void getCurrentUserInfo()
     {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -764,6 +796,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 int i = item.getItemId();
                 if (i == R.id.action1) {
                     Toast.makeText(getApplicationContext(),"Local Post and Events in a List.",Toast.LENGTH_LONG).show();
+                    //listview=1;
+                    //drawPointsWithinUserRadius();
                     listView();
                     return true;
                 }

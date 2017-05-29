@@ -481,10 +481,8 @@ public class TrendingFragment extends Fragment {
             try {
                 if (city.Picture != null)
                     Picasso.with(getContext()).load(city.Picture).into(cityImage);
-                    //cityImage.setImageBitmap(getBitmapFromURL(city.Picture));
                 else
                     Picasso.with(getContext()).load(R.drawable.cityscape).into(cityImage);
-                //cityImage.setImageResource(R.drawable.cityscape);
             }catch (Exception e){}
             return convertView;
         }
