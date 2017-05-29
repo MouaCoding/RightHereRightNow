@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.City;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.FollowingUser;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
@@ -94,6 +95,7 @@ public class TrendingFragment extends Fragment {
                 queryFilteredCities();
             }
         });
+
 
         eventList = new ArrayList<>();
         cityArray = new ArrayList<>();
@@ -172,6 +174,10 @@ public class TrendingFragment extends Fragment {
             TextView displayNameView = (TextView) convertView.findViewById(R.id.mini_name);
             ImageView profilePicture = (ImageView) convertView.findViewById(R.id.mini_profile_picture);
             TextView userHandleView = (TextView) convertView.findViewById(R.id.mini_user_handle);
+            ImageButton followButton = (ImageButton) convertView.findViewById(R.id.mini_profile_add_button);
+            if (event.ownerID != FirebaseAuth.getInstance().getCurrentUser().getUid())
+                followButton(followButton,FirebaseAuth.getInstance().getCurrentUser().getUid(), event.ownerID);
+
 
             eventTitle.setText(event.eventName);
             startTime.setText(event.startTime);
@@ -240,6 +246,42 @@ public class TrendingFragment extends Fragment {
             return convertView;
         }
 
+        private void followButton(ImageButton followButton, final String curUserID, final String otherUserID) {
+            followButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (curUserID != null && curUserID != otherUserID) {
+                        Toast.makeText(getApplicationContext(),"Followed!", Toast.LENGTH_SHORT).show();
+                        FirebaseDatabase.getInstance().getReference("User").child(curUserID).child("Following")
+                                .child(otherUserID).setValue(new FollowingUser());
+                        incrementFollowers(otherUserID);
+                    }
+                }
+            });
+        }
+
+        public void incrementFollowers(final String otherID)
+        {
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(otherID);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User follow = dataSnapshot.getValue(User.class);
+                    int followerNumber = follow.NumberFollowers;
+                    followerNumber++;
+                    ref.child("NumberFollowers").setValue(followerNumber);
+                    FirebaseDatabase.getInstance().getReference("User").child(otherID).child("Followers")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new FollowingUser());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
         public void setButtons(final View view, final String EventID, final String currUsr) {
             likeButton = (ImageButton) view.findViewById(R.id.user_event_like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
@@ -267,6 +309,7 @@ public class TrendingFragment extends Fragment {
                     Bundle params = new Bundle();
                     Intent intent = new Intent(context, CommentsListActivity.class);
                     intent.putExtra("postID", EventID.toString());
+                    intent.putExtra("type", "Event");
                     context.startActivity(intent);
 
                 }

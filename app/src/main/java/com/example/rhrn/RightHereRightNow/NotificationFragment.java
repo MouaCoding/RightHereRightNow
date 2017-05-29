@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rhrn.RightHereRightNow.firebase_entry.FollowingUser;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
@@ -155,6 +158,10 @@ public class NotificationFragment extends Fragment {
             TextView userHandleView= (TextView) convertView.findViewById(R.id.mini_user_handle);
             TextView numLikes = (TextView) convertView.findViewById(R.id.user_post_like_count);
             TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
+            ImageButton followButton = (ImageButton) convertView.findViewById(R.id.mini_profile_add_button);
+            if (post.ownerID != FirebaseAuth.getInstance().getCurrentUser().getUid())
+                followButton(followButton,FirebaseAuth.getInstance().getCurrentUser().getUid(), post.ownerID);
+
 
             setButtons(convertView, post.postID, post.ownerID);
             if(postDeleted == 0)
@@ -190,13 +197,60 @@ public class NotificationFragment extends Fragment {
             return convertView;
         }
 
+        private void followButton(ImageButton followButton, final String curUserID, final String otherUserID) {
+            followButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (curUserID != null && curUserID != otherUserID) {
+                        Toast.makeText(getApplicationContext(),"Followed!", Toast.LENGTH_SHORT).show();
+                        FirebaseDatabase.getInstance().getReference("User").child(curUserID).child("Following")
+                                .child(otherUserID).setValue(new FollowingUser());
+                        incrementFollowers(otherUserID);
+                    }
+                }
+            });
+        }
+
+        public void incrementFollowers(final String otherID)
+        {
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(otherID);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User follow = dataSnapshot.getValue(User.class);
+                    int followerNumber = follow.NumberFollowers;
+                    followerNumber++;
+                    ref.child("NumberFollowers").setValue(followerNumber);
+                    FirebaseDatabase.getInstance().getReference("User").child(otherID).child("Followers")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new FollowingUser());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
         public void setButtons(final View view, final String postID, final String ownerID)
         {
             likeButton = (ImageButton) view.findViewById(R.id.user_post_like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(Likes.hasLiked(2, postID, ownerID )){
+                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
+                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                        FirebaseDatabase.getInstance().getReference("Likes").child(postID).child(ownerID).removeValue();
+                        Post.changeCount("likes", postID, false);
 
+                    }
+                    else{
+                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
+                        Likes.Like(2, postID, ownerID);
+                        Post.changeCount("likes", postID, true);
+                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -204,7 +258,11 @@ public class NotificationFragment extends Fragment {
             commentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Context context = getContext();
+                    Intent intent = new Intent(context, CommentsListActivity.class);
+                    intent.putExtra("postID", postID.toString());
+                    intent.putExtra("type", "Post");
+                    context.startActivity(intent);
                 }
             });
 
@@ -225,6 +283,7 @@ public class NotificationFragment extends Fragment {
             });
 
         }
+
         @Override
         public int getCount() {
 

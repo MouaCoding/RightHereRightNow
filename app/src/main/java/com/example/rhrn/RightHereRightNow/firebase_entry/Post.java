@@ -78,6 +78,39 @@ public class Post {
         public void onPostReceived(Post... posts);
     }
 
+    public static void changeCount(String type, String postID, final boolean inc) {
+
+        FirebaseDatabase.getInstance().getReference("Post").child(postID).child(type).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+
+                }
+                else {
+
+                    int count = mutableData.getValue(Integer.class);
+                    if(inc){
+                        mutableData.setValue(count + 1);
+                    }
+                    else{
+                        mutableData.setValue(count - 1);
+                    }
+
+
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+
+        });
+
+    }
+
     public static void Like(final String postID, final String currUsr){
         FirebaseDatabase.getInstance().getReference("Post").child(postID).child("likes").runTransaction(new Transaction.Handler() {
             @Override

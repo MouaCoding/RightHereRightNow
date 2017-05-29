@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.firebase.client.ServerValue;
@@ -81,7 +82,10 @@ public class CommentsListActivity extends FragmentActivity {
                 temp = temp.trim();
                 if (temp.length() > 0) {
                     createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID, temp, 0, null);
-                    Event.changeCount("comments", postID, true);
+                    if(getIntent().getStringExtra("type").equals("Event"))
+                        Event.changeCount("comments", postID, true);
+                    else if(getIntent().getStringExtra("type").equals("Post"))
+                        Post.changeCount("comments", postID, true);
                     getComments(postID, true);
                 } else {
                     Toast.makeText(getApplicationContext(), "Please Enter Comment", Toast.LENGTH_SHORT).show();
