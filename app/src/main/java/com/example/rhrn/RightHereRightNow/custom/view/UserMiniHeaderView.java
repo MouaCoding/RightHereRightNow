@@ -119,7 +119,7 @@ public class UserMiniHeaderView extends FrameLayout {
         });
     }
 
-    public void incrementFollowers(String otherID)
+    public void incrementFollowers(final String otherID)
     {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(otherID);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -129,6 +129,8 @@ public class UserMiniHeaderView extends FrameLayout {
                 int followerNumber = follow.NumberFollowers;
                 followerNumber++;
                 ref.child("NumberFollowers").setValue(followerNumber);
+                FirebaseDatabase.getInstance().getReference("User").child(otherID).child("Followers")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new FollowingUser());
             }
 
             @Override

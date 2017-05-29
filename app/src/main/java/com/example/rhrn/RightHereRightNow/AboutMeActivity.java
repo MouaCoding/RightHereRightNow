@@ -1,5 +1,6 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -63,6 +64,9 @@ public class AboutMeActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference().child("User")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child("AboutMe").setValue(edit);
+                Intent i = new Intent();
+                i.putExtra("aboutme", edit);
+                setResult(RESULT_OK, i);
                 finish();
             }
         });
@@ -72,14 +76,13 @@ public class AboutMeActivity extends AppCompatActivity {
     void populateContent() {
         FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("User");
-        users.orderByChild("Email").equalTo(fbuser.getEmail())
+        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            User temp = userSnapshot.getValue(User.class);
-                            content.setText(temp.AboutMe);
-                        }
+                        User temp = dataSnapshot.getValue(User.class);
+                        content.setText(temp.AboutMe,TextView.BufferType.EDITABLE);
+
                     }
 
                     @Override

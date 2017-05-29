@@ -104,7 +104,9 @@
             android:label="@string/title_activity_filter_city"
             android:theme="@style/AppTheme" />
         <activity android:name=".MorePostsActivity" />
-        <activity android:name=".MoreEventsActivity"></activity>
+        <activity android:name=".MoreEventsActivity" />
+        <activity android:name=".FollowingListActivity" />
+        <activity android:name=".FollowerListActivity"></activity>
     </application>
 
 </manifest>
