@@ -54,8 +54,6 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
     ListView commentList;
     CommentsListActivity.commentsAdapter commentsAdapter;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,12 +74,14 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         back = (ImageButton) findViewById(R.id.back_button);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {finish();}
+            public void onClick(View v) {
+                finish();
+            }
         });
         //event_location.getMapAsync(this);
         //event_location.onCreate(savedInstanceState);
         String eventid = null;
-        if(getIntent().getExtras()!=null) {
+        if (getIntent().getExtras() != null) {
             eventid = getIntent().getExtras().getString("eventid");
             populate(eventid);
             populateComments(eventid);
@@ -89,7 +89,6 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
             //getPostLocation(postid);
         }
         //createLoc = new LatLng(0,0);
-
 
 
     }
@@ -105,26 +104,30 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Event event = dataSnapshot.getValue(Event.class);
-                try {content.setText(event.description);}catch(Exception e){} //to encompass some posts with no description
+                try {
+                    content.setText(event.description);
+                } catch (Exception e) {
+                } //to encompass some posts with no description
                 likes.setText(Integer.toString(event.likes));
                 comments.setText(Integer.toString(event.comments));
                 shares.setText(Integer.toString(event.shares));
                 displayName.setText(event.DisplayName);
                 handle.setText(event.handle);
-                try{
-                    if(event.userProfilePicture != null)
+                try {
+                    if (event.userProfilePicture != null)
                         Picasso.with(getBaseContext()).load(event.userProfilePicture).transform(new CircleTransform()).into(profile);
                     else
                         Picasso.with(getBaseContext()).load(R.mipmap.ic_launcher).into(profile);
-                } catch(Exception e){}
-                try{
-                    if(event.ProfilePicture != null){
+                } catch (Exception e) {
+                }
+                try {
+                    if (event.ProfilePicture != null) {
                         Picasso.with(getBaseContext()).load(event.ProfilePicture).into(eventImage);
                         eventImage.setVisibility(View.VISIBLE);
-                    }
-                    else
+                    } else
                         Picasso.with(getBaseContext()).load(R.drawable.images).into(eventImage);
-                } catch(Exception e){}
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -150,14 +153,22 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                                 .position(location).draggable(false)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_blue)));
                     }
+
                     @Override
-                    public void onKeyExited(String key) {}
+                    public void onKeyExited(String key) {
+                    }
+
                     @Override
-                    public void onKeyMoved(String key, GeoLocation location) {}
+                    public void onKeyMoved(String key, GeoLocation location) {
+                    }
+
                     @Override
-                    public void onGeoQueryReady() {}
+                    public void onGeoQueryReady() {
+                    }
+
                     @Override
-                    public void onGeoQueryError(DatabaseError error) {}
+                    public void onGeoQueryError(DatabaseError error) {
+                    }
                 });
             }
 
@@ -170,20 +181,19 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-    public void populateComments(String eventid)
-    {
+    public void populateComments(String eventid) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Comments").child(eventid);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists())
+                if (!dataSnapshot.exists())
                     ; //no comments, so do nothing
-                else{
-                    for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
+                else {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Comments comments = dataSnapshot1.getValue(Comments.class);
                         commentArray.add(comments);
                     }
-                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(),commentArray);
+                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(), commentArray);
                     commentList.setAdapter(commentsAdapter);
                     commentList.setOnTouchListener(new ListView.OnTouchListener() {
                         @Override

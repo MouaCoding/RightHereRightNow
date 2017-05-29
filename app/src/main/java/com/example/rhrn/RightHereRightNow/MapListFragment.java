@@ -41,8 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MapListFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener
-{
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public Button eventButton, postButton;
 
@@ -113,6 +112,7 @@ public class MapListFragment extends Fragment implements GoogleApiClient.Connect
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -123,9 +123,11 @@ public class MapListFragment extends Fragment implements GoogleApiClient.Connect
     private void queryEvents() {
 
     }
-    private void queryPosts(){
+
+    private void queryPosts() {
 
     }
+
     private void handleNewLocation(Location location) {
         eventQuery.setCenter(new GeoLocation(curLatitude = location.getLatitude(), curLongitude = location.getLongitude()));
         postQuery.setCenter(new GeoLocation(curLatitude, curLongitude));
@@ -144,7 +146,7 @@ public class MapListFragment extends Fragment implements GoogleApiClient.Connect
         DatabaseReference postsOnMap = FirebaseDatabase.getInstance().getReference("PostLocations");
         GeoFire postFire = new GeoFire(postsOnMap);
 
-        Log.i("locationlattt",Double.toString(curLatitude));
+        Log.i("locationlattt", Double.toString(curLatitude));
 
         eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), 1); // 12800.0);
         postQuery = postFire.queryAtLocation(eventQuery.getCenter(), 1);//12800.0);
@@ -214,54 +216,55 @@ public class MapListFragment extends Fragment implements GoogleApiClient.Connect
     }
 
 
-            @Override
-            public void onConnected(@Nullable Bundle bundle) {
-                Log.i("MapListFragment", "Location services connected.");
-                    Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                if (location == null) {
-                        //if it cannot, then it requests for the location from client
-                        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-                    } else {
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.i("MapListFragment", "Location services connected.");
+        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (location == null) {
+            //if it cannot, then it requests for the location from client
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        } else {
 
-                    curLatitude = location.getLatitude();
-                    curLongitude = location.getLongitude();
-                    }
+            curLatitude = location.getLatitude();
+            curLongitude = location.getLongitude();
+        }
 
-                drawPointsWithinUserRadius();
+        drawPointsWithinUserRadius();
 
 
-            }
+    }
 
-            @Override
-            public void onConnectionSuspended(int i) {
+    @Override
+    public void onConnectionSuspended(int i) {
 
-            }
+    }
 
-            @Override
-            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-            }
+    }
 
-            @Override
-            public void onLocationChanged(Location location) {
-                handleNewLocation(location);
-            }
+    @Override
+    public void onLocationChanged(Location location) {
+        handleNewLocation(location);
+    }
 
-    public void storeEventToList(String eventKey)
-    {
+    public void storeEventToList(String eventKey) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Event");
         ref.child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Event ev = dataSnapshot.getValue(Event.class);
-                    eventArray.add(ev);
-                    Log.d("goteventtt", eventArray.get(0).eventID);
-                    eventAdapter = new TrendingFragment.EventAdapter(getContext(),eventArray);
-                    eventList.setAdapter(eventAdapter);
+                eventArray.add(ev);
+                Log.d("goteventtt", eventArray.get(0).eventID);
+                eventAdapter = new TrendingFragment.EventAdapter(getContext(), eventArray);
+                eventList.setAdapter(eventAdapter);
                 eventAdapter.notifyDataSetChanged();
             }
+
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 

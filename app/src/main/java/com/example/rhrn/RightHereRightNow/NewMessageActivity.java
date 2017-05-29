@@ -77,23 +77,21 @@ public class NewMessageActivity extends MessageListActivity {
         });
 
         sendTo = (EditText) findViewById(R.id.send_to_handle);
-        messageContent= (EditText) findViewById(R.id.new_message_content);
+        messageContent = (EditText) findViewById(R.id.new_message_content);
 
 
     }
 
-    public void populateAuto()
-    {
+    public void populateAuto() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("User");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
-                {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     User usr = dataSnapshot1.getValue(User.class);
                     userArray.add(usr);
                 }
-                userAdapter = new UserAdapter(getBaseContext(),userArray);
+                userAdapter = new UserAdapter(getBaseContext(), userArray);
                 autoCompleteTextView.setAdapter(userAdapter);
                 autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -111,8 +109,7 @@ public class NewMessageActivity extends MessageListActivity {
         });
     }
 
-    public void sendMessage()
-    {
+    public void sendMessage() {
         //get the handle, get the message content
         final String receiverHandle = sendTo.getText().toString().trim();
         String contentOfMessage = messageContent.getText().toString();
@@ -131,10 +128,9 @@ public class NewMessageActivity extends MessageListActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     //@Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.exists())
-                        {
-                            Toast.makeText(getBaseContext(),"User Handle " + receiverHandle + " does not exist!",Toast.LENGTH_SHORT).show();
-                        }else {
+                        if (!dataSnapshot.exists()) {
+                            Toast.makeText(getBaseContext(), "User Handle " + receiverHandle + " does not exist!", Toast.LENGTH_SHORT).show();
+                        } else {
                             //Iterates through Firebase database
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                                 //found the receiver by their handle, now set it
@@ -147,10 +143,13 @@ public class NewMessageActivity extends MessageListActivity {
                                 String[] ids = {user.getUid(), receiver.uid};
                                 Arrays.sort(ids);
                                 mConvoId = ids[0] + ids[1];
-                                Intent i =new Intent();
+                                Intent i = new Intent();
                                 i.putExtra("name", receiver.DisplayName);
                                 i.putExtra("handle", receiver.handle);
-                                try{i.putExtra("profile", receiver.ProfilePicture);}catch (Exception e){}
+                                try {
+                                    i.putExtra("profile", receiver.ProfilePicture);
+                                } catch (Exception e) {
+                                }
                                 setResult(RESULT_OK, i);
                             }
                             if (receiverID != null)
@@ -176,7 +175,6 @@ public class NewMessageActivity extends MessageListActivity {
                 });
 
     }
-
 
 
 }

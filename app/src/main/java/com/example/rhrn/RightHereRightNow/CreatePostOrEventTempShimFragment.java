@@ -14,7 +14,6 @@ import android.widget.Button;
 
 public class CreatePostOrEventTempShimFragment extends Fragment {
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View r = inflater.inflate(R.layout.post_event_create_shim_layout, container, false);
@@ -26,14 +25,14 @@ public class CreatePostOrEventTempShimFragment extends Fragment {
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 if (manager.findFragmentById(R.id.post_event_create_shim_fragment_container) != null)
                     manager.beginTransaction()
-                        .replace(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
-                        .addToBackStack(null)
-                        .commit();
+                            .replace(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
+                            .addToBackStack(null)
+                            .commit();
                 else
                     manager.beginTransaction()
-                        .add(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
-                        .addToBackStack(null)
-                        .commit();
+                            .add(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
+                            .addToBackStack(null)
+                            .commit();
             }
         });
 
@@ -54,8 +53,6 @@ public class CreatePostOrEventTempShimFragment extends Fragment {
                             .commit();
             }
         });
-        // restore any state here if necessary
-
         return r;
     }
 }

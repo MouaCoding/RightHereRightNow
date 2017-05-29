@@ -84,7 +84,7 @@ public class ViewUserActivity extends AppCompatActivity {
         numFollowing = (TextView) findViewById(R.id.profile_number_following);
         numLikes = (TextView) findViewById(R.id.profile_karma_value);
         about = (TextView) findViewById(R.id.profile_about_text);
-        postList = (ListView)findViewById(R.id.post_list);
+        postList = (ListView) findViewById(R.id.post_list);
         eventList = (ListView) findViewById(R.id.event_list);
         profilePicture = (ImageView) findViewById(R.id.profile_picture);
         profilePicture.setOnClickListener(new View.OnClickListener() {
@@ -135,16 +135,15 @@ public class ViewUserActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String otherUserID = intent.getStringExtra("otherUserID");
-        if(otherUserID!=null)
+        if (otherUserID != null)
             queryFirebase(otherUserID);
 
         populatePost(otherUserID);
         populateEvent(otherUserID);
+        checkIfLikesExist();
     }
 
-    public void queryFirebase(String userUID)
-    {
-
+    public void queryFirebase(String userUID) {
         FirebaseDatabase.getInstance().getReference("User").child(userUID)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -158,34 +157,32 @@ public class ViewUserActivity extends AppCompatActivity {
                         about.setText(temp.AboutMe);
 
                         //TRY because user might not have profile picture yet
-                        //TODO: Could use an if loop instead? if(temp.Profilpicture is not null) then set it, otherwise set it to default android
                         try {
                             //Convert the URL to aa Bitmap using function, then set the profile picture
-                            if( temp.ProfilePicture != null)
+                            if (temp.ProfilePicture != null)
                                 Picasso.with(getBaseContext()).load(temp.ProfilePicture).transform(new CircleTransform()).into(profilePicture);
                             else
                                 Picasso.with(getBaseContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(profilePicture);
-                            Log.d("photoURL", temp.ProfilePicture);
-                        } catch (Exception e) {}
+                        } catch (Exception e) {
+                        }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());
                     }
-
                 });
     }
 
 
     //populate posts from firebase
-    public void populatePost(String otherID)
-    {
-        DatabaseReference users= FirebaseDatabase.getInstance().getReference("Post");
-        users.orderByChild("ownerID").equalTo(otherID).limitToLast(2)
+    public void populatePost(String otherID) {
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("Post");
+        users.orderByChild("ownerID").equalTo(otherID).limitToLast(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.exists())
+                        if (!dataSnapshot.exists())
                             return;
                         else {
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -193,14 +190,16 @@ public class ViewUserActivity extends AppCompatActivity {
                                 //Most recent first
                                 postArray.add(0, post);
                             }
-                            if(postArray.size() != 0) {
+                            if (postArray.size() != 0) {
                                 postAdapter = new NotificationFragment.PostAdapter(ViewUserActivity.this, postArray);
                                 try {
                                     postList.setAdapter(postAdapter);
-                                } catch (Exception e){}
+                                } catch (Exception e) {
+                                }
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());
@@ -208,15 +207,14 @@ public class ViewUserActivity extends AppCompatActivity {
                 });
     }
 
-    public void populateEvent(String otherID)
-    {
-        DatabaseReference users= FirebaseDatabase.getInstance().getReference("Event");
+    public void populateEvent(String otherID) {
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("Event");
         //two events since events views are big
-        users.orderByChild("ownerID").equalTo(otherID).limitToLast(2)
+        users.orderByChild("ownerID").equalTo(otherID).limitToLast(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.exists())
+                        if (!dataSnapshot.exists())
                             return;
                         else {
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -224,19 +222,94 @@ public class ViewUserActivity extends AppCompatActivity {
                                 //Most recent first
                                 eventArray.add(0, event);
                             }
-                            if(eventArray.size() != 0){
+                            if (eventArray.size() != 0) {
                                 eventAdapter = new TrendingFragment.EventAdapter(ViewUserActivity.this, eventArray);
-                                try{
+                                try {
                                     eventList.setAdapter(eventAdapter);
-                                } catch (Exception e){}
+                                } catch (Exception e) {
+                                }
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());
                     }
                 });
+    }
+
+    public void checkIfLikesExist() {
+        FirebaseDatabase.getInstance().getReference().child("LikesCount").child(getIntent().getStringExtra("otherUserID"))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists())
+                            numLikes.setText(Long.toString((Long) dataSnapshot.getValue()));
+                        else
+                            getEventLikes();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void getEventLikes() {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Event");
+        eventRef.orderByChild("ownerID").equalTo(getIntent().getStringExtra("otherUserID")).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int likesCount = 0;
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Event e = dataSnapshot1.getValue(Event.class);
+                    likesCount += e.likes;
+                }
+                FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid()).setValue(likesCount);
+                getPostLikes();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getPostLikes() {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Post");
+        eventRef.orderByChild("ownerID").equalTo(getIntent().getStringExtra("otherUserID")).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long likesCount = 0;
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Post e = dataSnapshot1.getValue(Post.class);
+                    likesCount += e.likes;
+                }
+                setLikes(likesCount);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void setLikes(final long likesCount) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("LikesCount").child(getIntent().getStringExtra("otherUserID"));
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long totalLikes = (long) dataSnapshot.getValue();
+                totalLikes = totalLikes + likesCount;
+                FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid()).setValue(totalLikes);
+                numLikes.setText(Long.toString(totalLikes));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
 }

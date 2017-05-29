@@ -133,7 +133,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     public int countNumber = 0;
     public int isEducation = 0, isSports = 0, isParty = 0, isClubEvent = 0, isOther = 0, logout = 0;
     Map<String, Integer> map;
-    int [] filter;
+    int[] filter;
 
     private GoogleMap mMap;
     public MapView mapView;
@@ -152,8 +152,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private String curUserID;
     private GeoLocation curLocation;
 
-    public DatabaseReference   eventsOnMap,
-                                postsOnMap;
+    public DatabaseReference eventsOnMap,
+            postsOnMap;
 
     public BottomNavigationView topNavigationView;
 
@@ -169,8 +169,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
     public HashMap<Marker, String> eventMarkerKeys = new HashMap<Marker, String>();
     public HashMap<String, Marker> eventKeyMarkers = new HashMap<String, Marker>();
-    public HashMap<Marker, String> postMarkerKeys  = new HashMap<Marker, String>();
-    public HashMap<String, Marker> postKeyMarkers  = new HashMap<String, Marker>();
+    public HashMap<Marker, String> postMarkerKeys = new HashMap<Marker, String>();
+    public HashMap<String, Marker> postKeyMarkers = new HashMap<String, Marker>();
 
     //Globals related to on map long click
     private LinearLayout layoutToAdd;
@@ -210,7 +210,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             BottomNavigationItemView city = (BottomNavigationItemView) menuView.getChildAt(2);
             city.setShiftingMode(false);
             city.setChecked(city.getItemData().isChecked());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         topNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -228,10 +229,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                             case R.id.current_city:
                                 break;
                             case R.id.favorite: //TODO: Refresh or favorite?
-                                Toast.makeText(getApplicationContext(),"Refreshing...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Refreshing...", Toast.LENGTH_SHORT).show();
                                 drawPointsWithinUserRadius();
                                 onResume();
-                                Toast.makeText(getApplicationContext(),"Refreshed!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Refreshed!", Toast.LENGTH_SHORT).show();
                                 //promptFavorite();
                                 break;
                             case R.id.refresh:
@@ -267,7 +268,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
-        Marker = drawMarkerWithSize(100,100);
+        Marker = drawMarkerWithSize(100, 100);
         eventArrayList = new ArrayList<>();
     }
 
@@ -377,7 +378,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onMapLongClick(LatLng latLng) {
                 //if user long clicks at even numbers (0, 2, 4, 6, 8 times) then inflate view
-                if((inflateButtons % 2) == 0) {
+                if ((inflateButtons % 2) == 0) {
                     //Toast.makeText(getContext(), "Create Event or Post", Toast.LENGTH_SHORT).show();
                     LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
                     View view = inflater.inflate(R.layout.post_event_create_shim_layout, null);
@@ -443,17 +444,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 */
 
 
-
-
-
-
-
-
-
     }
-
-
-
 
 
     @Override
@@ -461,7 +452,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         Log.i(TAG, "Location services connected.");
 
         //if app has permission to use current location,
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             //finds the current location
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (location == null) {
@@ -520,26 +511,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) { //if city is already in the database
                             //TODO: If you can think of a better way to do city pictures, then implement it
-                            if((dataSnapshot.child("CityName").getValue()).equals("Davis"))
+                            if ((dataSnapshot.child("CityName").getValue()).equals("Davis"))
                                 cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/davis.jpg?alt=media&token=9a201385-b9e7-400c-9e63-dee572aebce3");
-                            if((dataSnapshot.child("CityName").getValue()).equals("Sacramento"))
+                            if ((dataSnapshot.child("CityName").getValue()).equals("Sacramento"))
                                 cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/sacramento.jpg?alt=media&token=1beabb71-309a-4661-8456-73403c27c933");
-                            if((dataSnapshot.child("CityName").getValue()).equals("Galt"))
+                            if ((dataSnapshot.child("CityName").getValue()).equals("Galt"))
                                 cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/galt.jpg?alt=media&token=967f71cf-8a6c-4025-b9bd-62ac03f798ec");
-                            if((dataSnapshot.child("CityName").getValue()).equals("Dixon"))
+                            if ((dataSnapshot.child("CityName").getValue()).equals("Dixon"))
                                 cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/dixon.jpg?alt=media&token=b4d67a69-4016-405c-9a91-1c8d94195440");
-                            if((dataSnapshot.child("CityName").getValue()).equals("Vacaville"))
+                            if ((dataSnapshot.child("CityName").getValue()).equals("Vacaville"))
                                 cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/vacaville.jpg?alt=media&token=89ec6f85-edb5-4428-8384-ceb554e14113");
 
-                        }
-                        else {
+                        } else {
                             //city does not exist, so create new
                             try { //Sometimes, the city doesnt exist on google maps, so try.
                                 City city = new City(addresses.get(0).getLocality(),
                                         addresses.get(0).getAdminArea(),
                                         addresses.get(0).getCountryName(), " ", "0");
                                 cityRef.setValue(city);
-                            } catch(Exception e){}
+                            } catch (Exception e) {
+                            }
                         }
                     }
 
@@ -548,7 +539,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     }
                 });
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -556,11 +547,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 .position(latLng)
                 .draggable(true)
                 .title("My Location");
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exc));
+        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exc));
         ourLoc = mMap.addMarker(options);
         if (first) {
             first = false;
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
 
         final Circle circle = mMap.addCircle(new CircleOptions()
@@ -602,9 +593,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GeoFire postFire = new GeoFire(postsOnMap);
 
         eventQuery = eventFire.queryAtLocation(new GeoLocation(curLatitude, curLongitude), radius / 1000); // 12800.0);
-                //(radius * 0.001) * kmToMiles * 70);
+        //(radius * 0.001) * kmToMiles * 70);
         postQuery = postFire.queryAtLocation(eventQuery.getCenter(), radius / 1000);//12800.0);
-                // (radius * 0.001) * kmToMiles * 70);
+        // (radius * 0.001) * kmToMiles * 70);
 
         // might be something to do with initialization
 
@@ -620,12 +611,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                         .position(location).draggable(false)
                         //TODO: MM: Change marker size with our algorithm -> query likes and multiply
                         .icon(BitmapDescriptorFactory.fromBitmap(Marker)));
-                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 eventMarkerKeys.put(m, s);
                 eventKeyMarkers.put(s, m);
 
                 //if(listview == 1)
-                  //  storeEventToList(s);
+                //  storeEventToList(s);
             }  // have discovered an event, so put it in hashmap and put a marker for it
 
             @Override
@@ -725,44 +716,42 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 //    }
 
 
-
-    public void getCurrentUserInfo()
-    {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            final String userKey = user.getUid();
-            final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
-            rootRef.child(userKey).child("UsersMessaged").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    ArrayList<String> keys = new ArrayList<String>();
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        String other = userSnapshot.getKey();
-                        keys.add(other);
-                    }
-
-                    Bundle extra = new Bundle();
-                    extra.putSerializable("objects", keys);
-
-                    Intent intent = new Intent(getApplicationContext(), MessageListActivity.class);
-                    intent.putExtra("extra",extra);
-                    startActivity(intent);
+    public void getCurrentUserInfo() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userKey = user.getUid();
+        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child("User");
+        rootRef.child(userKey).child("UsersMessaged").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> keys = new ArrayList<String>();
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    String other = userSnapshot.getKey();
+                    keys.add(other);
                 }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {}
-            });
+
+                Bundle extra = new Bundle();
+                extra.putSerializable("objects", keys);
+
+                Intent intent = new Intent(getApplicationContext(), MessageListActivity.class);
+                intent.putExtra("extra", extra);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
-    public Bitmap drawMarkerWithSize(int width, int height)
-    {
-        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources()
-                .getDrawable(R.drawable.exclamation_point,null);
-        Bitmap b=bitmapdraw.getBitmap();
+    public Bitmap drawMarkerWithSize(int width, int height) {
+        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources()
+                .getDrawable(R.drawable.exclamation_point, null);
+        Bitmap b = bitmapdraw.getBitmap();
         Bitmap marker = Bitmap.createScaledBitmap(b, width, height, false);
         return marker;
     }
 
-    public void promptFavorite()
-    {
+    public void promptFavorite() {
         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getActivity());
         dlgAlert.setTitle("Would you like to save this location?");
         dlgAlert.setMessage("You can come back to this location later.");
@@ -787,44 +776,38 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         dlgAlert.show();
     }
 
-    public void optionsMenu(View r)
-    {
+    public void optionsMenu(View r) {
         PopupMenu popup = new PopupMenu(getActivity(), r);
         popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 int i = item.getItemId();
                 if (i == R.id.action1) {
-                    Toast.makeText(getApplicationContext(),"Local Post and Events in a List.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Local Post and Events in a List.", Toast.LENGTH_LONG).show();
                     //listview=1;
                     //drawPointsWithinUserRadius();
                     listView();
                     return true;
-                }
-                else if (i == R.id.action2){
-                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
+                } else if (i == R.id.action2) {
+                    Toast.makeText(getApplicationContext(), "Here are some quotes to brighten your day.", Toast.LENGTH_LONG).show();
                     return true;
-                }
-                else if (i == R.id.action3) {
-                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
+                } else if (i == R.id.action3) {
+                    Toast.makeText(getApplicationContext(), "Keep Calm and Never Give Up.", Toast.LENGTH_LONG).show();
                     return true;
-                }
-                else if (i == R.id.action4) {
-                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
+                } else if (i == R.id.action4) {
+                    Toast.makeText(getApplicationContext(), "The Sky is the Limit.", Toast.LENGTH_LONG).show();
                     return true;
-                }
-                else if (i == R.id.logout) {
+                } else if (i == R.id.logout) {
                     logout = 1;
                     // TODO delete token
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic("Messages_"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("Messages_" + FirebaseAuth.getInstance().getCurrentUser().getUid());
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear all activities above it
                     startActivity(intent);
                     getActivity().finish();
                     return true;
-                }
-                else {
+                } else {
                     return onMenuItemClick(item);
                 }
             }
@@ -835,7 +818,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     public void drawWithFilters(final Map<String, Integer> aMap) {
         DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("Event");
         //iterate through all the keys/flags that are on filtering
-        for (final String key: aMap.keySet()) {
+        for (final String key : aMap.keySet()) {
             int val = aMap.get(key);
             if (val == 1) {
                 Log.d("KEY", key);
@@ -847,7 +830,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                             mMap.clear();
                             Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                             handleNewLocation(loc);
-                            queryWithFilter(key,childSnapshot.getKey());
+                            queryWithFilter(key, childSnapshot.getKey());
                         }
                     }
 
@@ -859,20 +842,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public void queryWithFilter(String filter, String filterKey)
-    {
+    public void queryWithFilter(String filter, String filterKey) {
         DatabaseReference filterEvent;
         GeoFire eventFire;
         //Filter by event
-        if(filter.equals("isSports"))
+        if (filter.equals("isSports"))
             filterEvent = FirebaseDatabase.getInstance().getReference("SportEventLocations");
-        else if(filter.equals("isEducation"))
+        else if (filter.equals("isEducation"))
             filterEvent = FirebaseDatabase.getInstance().getReference("EducationEventLocations");
-        else if(filter.equals("isClubEvent"))
+        else if (filter.equals("isClubEvent"))
             filterEvent = FirebaseDatabase.getInstance().getReference("ClubEventLocations");
-        else if(filter.equals("isOther"))
+        else if (filter.equals("isOther"))
             filterEvent = FirebaseDatabase.getInstance().getReference("OtherEventLocations");
-        else if(filter.equals("isParty"))
+        else if (filter.equals("isParty"))
             filterEvent = FirebaseDatabase.getInstance().getReference("PartyEventLocations");
         else
             filterEvent = FirebaseDatabase.getInstance().getReference("EventLocations");
@@ -974,8 +956,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    public void filterMenu(View r)
-    {
+    public void filterMenu(View r) {
         PopupMenu popup = new PopupMenu(getActivity(), r);
         popup.getMenuInflater().inflate(R.menu.filter_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -985,28 +966,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     checkboxFilter(item);
                     isEducation = 1;
                     return false;
-                }
-                else if (i == R.id.filter2){
+                } else if (i == R.id.filter2) {
                     checkboxFilter(item);
                     isSports = 1;
                     return false;
-                }
-                else if (i == R.id.filter3) {
+                } else if (i == R.id.filter3) {
                     checkboxFilter(item);
                     isParty = 1;
                     return false;
-                }
-                else if (i == R.id.filter4) {
+                } else if (i == R.id.filter4) {
                     checkboxFilter(item);
                     isClubEvent = 1;
                     return false;
-                }
-                else if (i == R.id.filter5) {
+                } else if (i == R.id.filter5) {
                     checkboxFilter(item);
                     isOther = 1;
                     return false;
-                }
-                else if (i == R.id.done_filter) {
+                } else if (i == R.id.done_filter) {
                     map = new HashMap<String, Integer>();
                     map.put("isEducation", isEducation);
                     map.put("isSports", isSports);
@@ -1017,8 +993,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     drawWithFilters(map);
 
                     return true;
-                }
-                else {
+                } else {
                     return onMenuItemClick(item);
                 }
             }
@@ -1026,13 +1001,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         popup.show();
     }
 
-    public void clearFilterFlags()
-    {
+    public void clearFilterFlags() {
         isEducation = isClubEvent = isOther = isParty = isSports = 0;
     }
 
-    public void checkboxFilter(MenuItem item)
-    {
+    public void checkboxFilter(MenuItem item) {
         item.setChecked(!item.isChecked());
         SharedPreferences settings = getActivity().getSharedPreferences("settings", 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -1057,8 +1030,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public void giveButtonFunctionality()
-    {
+    public void giveButtonFunctionality() {
         Button createPost, createEvent;
         createPost = (Button) getView().findViewById(R.id.create_post_button);
         createEvent = (Button) getView().findViewById(R.id.create_event_button);
@@ -1136,8 +1108,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         });
     }
 
-    public void listView()
-    {
+    public void listView() {
         final FragmentManager manager = getActivity().getSupportFragmentManager();
         if (manager.findFragmentById(R.id.map_as_list) != null)
             manager.beginTransaction()
@@ -1152,12 +1123,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    public void uploadToFirebase(String photoDetail){
+    public void uploadToFirebase(String photoDetail) {
         //create the profile picture name using their uid + .jpg
         String childFile = photoDetail + ".jpg";
 
         //If the file was chosen from gallery then != null
-        if(filePath != null) {
+        if (filePath != null) {
             //Create child using the above string
             StorageReference fileRef = storageRef.child(childFile);
             //Create the upload using built-in UploadTask
@@ -1177,10 +1148,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 public void onFailure(@NonNull Exception exception) {
                     //failed to upload
 
-               }
+                }
             });
-        }
-        else {
+        } else {
             //no image to upload
         }
     }
@@ -1190,7 +1160,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        if(path != null) return Uri.parse(path);
+        if (path != null) return Uri.parse(path);
         else return null;
     }
 

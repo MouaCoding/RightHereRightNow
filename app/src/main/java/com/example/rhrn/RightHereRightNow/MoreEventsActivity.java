@@ -37,7 +37,7 @@ public class MoreEventsActivity extends AppCompatActivity {
 
     public int loadEvents = 0;
     public int scrollCount = 0;
-    int first=0;
+    int first = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class MoreEventsActivity extends AppCompatActivity {
         eventList.setAdapter(eventAdapter);
         //loadMoreEvents = (ProgressBar) LayoutInflater.from(this).inflate(R.layout.progress_bar, null);
         //findViewById(R.id.load_more_events);
-        View mProgressBarFooter = ((LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+        View mProgressBarFooter = ((LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.progress_bar, null, false);
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -61,14 +61,17 @@ public class MoreEventsActivity extends AppCompatActivity {
                 finish();
             }
         });
-        eventList.addFooterView(mProgressBarFooter);
+        try {
+            eventList.addFooterView(mProgressBarFooter);
+        } catch (Exception e) {
+        }
         eventList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-                if(findViewById(R.id.load_more_posts).isShown())//.getVisibility() == View.VISIBLE)
+                if (findViewById(R.id.load_more_posts).isShown())//.getVisibility() == View.VISIBLE)
                 {
-                    loadEvents=0;
+                    loadEvents = 0;
                 }
 
             }
@@ -76,16 +79,17 @@ public class MoreEventsActivity extends AppCompatActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 //if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
-                if(loadEvents == 0)
-                {
+                if (loadEvents == 0) {
                     loadEvents = 1;
                     scrollCount++;
                     eventArrayList = new ArrayList<Event>();
-                    try{getUserEvents(scrollCount*25);}catch (Exception e){}
+                    try {
+                        getUserEvents(scrollCount * 25);
+                    } catch (Exception e) {
+                    }
                     eventAdapter.notifyDataSetChanged();
                     Log.i("counttt", Integer.toString(scrollCount));
                 }
-
 
 
             }
@@ -94,26 +98,24 @@ public class MoreEventsActivity extends AppCompatActivity {
 
     }
 
-    public void getUserEvents(final int n)
-    {
-        //final int numEventsToLoad = 3;
-        //final int first = 0;
+    public void getUserEvents(final int n) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Event");
         ref.orderByChild("ownerID").equalTo(getIntent().getStringExtra("userKey")).limitToLast(n).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
-                    eventArrayList.add(0,dataSnapshot1.getValue(Event.class));
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    eventArrayList.add(0, dataSnapshot1.getValue(Event.class));
                 }
-                eventTitle.setText(eventArrayList.get(0).DisplayName+"'s Events");
-                eventAdapter = new TrendingFragment.EventAdapter(MoreEventsActivity.this, eventArrayList);
-                eventList.setAdapter(eventAdapter);
-
+                try {
+                    eventTitle.setText(eventArrayList.get(0).DisplayName + "'s Events");
+                    eventAdapter = new TrendingFragment.EventAdapter(MoreEventsActivity.this, eventArrayList);
+                    eventList.setAdapter(eventAdapter);
+                } catch (Exception e) {
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }

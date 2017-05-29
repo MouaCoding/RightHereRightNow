@@ -53,7 +53,6 @@ public class FilterCityActivity extends AppCompatActivity {
     private ImageButton backButton, menuButton;
     Button finishButton;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +62,6 @@ public class FilterCityActivity extends AppCompatActivity {
 
         cityArray = new ArrayList<>();
         cityList = (ListView) findViewById(R.id.city_list);
-
         menuButton = (ImageButton) findViewById(R.id.profile_app_bar_options);
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +69,6 @@ public class FilterCityActivity extends AppCompatActivity {
                 popupMenu();
             }
         });
-
         backButton = (ImageButton) findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,8 +81,10 @@ public class FilterCityActivity extends AppCompatActivity {
         filterCity = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {try{cityAdapter.getFilter().filter(s);}catch (Exception e){}}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {try {cityAdapter.getFilter().filter(s);} catch (Exception e) {}}
+
             @Override
             public void afterTextChanged(Editable s) {}
         };
@@ -96,17 +95,15 @@ public class FilterCityActivity extends AppCompatActivity {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =new Intent();
+                Intent i = new Intent();
                 setResult(RESULT_OK, i);
                 finish();
             }
         });
-
         queryAllCities();
     }
 
-    public void queryAllCities()
-    {
+    public void queryAllCities() {
         final DatabaseReference cityRef = FirebaseDatabase.getInstance().getReference().child("CityFilters");
         DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         RootRef.child("City").orderByChild("CityName").startAt("A").endAt("Z").addValueEventListener(new ValueEventListener() {
@@ -117,24 +114,22 @@ public class FilterCityActivity extends AppCompatActivity {
                     City cty = dataSnapshot.getValue(City.class);
                     cityArray.add(cty);
                 }
-                cityAdapter = new CityCheckBoxAdapter(getBaseContext(),cityArray);
+                cityAdapter = new CityCheckBoxAdapter(getBaseContext(), cityArray);
                 cityList = (ListView) findViewById(R.id.city_list);
                 cityList.setAdapter(cityAdapter);
                 cityList.setOnItemClickListener(new OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        /// /checkBox.setFocusable(true);
                         checkBox = (CheckBox) view.findViewById(R.id.city_checkbox);
                         checkBox.setChecked(!checkBox.isChecked());
-
-                        if(checkBox.isChecked())
+                        if (checkBox.isChecked())
                             cityRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(cityArray.get(position).CityName).setValue(cityArray.get(position));
                         else
                             cityRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(cityArray.get(position).CityName).removeValue();
-                        //checkBox.setFocusable(false);
                     }
                 });
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
@@ -142,10 +137,8 @@ public class FilterCityActivity extends AppCompatActivity {
 
 
     public class CityCheckBoxAdapter extends ArrayAdapter<City> {
-
         private ArrayList<City> mCities;
         private ArrayList<City> mCitiesFilter;
-
         CityCheckBoxAdapter(Context context, ArrayList<City> cities) {
             super(context, R.layout.filter_city, R.id.city_name, cities);
             mCities = cities;
@@ -163,27 +156,21 @@ public class FilterCityActivity extends AppCompatActivity {
             cityName.setText(city.CityName);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cityName.getLayoutParams();
             cityName.setLayoutParams(layoutParams);
-
             checkIfCityExists(city.CityName, cb);
-
             return convertView;
         }
 
-        public void checkIfCityExists(String cityName, final CheckBox cb)
-        {
+        public void checkIfCityExists(String cityName, final CheckBox cb) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("CityFilters").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             ref.child(cityName).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
+                    if (dataSnapshot.exists())
                         cb.setChecked(true);
-                    }
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
+                public void onCancelled(DatabaseError databaseError) {}
             });
         }
 
@@ -194,10 +181,7 @@ public class FilterCityActivity extends AppCompatActivity {
 
         //Get the data item associated with the specified position in the data set.
         @Override
-        public City getItem(int position) {
-
-            return mCities.get(position);
-        }
+        public City getItem(int position) {return mCities.get(position);}
 
         //Get the row id associated with the specified position in the list.
         @Override
@@ -221,24 +205,14 @@ public class FilterCityActivity extends AppCompatActivity {
                                 filterList.add(mCitiesFilter.get(i));
                             }
                         }
-
-
                         results.count = filterList.size();
-
                         results.values = filterList;
-
                     } else {
-
                         results.count = mCitiesFilter.size();
-
                         results.values = mCitiesFilter;
-
                     }
-
                     return results;
                 }
-
-
                 //Invoked in the UI thread to publish the filtering results in the user interface.
                 @SuppressWarnings("unchecked")
                 @Override
@@ -249,13 +223,10 @@ public class FilterCityActivity extends AppCompatActivity {
                 }
             };
         }
-
-
     }
 
 
-    private void popupMenu()
-    {
+    private void popupMenu() {
         PopupMenu popup = new PopupMenu(FilterCityActivity.this, menuButton);
         popup.getMenuInflater().inflate(R.menu.other_options_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -264,17 +235,15 @@ public class FilterCityActivity extends AppCompatActivity {
                 if (i == R.id.logout) {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear all activities above it
                     startActivity(intent);
                     finish();
                     return true;
-                }
-                else {
+                } else {
                     return onMenuItemClick(item);
                 }
             }
         });
         popup.show();
     }
-
 }

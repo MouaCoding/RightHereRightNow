@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -33,7 +32,6 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,13 +44,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -70,17 +64,17 @@ public class ProfilePageFragment extends Fragment {
             morePosts,
             moreEvents;
     public EditText profileMain;
-    public ImageView profilePicture, edit,editDisplay;
+    public ImageView profilePicture, edit, editDisplay;
     public ImageButton changeProfile, options;
 
     //Posts
     public ImageView miniProfilePicture;
     public TextView miniUserName,
-                    miniHandle,
-                    body,
-                    postsNumLikes,
-                    postsNumShares,
-                    postsNumComments;
+            miniHandle,
+            body,
+            postsNumLikes,
+            postsNumShares,
+            postsNumComments;
 
     //Populating list of posts and events
     public ListView postList, eventList;
@@ -110,8 +104,7 @@ public class ProfilePageFragment extends Fragment {
         //The below code is for handling exception of querying the profile picture:
         //exception is thrown when application attempts to perform a networking operation in the main thread.
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 8)
-        {
+        if (SDK_INT > 8) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -198,9 +191,9 @@ public class ProfilePageFragment extends Fragment {
             public void onClick(View v) {
                 String newDisplayName = profileMain.getText().toString().trim();
                 editDisplay.clearFocus();
-                InputMethodManager in = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 in.hideSoftInputFromWindow(editDisplay.getWindowToken(), 0);
-                Toast.makeText(getApplicationContext(),"Display Name Changed to " + newDisplayName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Display Name Changed to " + newDisplayName, Toast.LENGTH_SHORT).show();
                 FirebaseDatabase.getInstance().getReference().child("User")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DisplayName").setValue(newDisplayName);
             }
@@ -233,7 +226,7 @@ public class ProfilePageFragment extends Fragment {
         body = (TextView) r.findViewById(R.id.user_post_body);
         postsNumLikes = (TextView) r.findViewById(R.id.user_post_like_count);
         postsNumComments = (TextView) r.findViewById(R.id.user_post_comment_count);
-        postList = (ListView)r.findViewById(R.id.post_list);
+        postList = (ListView) r.findViewById(R.id.post_list);
         eventList = (ListView) r.findViewById(R.id.event_list);
         postsNumShares = (TextView) r.findViewById(R.id.user_post_share_count);
         postArray = new ArrayList<>();
@@ -242,6 +235,7 @@ public class ProfilePageFragment extends Fragment {
         queryFirebase();
         populatePost();
         populateEvent();
+        checkIfLikesExist();
         return r;
     }
 
@@ -276,16 +270,15 @@ public class ProfilePageFragment extends Fragment {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             profilePicture.setImageBitmap(imageBitmap);
             //Else user did not pick an image
-        }else {
+        } else {
             Toast.makeText(getApplicationContext(), "You haven't picked Image",
                     Toast.LENGTH_LONG).show();
         }
     }
 
 
-
     public void queryFirebase() {
-        DatabaseReference users= FirebaseDatabase.getInstance().getReference("User");
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("User");
         users.orderByChild("uid").equalTo(fbuser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -302,17 +295,16 @@ public class ProfilePageFragment extends Fragment {
                             //TRY because user might not have profile picture yet
                             try {
                                 //Convert the URL to aa Bitmap using function, then set the profile picture
-                                if(temp.ProfilePicture != null)
+                                if (temp.ProfilePicture != null)
                                     Picasso.with(getContext()).load(temp.ProfilePicture).transform(new CircleTransform()).into(profilePicture);
-                                    //Picasso.with(getContext()).load(temp.ProfilePicture).into(profilePicture);
-                                    //profilePicture.setImageBitmap(getBitmapFromURL(temp.ProfilePicture));
-                                //else
-                                    //profilePicture.setImageResource(R.mipmap.ic_launcher);
-                            }catch (Exception e){
+                                else
+                                    Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(profilePicture);
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());
@@ -320,13 +312,12 @@ public class ProfilePageFragment extends Fragment {
                 });
     }
 
-    public void uploadToFirebase()
-    {
+    public void uploadToFirebase() {
         //create the profile picture name using their uid + .jpg
         String childFile = String.valueOf(fbuser.getUid()) + ".jpg";
 
         //If the file was chosen from gallery then != null
-        if(filePath != null) {
+        if (filePath != null) {
             //Create child using the above string
             StorageReference fileRef = storageRef.child(childFile);
             //Create the upload using built-in UploadTask
@@ -347,29 +338,27 @@ public class ProfilePageFragment extends Fragment {
                     Toast.makeText(getApplicationContext(), "Upload Failed!", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "Select an image", Toast.LENGTH_SHORT).show();
         }
     }
 
-
     //populate posts from firebase
-    public void populatePost()
-    {
-        DatabaseReference users= FirebaseDatabase.getInstance().getReference("Post");
-        users.orderByChild("ownerID").limitToLast(2).equalTo(fbuser.getUid())
+    public void populatePost() {
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("Post");
+        users.orderByChild("ownerID").equalTo(fbuser.getUid()).limitToLast(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             Post post = userSnapshot.getValue(Post.class);
                             //Most recent first
-                            postArray.add(0,post);
+                            postArray.add(0, post);
                         }
-                        postAdapter = new NotificationFragment.PostAdapter(getContext(),postArray);
+                        postAdapter = new NotificationFragment.PostAdapter(getContext(), postArray);
                         postList.setAdapter(postAdapter);
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());
@@ -377,22 +366,22 @@ public class ProfilePageFragment extends Fragment {
                 });
     }
 
-    public void populateEvent()
-    {
-        DatabaseReference users= FirebaseDatabase.getInstance().getReference("Event");
+    public void populateEvent() {
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("Event");
         //two events since events views are big
-        users.orderByChild("ownerID").limitToLast(2).equalTo(fbuser.getUid())
+        users.orderByChild("ownerID").equalTo(fbuser.getUid()).limitToLast(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             Event event = userSnapshot.getValue(Event.class);
                             //Most recent first
-                            eventArray.add(0,event);
+                            eventArray.add(0, event);
                         }
-                        eventAdapter = new TrendingFragment.EventAdapter(getContext(),eventArray);
+                        eventAdapter = new TrendingFragment.EventAdapter(getContext(), eventArray);
                         eventList.setAdapter(eventAdapter);
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());
@@ -400,43 +389,101 @@ public class ProfilePageFragment extends Fragment {
                 });
     }
 
-    private void popupMenu()
-    {
+    private void popupMenu() {
         PopupMenu popup = new PopupMenu(getActivity(), options);
-        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+        popup.getMenuInflater().inflate(R.menu.other_options_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 int i = item.getItemId();
-                if (i == R.id.action1) {
-                    Toast.makeText(getApplicationContext(),"Hello, Welcome to RightHereRightNow!",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action2){
-                    Toast.makeText(getApplicationContext(),"Here are some quotes to brighten your day.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action3) {
-                    Toast.makeText(getApplicationContext(),"Keep Calm and Never Give Up.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.action4) {
-                    Toast.makeText(getApplicationContext(),"The Sky is the Limit.",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                else if (i == R.id.logout) {
+                if (i == R.id.logout) {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); // Clear all activities above it
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear all activities above it
                     startActivity(intent);
                     getActivity().finish();
                     return true;
-                }
-                else {
+                } else {
                     return onMenuItemClick(item);
                 }
             }
         });
         popup.show();
     }
+
+    public void checkIfLikesExist() {
+        FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists())
+                            numLikes.setText(Long.toString((Long) dataSnapshot.getValue()));
+                        else
+                            getEventLikes();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void getEventLikes() {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Event");
+        eventRef.orderByChild("ownerID").equalTo(fbuser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int likesCount = 0;
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Event e = dataSnapshot1.getValue(Event.class);
+                    likesCount += e.likes;
+                }
+                FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid()).setValue(likesCount);
+                getPostLikes();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getPostLikes() {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Post");
+        eventRef.orderByChild("ownerID").equalTo(fbuser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long likesCount = 0;
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Post e = dataSnapshot1.getValue(Post.class);
+                    likesCount += e.likes;
+                }
+                setLikes(likesCount);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void setLikes(final long likesCount) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long totalLikes = (long) dataSnapshot.getValue();
+                totalLikes = totalLikes + likesCount;
+                FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid()).setValue(totalLikes);
+                numLikes.setText(Long.toString(totalLikes));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
 }

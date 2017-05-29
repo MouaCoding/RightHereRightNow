@@ -66,7 +66,6 @@ import java.util.Arrays;
 import retrofit2.Call;
 
 
-
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnClickListener {
     private static final int REQUEST_READ_CONTACTS = 0;
     private static final int LOCATIONS_PERMISSION = 0;
@@ -136,21 +135,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent (getApplicationContext(), RegisterActivity.class);
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(intent);
             }
         });
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},LOCATIONS_PERMISSION);
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATIONS_PERMISSION);
         }
 
         forgotPassword = (TextView) findViewById(R.id.forgot_password);
         forgotPassword.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ForgotPasswordActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ForgotPasswordActivity.class);
                 startActivity(intent);
 
             }
@@ -177,6 +176,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void success(Result<TwitterSession> result) {
                 twitterSignIn(result.data);
             }
+
             @Override
             public void failure(TwitterException exception) {
                 Toast.makeText(getApplicationContext(), "Failed to Log In!", Toast.LENGTH_LONG).show();
@@ -202,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (isChecked & firebaseUser != null) {
-            FirebaseMessaging.getInstance().subscribeToTopic("Messages_"+firebaseUser.getUid());
+            FirebaseMessaging.getInstance().subscribeToTopic("Messages_" + firebaseUser.getUid());
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
@@ -242,11 +242,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     //Facebook register user
-    private void facebookRegister()
-    {
-        callbackManager=CallbackManager.Factory.create();
-        LoginButton loginButton = (LoginButton)findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_about_me","user_photos"));
+    private void facebookRegister() {
+        callbackManager = CallbackManager.Factory.create();
+        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_about_me", "user_photos"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(final LoginResult loginResult) {
@@ -254,10 +253,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
 
             @Override
-            public void onCancel() {}
+            public void onCancel() {
+            }
 
             @Override
-            public void onError(FacebookException e) {}
+            public void onError(FacebookException e) {
+            }
         });
     }
 
@@ -273,7 +274,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             final FirebaseUser user = firebaseAuth.getCurrentUser();
                             final DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
                             final Profile profile = Profile.getCurrentProfile();
-                            final User usr = new User(profile.getFirstName(),profile.getLastName(),null,null,null,null,null,null,null,"000",user.getUid(),0,0,0);
+                            final User usr = new User(profile.getFirstName(), profile.getLastName(), null, null, null, null, null, null, null, "000", user.getUid(), 0, 0, 0);
 
                             //updateUI(user);
                             String msg = "Successfully logged in as " + Profile.getCurrentProfile().getFirstName();
@@ -282,17 +283,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     LoginManager.getInstance().logOut();
-                                    if(dataSnapshot.hasChild(user.getUid())){
+                                    if (dataSnapshot.hasChild(user.getUid())) {
                                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                         startActivity(intent);
-                                    } else{
+                                    } else {
                                         Intent intent = new Intent(getApplicationContext(), AlmostDoneActivity.class);
                                         intent.putExtra("first_name", profile.getFirstName());
                                         intent.putExtra("last_name", profile.getLastName());
-                                        intent.putExtra("profile_picture",profile.getProfilePictureUri(100,100));
+                                        intent.putExtra("profile_picture", profile.getProfilePictureUri(100, 100));
                                         startActivity(intent);
                                     }
                                 }
+
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
 
@@ -314,11 +316,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
+
     private void googleSignIn() {
         googleSignOut();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
     private void googleSignOut() {
         // Firebase sign out
         firebaseAuth.signOut();
@@ -332,12 +336,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
     }
-    public void showProgressDialog()
-    {
+
+    public void showProgressDialog() {
         pd = new ProgressDialog(LoginActivity.this);
         pd.setMessage("Loading...");
         pd.show();
     }
+
     private void googleRegister(final GoogleSignInAccount acct) {
         final DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         showProgressDialog();
@@ -355,16 +360,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             RootRef.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if(dataSnapshot.hasChild(user.getUid())){
+                                    if (dataSnapshot.hasChild(user.getUid())) {
                                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                         startActivity(intent);
-                                    } else{
+                                    } else {
                                         Intent intent = new Intent(getApplicationContext(), AlmostDoneActivity.class);
                                         intent.putExtra("first_name", acct.getGivenName());
                                         intent.putExtra("last_name", acct.getFamilyName());
-                                        intent.putExtra("email",acct.getEmail());
-                                        intent.putExtra("profile_picture",acct.getPhotoUrl());
-                                        intent.putExtra("uid",acct.getId());
+                                        intent.putExtra("email", acct.getEmail());
+                                        intent.putExtra("profile_picture", acct.getPhotoUrl());
+                                        intent.putExtra("uid", acct.getId());
                                         startActivity(intent);
                                     }
 
@@ -388,26 +393,27 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 });
 
     }
-    private void twitterSignIn(final TwitterSession session)
-    {
+
+    private void twitterSignIn(final TwitterSession session) {
         showProgressDialog();
         final DatabaseReference RootRef = FirebaseDatabase.getInstance().getReference();
         final FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
         TwitterSession session1 = Twitter.getSessionManager().getActiveSession();
         Call<com.twitter.sdk.android.core.models.User> call = Twitter.getApiClient(session1).getAccountService().verifyCredentials(true, true);
-        call.enqueue( new Callback<com.twitter.sdk.android.core.models.User>() {
-                    @Override
-                    public void success(Result<com.twitter.sdk.android.core.models.User> userResult) {
-                        com.twitter.sdk.android.core.models.User usr = userResult.data;
-                        User curUser = new User(usr.name, usr.name, usr.screenName, "@"+usr.screenName, usr.email, null, null, usr.location, usr.location, "000", fbuser.getUid(), 0, 0,0);
-                        RootRef.child("User").child(fbuser.getUid()).setValue(curUser);
-                    }
-                    @Override
-                    public void failure(TwitterException e) {
+        call.enqueue(new Callback<com.twitter.sdk.android.core.models.User>() {
+            @Override
+            public void success(Result<com.twitter.sdk.android.core.models.User> userResult) {
+                com.twitter.sdk.android.core.models.User usr = userResult.data;
+                User curUser = new User(usr.name, usr.name, usr.screenName, "@" + usr.screenName, usr.email, null, null, usr.location, usr.location, "000", fbuser.getUid(), 0, 0, 0);
+                RootRef.child("User").child(fbuser.getUid()).setValue(curUser);
+            }
 
-                    }
+            @Override
+            public void failure(TwitterException e) {
 
-                });
+            }
+
+        });
 
         final AuthCredential credential = TwitterAuthProvider.getCredential(
                 session.getAuthToken().token,
@@ -440,8 +446,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     //added a sign in function
-    private void signIn()
-    {
+    private void signIn() {
         String email = mEmailView.getText().toString().trim();
         String password = mPasswordView.getText().toString().trim();
 
@@ -475,12 +480,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //if successfully logs in, displays success,
-                            Toast.makeText(LoginActivity.this,"Successfully Logged In",Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "Successfully Logged In", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                         } else {
                             //if failed, display error message
-                            Toast.makeText(LoginActivity.this,"Login Error",Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "Login Error", Toast.LENGTH_LONG).show();
                         }
                         //once done, process dialog disappears
                         progressDialog.dismiss();

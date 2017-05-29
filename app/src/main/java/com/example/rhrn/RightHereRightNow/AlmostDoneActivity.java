@@ -52,7 +52,7 @@ public class AlmostDoneActivity extends AppCompatActivity {
         displayNAME = display_name.getText().toString().trim();
         handle1 = handle.getText().toString().trim();
         phone = user_phone.getText().toString().trim();
-        if(!handle1.contains("@"))
+        if (!handle1.contains("@"))
             handle1 = "@" + handle1;
 
         if (!isValid(displayNAME, handle1))
@@ -70,21 +70,15 @@ public class AlmostDoneActivity extends AppCompatActivity {
         String ProfilePicture = getIntent().getStringExtra("profile_picture");
 
         final User usr = new User(firstName, lastName, displayNAME, handle1, null, phone, null, null, null, "000", uid, 0, 0, 0);
-
-
         //creating user and indexing by Firebase UID
         DatabaseReference userRef = RootRef.child("User").child(uid);
         userRef.setValue(usr);
         userRef.child("ProfilePicture").setValue(ProfilePicture);
-        /*userRef.child("DisplayName").setValue(displayNAME);
-        userRef.child("handle").setValue(handle1);
-        userRef.child("Phone").setValue(phone);*/
 
         Toast.makeText(getApplicationContext(), "You're all set! Enjoy.", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
-
     }
 
     private boolean isValid(String displayName, String handle2) {
