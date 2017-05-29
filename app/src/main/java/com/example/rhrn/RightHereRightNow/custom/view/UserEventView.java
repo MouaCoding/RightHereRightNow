@@ -322,14 +322,14 @@ public class UserEventView extends FrameLayout {
 
     public boolean hasBadWord(String[] content)
     {
-        int i = 0;
-        for(String badWord : app.badWords){
-            content[i] = content[i].toLowerCase();
-            if(content[i].contains(badWord)) {
-                Toast.makeText(getContext(), "Event has been reported.", Toast.LENGTH_SHORT).show();
-                return true;
+        for(String c : content) {
+            for (String badWord : app.badWords) {
+                c = c.toLowerCase();
+                if (c.contains(badWord)) {
+                    Toast.makeText(getContext(), "Event has been reported.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
             }
-            i++;
         }
         Toast.makeText(getContext(), "There is nothing to report.", Toast.LENGTH_SHORT).show();
         return false;

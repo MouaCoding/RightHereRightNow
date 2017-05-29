@@ -5,13 +5,8 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.custom.view.UserEventView;
-import com.example.rhrn.RightHereRightNow.custom.view.UserPostView;
-import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 
 /**
  * Created by Bradley Wang on 3/6/2017.

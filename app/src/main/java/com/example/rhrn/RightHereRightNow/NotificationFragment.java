@@ -1,24 +1,17 @@
 package com.example.rhrn.RightHereRightNow;
 
-import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,8 +24,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
-import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
@@ -408,14 +399,14 @@ public class NotificationFragment extends Fragment {
 
         public boolean hasBadWord(String[] content)
         {
-            int i = 0;
-            for(String badWord : app.badWords){
-                content[i] = content[i].toLowerCase();
-                if(content[i].contains(badWord)) {
-                    Toast.makeText(getContext(), "Post has been reported.", Toast.LENGTH_SHORT).show();
-                    return true;
+            for(String c : content) {
+                for (String badWord : app.badWords) {
+                    c = c.toLowerCase();
+                    if (c.contains(badWord)) {
+                        Toast.makeText(getContext(), "Event has been reported.", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
                 }
-                i++;
             }
             Toast.makeText(getContext(), "There is nothing to report.", Toast.LENGTH_SHORT).show();
             return false;
@@ -520,7 +511,7 @@ public class NotificationFragment extends Fragment {
         notify.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 //.orderByChild("createDate").startAt("201701").endAt("201712").
                 //Seems like firebase already sorts them in order of created date!
-                .limitToLast(10).addChildEventListener(new ChildEventListener() {
+                .limitToLast(25).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if(!dataSnapshot.exists()) return;
