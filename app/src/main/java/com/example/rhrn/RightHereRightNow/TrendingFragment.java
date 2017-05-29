@@ -9,12 +9,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -29,10 +27,7 @@ import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +37,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -196,21 +190,15 @@ public class TrendingFragment extends Fragment {
             try {
                 if (event.userProfilePicture != null)
                     Picasso.with(getContext()).load(event.userProfilePicture).transform(new CircleTransform()).into(profilePicture);
-                    //profilePicture.setImageBitmap(getBitmapFromURL(event.userProfilePicture));
                 else
                     Picasso.with(getContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(profilePicture);
-                //profilePicture.setImageResource(R.mipmap.ic_launcher);
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
             try {
                 if (event.ProfilePicture != null)
-                    Picasso.with(getContext()).load(event.userProfilePicture).into(eventImage);
-                    //eventImage.setImageBitmap(getBitmapFromURL(event.ProfilePicture));
+                    Picasso.with(getContext()).load(event.ProfilePicture).into(eventImage);
                 else
                     Picasso.with(getContext()).load(R.drawable.images).into(eventImage);
-                //eventImage.setImageResource(R.drawable.ic_group_black_24dp);
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
 
             //On clicks to navigate to view user or event
             displayNameView.setOnClickListener(new View.OnClickListener() {
@@ -425,14 +413,14 @@ public class TrendingFragment extends Fragment {
         }
 
         public boolean hasBadWord(String[] content) {
-            int i = 0;
-            for (String badWord : app.badWords) {
-                content[i] = content[i].toLowerCase();
-                if (content[i].contains(badWord)) {
-                    Toast.makeText(getContext(), "Event has been reported.", Toast.LENGTH_SHORT).show();
-                    return true;
+            for(String c : content) {
+                for (String badWord : app.badWords) {
+                    c = c.toLowerCase();
+                    if (c.contains(badWord)) {
+                        Toast.makeText(getContext(), "Event has been reported.", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
                 }
-                i++;
             }
             Toast.makeText(getContext(), "There is nothing to report.", Toast.LENGTH_SHORT).show();
             return false;

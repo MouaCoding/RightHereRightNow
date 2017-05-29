@@ -610,8 +610,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 Marker m = mMap.addMarker(new MarkerOptions()
                         .position(location).draggable(false)
                         //TODO: MM: Change marker size with our algorithm -> query likes and multiply
-                        .icon(BitmapDescriptorFactory.fromBitmap(Marker)));
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
+                        //.icon(BitmapDescriptorFactory.fromBitmap(Marker)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 eventMarkerKeys.put(m, s);
                 eventKeyMarkers.put(s, m);
 
@@ -876,8 +876,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 LatLng location = new LatLng(l.latitude, l.longitude);
                 Marker m = mMap.addMarker(new MarkerOptions()
                         .position(location).draggable(false)
-                        .icon(BitmapDescriptorFactory.fromBitmap(Marker)));
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
+                        //.icon(BitmapDescriptorFactory.fromBitmap(Marker)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.exclamation_point)));
                 eventMarkerKeys.put(m, s);
                 eventKeyMarkers.put(s, m);
             }  // have discovered an event, so put it in hashmap and put a marker for it
