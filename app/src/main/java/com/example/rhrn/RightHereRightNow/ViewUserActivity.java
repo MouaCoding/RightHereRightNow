@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Matt on 4/2/2017.
@@ -48,7 +49,9 @@ public class ViewUserActivity extends AppCompatActivity {
             numberFollowers,
             numFollowing,
             numLikes,
-            about;
+            about,
+            morePosts,
+            moreEvents;
     public ImageView profilePicture;
     public ImageButton backButton;
 
@@ -106,6 +109,27 @@ public class ViewUserActivity extends AppCompatActivity {
         postsNumLikes = (TextView) findViewById(R.id.user_post_like_count);
         postsNumComments = (TextView) findViewById(R.id.user_post_comment_count);
         postNumShares = (TextView) findViewById(R.id.user_post_share_count);
+
+        morePosts = (TextView) findViewById(R.id.more_posts);
+        morePosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MorePostsActivity.class);
+                intent.putExtra("userKey", getIntent().getStringExtra("otherUserID"));
+                startActivity(intent);
+            }
+        });
+
+        moreEvents = (TextView) findViewById(R.id.more_events);
+        moreEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MoreEventsActivity.class);
+                intent.putExtra("userKey", getIntent().getStringExtra("otherUserID"));
+                startActivity(intent);
+            }
+        });
+
         postArray = new ArrayList<>();
         eventArray = new ArrayList<>();
 

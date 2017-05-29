@@ -66,7 +66,9 @@ public class ProfilePageFragment extends Fragment {
             numberFollowers,
             numberFollowing,
             numLikes,
-            about;
+            about,
+            morePosts,
+            moreEvents;
     public EditText profileMain;
     public ImageView profilePicture, edit,editDisplay;
     public ImageButton changeProfile, options;
@@ -201,6 +203,26 @@ public class ProfilePageFragment extends Fragment {
                 Toast.makeText(getApplicationContext(),"Display Name Changed to " + newDisplayName, Toast.LENGTH_SHORT).show();
                 FirebaseDatabase.getInstance().getReference().child("User")
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DisplayName").setValue(newDisplayName);
+            }
+        });
+
+        morePosts = (TextView) r.findViewById(R.id.more_posts);
+        morePosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MorePostsActivity.class);
+                intent.putExtra("userKey", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
+            }
+        });
+
+        moreEvents = (TextView) r.findViewById(R.id.more_events);
+        moreEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MoreEventsActivity.class);
+                intent.putExtra("userKey", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
             }
         });
 

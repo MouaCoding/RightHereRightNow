@@ -5,6 +5,6 @@
     android:layout_height="wrap_content"
     android:background="@android:drawable/alert_light_frame">
 
-    <include layout="@layout/user_post_layout"/>
+    <include layout="@layout/user_post_layout" />
 
 </FrameLayout>
