@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.RHRNNotifications;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -202,7 +203,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (isChecked & firebaseUser != null) {
-            FirebaseMessaging.getInstance().subscribeToTopic("Messages_" + firebaseUser.getUid());
+            RHRNNotifications.subscribeToMessages();
+
+            RHRNNotifications.subscribeToFollows();
+
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
@@ -216,7 +220,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         //updateUI(currentUser);
     }
 

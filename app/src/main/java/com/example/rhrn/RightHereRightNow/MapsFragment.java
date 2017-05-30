@@ -57,6 +57,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.City;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.util.RHRNNotifications;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -800,7 +801,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                 } else if (i == R.id.logout) {
                     logout = 1;
                     // TODO delete token
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic("Messages_" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    RHRNNotifications.unsubscribeFromMessages();
+                    RHRNNotifications.unsubscribeFromFollows();
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear all activities above it

@@ -89,8 +89,8 @@ public class UserMiniHeaderView extends FrameLayout {
         userHandleView = (TextView) findViewById(R.id.mini_user_handle);
         moreButton = (ImageButton) findViewById(R.id.mini_profile_more_button);
 
+        addButton = (ImageButton) findViewById(R.id.mini_profile_add_button);
         if (otherUserID != FirebaseAuth.getInstance().getCurrentUser().getUid()) {
-            addButton = (ImageButton) findViewById(R.id.mini_profile_add_button);
             followButton();
         }
     }
