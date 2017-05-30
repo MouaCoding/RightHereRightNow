@@ -74,7 +74,9 @@ public class ProfilePageFragment extends Fragment {
             body,
             postsNumLikes,
             postsNumShares,
-            postsNumComments;
+            postsNumComments,
+            profileFollowing,
+            profileFollowers;
 
     //Populating list of posts and events
     public ListView postList, eventList;
@@ -89,6 +91,7 @@ public class ProfilePageFragment extends Fragment {
     private static final int SELECT_PICTURE = 100;
     //request int for using camera
     private static final int CAPTURE_PICTURE = 200;
+    private static final int ABOUT_ME = 300;
     public FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
 
     // creating an instance of Firebase Storage
@@ -128,6 +131,22 @@ public class ProfilePageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //TODO: Enlarge the profile picture
+            }
+        });
+        profileFollowing = (TextView) r.findViewById(R.id.profile_following);
+        profileFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FollowingListActivity.class);
+                startActivity(intent);
+            }
+        });
+        profileFollowers = (TextView) r.findViewById(R.id.profile_followers_label);
+        profileFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FollowerListActivity.class);
+                startActivity(intent);
             }
         });
         changeProfile = (ImageButton) r.findViewById(R.id.change_profile_picture);
@@ -180,7 +199,7 @@ public class ProfilePageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AboutMeActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,ABOUT_ME);
             }
         });
 
@@ -235,7 +254,7 @@ public class ProfilePageFragment extends Fragment {
         queryFirebase();
         populatePost();
         populateEvent();
-        checkIfLikesExist();
+        getEventLikes();
         return r;
     }
 
@@ -270,8 +289,10 @@ public class ProfilePageFragment extends Fragment {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             profilePicture.setImageBitmap(imageBitmap);
             //Else user did not pick an image
+        } else if(requestCode == ABOUT_ME && resultCode == RESULT_OK){
+            about.setText(data.getStringExtra("aboutme"));
         } else {
-            Toast.makeText(getApplicationContext(), "You haven't picked Image",
+            Toast.makeText(getApplicationContext(), "Cancelled",
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -410,23 +431,7 @@ public class ProfilePageFragment extends Fragment {
         popup.show();
     }
 
-    public void checkIfLikesExist() {
-        FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists())
-                            numLikes.setText(Long.toString((Long) dataSnapshot.getValue()));
-                        else
-                            getEventLikes();
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-    }
 
     public void getEventLikes() {
         DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Event");

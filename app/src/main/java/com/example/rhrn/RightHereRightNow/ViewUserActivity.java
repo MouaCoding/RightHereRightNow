@@ -24,6 +24,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 /**
  * Created by Matt on 4/2/2017.
  * Class to view other user profiles
@@ -48,7 +50,9 @@ public class ViewUserActivity extends AppCompatActivity {
             body,
             postsNumLikes,
             postsNumComments,
-            postNumShares;
+            postNumShares,
+            profileFollowing,
+            profileFollowers;
 
     //Populating list of posts and events
     public ListView postList, eventList;
@@ -95,6 +99,24 @@ public class ViewUserActivity extends AppCompatActivity {
         postsNumLikes = (TextView) findViewById(R.id.user_post_like_count);
         postsNumComments = (TextView) findViewById(R.id.user_post_comment_count);
         postNumShares = (TextView) findViewById(R.id.user_post_share_count);
+        profileFollowing = (TextView) findViewById(R.id.profile_following);
+        profileFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FollowingListActivity.class);
+                intent.putExtra("otherUserID", getIntent().getStringExtra("otherUserID"));
+                startActivity(intent);
+            }
+        });
+        profileFollowers = (TextView) findViewById(R.id.profile_followers_label);
+        profileFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FollowerListActivity.class);
+                intent.putExtra("otherUserID", getIntent().getStringExtra("otherUserID"));
+                startActivity(intent);
+            }
+        });
 
         morePosts = (TextView) findViewById(R.id.more_posts);
         morePosts.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +148,7 @@ public class ViewUserActivity extends AppCompatActivity {
 
         populatePost(otherUserID);
         populateEvent(otherUserID);
-        checkIfLikesExist();
+        getEventLikes();
     }
 
     public void queryFirebase(String userUID) {
@@ -225,24 +247,6 @@ public class ViewUserActivity extends AppCompatActivity {
                 });
     }
 
-    public void checkIfLikesExist() {
-        FirebaseDatabase.getInstance().getReference().child("LikesCount").child(getIntent().getStringExtra("otherUserID"))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists())
-                            numLikes.setText(Long.toString((Long) dataSnapshot.getValue()));
-                        else
-                            getEventLikes();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-    }
-
     public void getEventLikes() {
         DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Event");
         eventRef.orderByChild("ownerID").equalTo(getIntent().getStringExtra("otherUserID")).addValueEventListener(new ValueEventListener() {
@@ -253,7 +257,7 @@ public class ViewUserActivity extends AppCompatActivity {
                     Event e = dataSnapshot1.getValue(Event.class);
                     likesCount += e.likes;
                 }
-                FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid()).setValue(likesCount);
+                FirebaseDatabase.getInstance().getReference().child("LikesCount").child(getIntent().getStringExtra("otherUserID")).setValue(likesCount);
                 getPostLikes();
             }
 
@@ -289,7 +293,7 @@ public class ViewUserActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 long totalLikes = (long) dataSnapshot.getValue();
                 totalLikes = totalLikes + likesCount;
-                FirebaseDatabase.getInstance().getReference().child("LikesCount").child(fbuser.getUid()).setValue(totalLikes);
+                FirebaseDatabase.getInstance().getReference().child("LikesCount").child(getIntent().getStringExtra("otherUserID")).setValue(totalLikes);
                 numLikes.setText(Long.toString(totalLikes));
             }
 

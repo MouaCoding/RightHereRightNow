@@ -43,7 +43,7 @@
             android:text="Following"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profile_activitypoints_label"
+            android:id="@+id/profile_following"
             android:textAppearance="@android:style/TextAppearance.Material.Body2"
             android:textAlignment="center"
             android:gravity="center"

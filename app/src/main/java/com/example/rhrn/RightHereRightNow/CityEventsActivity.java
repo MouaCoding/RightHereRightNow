@@ -101,7 +101,7 @@ public class CityEventsActivity extends AppCompatActivity {
                             Event ev = dataSnapshot1.getValue(Event.class);
                             eventArray.add(0, ev);
                         }
-                        eventAdapter = new TrendingFragment.EventAdapter(getBaseContext(), eventArray);
+                        eventAdapter = new TrendingFragment.EventAdapter(CityEventsActivity.this, eventArray);
                         eventList.setAdapter(eventAdapter);
                         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
