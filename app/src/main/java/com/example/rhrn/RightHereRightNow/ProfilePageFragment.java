@@ -63,7 +63,9 @@ public class ProfilePageFragment extends Fragment {
             numLikes,
             about,
             morePosts,
-            moreEvents;
+            moreEvents,
+            moreSharedPosts,
+            moreSharedEvents;
     public EditText profileMain;
     public ImageView profilePicture, edit, editDisplay;
     public ImageButton changeProfile, options;
@@ -242,6 +244,26 @@ public class ProfilePageFragment extends Fragment {
             }
         });
 
+        moreSharedPosts = (TextView) r.findViewById(R.id.more_shared_posts);
+        moreSharedPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MoreSharedPostsActivity.class);
+                intent.putExtra("userKey", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
+            }
+        });
+
+        moreSharedEvents = (TextView) r.findViewById(R.id.more_shared_events);
+        moreSharedEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MoreSharedEventsActivity.class);
+                intent.putExtra("userKey", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
+            }
+        });
+
         //Posts
         miniProfilePicture = (ImageView) r.findViewById(R.id.mini_profile_picture);
         miniUserName = (TextView) r.findViewById(R.id.mini_name);
@@ -259,11 +281,12 @@ public class ProfilePageFragment extends Fragment {
         sharedEventArray = new ArrayList<>();
         sharedPostArray = new ArrayList<>();
 
+
+        populateSharedPost();
+        populateSharedEvent();
         queryFirebase();
         populatePost();
         populateEvent();
-        populateSharedPost();
-        populateSharedEvent();
         getEventLikes();
         return r;
     }
@@ -443,7 +466,7 @@ public class ProfilePageFragment extends Fragment {
                             });
                         }
 
-                        sharedPostAdapter = new SharingAdapters.SharedPostAdapter(getContext(), sharedPostArray);
+                        sharedPostAdapter = new SharingAdapters.SharedPostAdapter(getContext(), sharedPostArray, true);
                         sharedPosts.setAdapter(sharedPostAdapter);
                     }
 
@@ -478,7 +501,7 @@ public class ProfilePageFragment extends Fragment {
                             });
                         }
 
-                        sharedEventAdapter = new SharingAdapters.SharedEventAdapter(getContext(), sharedEventArray);
+                        sharedEventAdapter = new SharingAdapters.SharedEventAdapter(getContext(), sharedEventArray, true);
                         sharedEvents.setAdapter(sharedEventAdapter);
                     }
 

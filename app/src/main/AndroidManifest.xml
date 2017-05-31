@@ -105,6 +105,8 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".MorePostsActivity" />
         <activity android:name=".MoreEventsActivity" />
+        <activity android:name=".MoreSharedPostsActivity"/>
+        <activity android:name=".MoreSharedEventsActivity"/>
         <activity android:name=".FollowingListActivity" />
         <activity android:name=".FollowerListActivity"></activity>
     </application>

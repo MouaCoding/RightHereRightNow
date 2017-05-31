@@ -57,10 +57,11 @@ public class SharingAdapters {
         private ImageButton options;
         int postDeleted = 0;
 
-        SharedPostAdapter(Context context, ArrayList<Post> users){
+        SharedPostAdapter(Context context, ArrayList<Post> users, boolean isOwner){
             super(context, R.layout.user_post_framed_layout/*user_item*/, R.id.mini_name, users);
             mPostsFilter = users;
             mPosts = users;
+            Owner = isOwner;
             getFilter();
         }
         @Override
@@ -281,7 +282,7 @@ public class SharingAdapters {
             options = (ImageButton) view.findViewById(R.id.mini_profile_more_button);
             final PopupMenu popup = new PopupMenu(view.getContext(), options);
             popup.getMenuInflater().inflate(R.menu.shared_post_options, popup.getMenu());
-            if(true)
+            if(Owner)
                 popup.getMenu().findItem(R.id.Unshare_Post).setVisible(true);
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -402,9 +403,10 @@ public class SharingAdapters {
 
         private int eventDeleted = 0;
 
-        SharedEventAdapter(Context context, ArrayList<Event> users) {
+        SharedEventAdapter(Context context, ArrayList<Event> users, boolean isOwner) {
             super(context, R.layout.user_event_framed_layout, R.id.user_event_title, users);
             android.util.Log.e("nat", "got here");
+            Owner = isOwner;
 
         }
 
@@ -608,7 +610,7 @@ public class SharingAdapters {
             options = (ImageButton) view.findViewById(R.id.mini_profile_more_button);
             final PopupMenu popup = new PopupMenu(view.getContext(), options);
             popup.getMenuInflater().inflate(R.menu.shared_event_options, popup.getMenu());
-            if (true)
+            if (Owner)
                 popup.getMenu().findItem(R.id.Unshare_Event).setVisible(true);
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
