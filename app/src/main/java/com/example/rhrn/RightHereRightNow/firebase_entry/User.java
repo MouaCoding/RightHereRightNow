@@ -168,6 +168,73 @@ public class User {
 
             }
         });
+
+
+    }
+
+    public static void decLike(final String Usr){
+        FirebaseDatabase.getInstance().getReference("User").child(Usr).child("LikesReceived").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count -  1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    public static void decFollowers(final String Usr){
+        FirebaseDatabase.getInstance().getReference("User").child(Usr).child("NumberFollowers").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count -  1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    public static void decFollowing(final String Usr){
+        FirebaseDatabase.getInstance().getReference("User").child(Usr).child("NumberFollowing").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count -  1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+
     }
     /*public String getFirstName() {
         return FirstName;
