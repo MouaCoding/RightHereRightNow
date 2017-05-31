@@ -17,34 +17,34 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Brian Becker on 2/20/2017.
  */
 
-public class Event {
+public class SharedEvent {
 
     public String   eventName,
-                    ownerID,
-                    startDate,
-                    endDate,
-                    startTime,
-                    endTime,
-                    address,
-                    description,
-                    ProfilePicture,
-                    DisplayName,
-                    handle,
-                    userProfilePicture,
-                    eventID;
+            ownerID,
+            startDate,
+            endDate,
+            startTime,
+            endTime,
+            address,
+            description,
+            ProfilePicture,
+            DisplayName,
+            handle,
+            userProfilePicture,
+            eventID;
     //  TODO: BB: Change dates and times to type Date
     // BB: we also might need some sort of unique event ID
 
     public double   viewRadius;
 
     public int      likes,
-                    comments,
-                    shares,
-                    rsvp;
+            comments,
+            shares,
+            rsvp;
 
-    public Event() {}
+    public SharedEvent() {}
 
-    public Event(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
+    public SharedEvent(String aName, String aOwner, String aStartDate, String aEndDate, String aStartTime,
                  String aEndTime, String aAddress, String aDescription,
                  double aViewRadius, int aLikes, int aComments, int aRSVPs) {
         eventName   = aName;
@@ -139,23 +139,23 @@ public class Event {
         FirebaseDatabase.getInstance().getReference("Event").child(eventID).child(type).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-               if(mutableData.getValue() == null){
-                   mutableData.setValue(0);
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
 
-               }
-               else {
+                }
+                else {
 
-                   int count = mutableData.getValue(Integer.class);
-                   if(inc){
-                       mutableData.setValue(count + 1);
-                   }
-                   else{
-                       mutableData.setValue(count - 1);
-                   }
+                    int count = mutableData.getValue(Integer.class);
+                    if(inc){
+                        mutableData.setValue(count + 1);
+                    }
+                    else{
+                        mutableData.setValue(count - 1);
+                    }
 
 
-               }
-               return Transaction.success(mutableData);
+                }
+                return Transaction.success(mutableData);
             }
 
             @Override
@@ -230,10 +230,10 @@ public class Event {
                 }
                 else{
                     android.util.Log.d("nat", "data not being created?");
-                      //  Comments.Comment(userID, eventID, Content, 0, null, Anon);
-                        int count = mutableData.getValue(Integer.class);
-                        mutableData.setValue(count + 1);
-                    }
+                    //  Comments.Comment(userID, eventID, Content, 0, null, Anon);
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count + 1);
+                }
 
                 return Transaction.success(mutableData);
             }

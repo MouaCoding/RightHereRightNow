@@ -10,33 +10,33 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 /**
- * Created by Brian Becker on 2/21/2017.
+ * Created by NatSand on 5/31/2017.
  */
 
-public class Post {
+public class SharedPost {
     public String   ownerID,
-                    postID,
-                    createDate,
-                    createTime,
-                    content,
-                    responseID,
-                    handle,
-                    DisplayName,
-                    ProfilePicture;
+            postID,
+            createDate,
+            createTime,
+            content,
+            responseID,
+            handle,
+            DisplayName,
+            ProfilePicture;
     //  TODO: BB: Change dates and times to type Date
 
     public double   viewRadius;
 
     public int      //order,  // is it an original post (0), response (1), or response to a response (2)
-                    likes,
-                    shares,
-                    comments;
+            likes,
+            shares,
+            comments;
 
     public boolean  isAnon;
 
-    public Post() {}
+    public SharedPost() {}
 
-    public Post(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
+    public SharedPost(String aOwner, String aID, String aCreateDate, String aCreateTime, String aContent,
                 String aResponseID, double aViewRadius, int aShares, int aLikes, int aComments, boolean Anon) {
 
         ownerID     = aOwner;
