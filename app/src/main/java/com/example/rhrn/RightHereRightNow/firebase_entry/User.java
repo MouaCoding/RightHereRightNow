@@ -111,7 +111,56 @@ public class User {
         FirebaseDatabase.getInstance().getReference("User").child(Usr).child("LikesReceived").runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                return null;
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count +  1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    public static void incFollowers(final String Usr){
+        FirebaseDatabase.getInstance().getReference("User").child(Usr).child("NumberFollowers").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count +  1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    public static void incFollowing(final String Usr){
+        FirebaseDatabase.getInstance().getReference("User").child(Usr).child("NumberFollowing").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    mutableData.setValue(0);
+                }
+                else{
+                    int count = mutableData.getValue(Integer.class);
+                    mutableData.setValue(count +  1);
+                }
+                return Transaction.success(mutableData);
             }
 
             @Override
