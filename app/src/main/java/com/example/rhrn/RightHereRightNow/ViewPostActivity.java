@@ -135,7 +135,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
                         Comments comments = dataSnapshot1.getValue(Comments.class);
                         commentArray.add(comments);
                     }
-                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(), commentArray);
+                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(), commentArray, "Post");
                     commentList.setAdapter(commentsAdapter);
                 }
             }

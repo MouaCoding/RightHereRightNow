@@ -137,6 +137,10 @@
     <string name="ReportPost">Report This Post</string>
     <string name="DeleteEvent">Delete This Event</string>
     <string name="ReportEvent">Report This Event</string>
+    <string name="DeleteComment">Delete This Comment</string>
+    <string name="ReportComment">Report This Comment</string>
+    <string name="UnshareEvent">Unshare This Event</string>
+    <string name="UnsharePost">Unshare This Post</string>
     <string name="title_activity_filter_city">FilterCityActivity</string>
     <string name="action_settings">Settings</string>
     <string name="finish">Finish</string>

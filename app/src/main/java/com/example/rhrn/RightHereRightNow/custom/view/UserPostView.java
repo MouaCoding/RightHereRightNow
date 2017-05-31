@@ -102,7 +102,7 @@ public class UserPostView extends FrameLayout {
                 Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", PostID.toString());
-                intent.putExtra("type", 1);
+                intent.putExtra("type", "Post");
                 //context.startActivityForResult(intent, RC);
                 context.startActivity(intent);
                 updateCounts(PostID);

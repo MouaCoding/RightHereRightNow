@@ -184,7 +184,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                         Comments comments = dataSnapshot1.getValue(Comments.class);
                         commentArray.add(comments);
                     }
-                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(), commentArray);
+                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(), commentArray, "Event");
                     commentList.setAdapter(commentsAdapter);
                     commentList.setOnTouchListener(new ListView.OnTouchListener() {
                         @Override

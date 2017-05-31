@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/comment_disp"
@@ -23,10 +24,12 @@
                 app:srcCompat="@mipmap/ic_launcher" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/userNameLayout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.03"
+                android:layout_weight="0.96"
                 android:orientation="vertical">
+
 
                 <TextView
                     android:id="@+id/comment_simp_user_name"
@@ -43,33 +46,31 @@
                     android:text="@string/handle"
                     android:textAppearance="@android:style/TextAppearance.Material.Title"
                     android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/comment_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Comment_Here" />
             </LinearLayout>
 
+            <ImageButton
+                android:id="@+id/comment_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_margin="1dp"
+                android:background="@android:color/transparent"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+
         </LinearLayout>
-
-        <View
-            android:id="@+id/view3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            android:id="@+id/comment_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Comment_Here" />
 
         <View
             android:id="@+id/view2"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:background="?android:attr/listDivider" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-        </LinearLayout>
     </LinearLayout>
 </FrameLayout>
