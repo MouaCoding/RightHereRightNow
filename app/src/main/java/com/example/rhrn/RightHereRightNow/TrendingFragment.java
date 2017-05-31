@@ -148,10 +148,8 @@ public class TrendingFragment extends Fragment {
     }
 
     public static class EventAdapter extends ArrayAdapter<Event> {
-        private ImageButton likeButton;
-        private ImageButton commentButton;
-        private ImageButton shareButton;
         private ImageButton options;
+
 
         private int eventDeleted = 0;
 
@@ -168,8 +166,6 @@ public class TrendingFragment extends Fragment {
             TextView startTime = (TextView) convertView.findViewById(R.id.user_event_start_time);
             TextView endTime = (TextView) convertView.findViewById(R.id.user_event_end_time);
             TextView eventLoc = (TextView) convertView.findViewById(R.id.user_event_location);
-            TextView numLikes = (TextView) convertView.findViewById(R.id.user_event_like_count);
-            TextView numComments = (TextView) convertView.findViewById(R.id.user_event_comment_count);
 
             TextView displayNameView = (TextView) convertView.findViewById(R.id.mini_name);
             ImageView profilePicture = (ImageView) convertView.findViewById(R.id.mini_profile_picture);
@@ -183,8 +179,13 @@ public class TrendingFragment extends Fragment {
             startTime.setText(event.startTime);
             endTime.setText(event.endTime);
             eventLoc.setText(event.address);
+            TextView numLikes = (TextView) convertView.findViewById(R.id.user_event_like_count);
+            TextView numComments = (TextView) convertView.findViewById(R.id.user_event_comment_count);
+            TextView sharesCount = (TextView) convertView.findViewById(R.id.user_event_share_count);
+
             numLikes.setText(Integer.toString(event.likes));
             numComments.setText(Integer.toString(event.comments));
+            sharesCount.setText(Integer.toString(event.shares));
 
             displayNameView.setText(event.DisplayName);
             userHandleView.setText(event.handle);
@@ -230,6 +231,7 @@ public class TrendingFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ViewEventActivity.class);
                     intent.putExtra("eventid", event.eventID);
+                    intent.putExtra("type", "Event");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
                 }
@@ -239,10 +241,12 @@ public class TrendingFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ViewEventActivity.class);
                     intent.putExtra("eventid", event.eventID);
+                    intent.putExtra("type", "Event");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
                 }
             });
+
             return convertView;
         }
 
@@ -283,25 +287,28 @@ public class TrendingFragment extends Fragment {
 
 
         public void setButtons(final View view, final String EventID, final String currUsr) {
-            likeButton = (ImageButton) view.findViewById(R.id.user_event_like_button);
+            final ImageButton likeButton = (ImageButton) view.findViewById(R.id.user_event_like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (Likes.hasLiked(2, EventID, currUsr)) {
-                        likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorTextDark));
+                    if(Likes.hasLiked(2, EventID, currUsr )){
+                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
                         Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                        FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
-                        Event.changeCount("likes", EventID, false);
-                    } else {
-                        likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
+                        Event.Unlike(EventID, currUsr);
+                        updateCounts(EventID,view);
+                    }
+                    else{
+                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
                         Likes.Like(2, EventID, currUsr);
-                        Event.changeCount("likes", EventID, true);
                         Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                        Event.Like(EventID, currUsr);
+                        updateCounts(EventID,view);
                     }
                 }
             });
 
-            commentButton = (ImageButton) view.findViewById(R.id.user_event_comment_button);
+
+            final ImageButton commentButton = (ImageButton) view.findViewById(R.id.user_event_comment_button);
             commentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -311,15 +318,17 @@ public class TrendingFragment extends Fragment {
                     intent.putExtra("postID", EventID.toString());
                     intent.putExtra("type", "Event");
                     context.startActivity(intent);
-
+                    updateCounts(EventID,view);
                 }
             });
 
-            shareButton = (ImageButton) view.findViewById(R.id.user_event_share_button);
+            final ImageButton shareButton = (ImageButton) view.findViewById(R.id.user_event_share_button);
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: increment shares, implement sharing
+                    shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
+                    Event.Share(EventID, currUsr);
+                    updateCounts(EventID,view);
                 }
             });
             options = (ImageButton) view.findViewById(R.id.mini_profile_more_button);
@@ -330,6 +339,25 @@ public class TrendingFragment extends Fragment {
                 }
             });
 
+        }
+
+        public void updateCounts(final String eventID, View view){
+            final TextView numLikes = (TextView) view.findViewById(R.id.user_event_like_count);
+            final TextView numComments = (TextView) view.findViewById(R.id.user_event_comment_count);
+            final TextView sharesCount = (TextView) view.findViewById(R.id.user_event_share_count);
+            Event.requestEvent(eventID, "authToken", new Event.EventReceivedListener() {
+                @Override
+                public void onEventReceived(Event... events) {
+                    Event ev = events[0];
+                    try{
+                        numLikes.setText(Integer.toString(ev.likes));
+                        numComments.setText(Integer.toString(ev.comments));
+                        sharesCount.setText(String.valueOf(ev.shares));
+
+
+                    } catch(Exception e){}
+                }
+            });
         }
 
         public void setExtraValues(final String eventID, final String ownerID) {

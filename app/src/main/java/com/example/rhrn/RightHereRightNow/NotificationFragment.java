@@ -135,9 +135,6 @@ public class NotificationFragment extends Fragment {
         private ArrayList<Post> mPosts;
         private ArrayList<Post> mPostsFilter;
 
-        private ImageButton likeButton;
-        private ImageButton commentButton;
-        private ImageButton shareButton;
         private ImageButton options;
         int postDeleted = 0;
 
@@ -158,6 +155,7 @@ public class NotificationFragment extends Fragment {
             TextView userHandleView= (TextView) convertView.findViewById(R.id.mini_user_handle);
             TextView numLikes = (TextView) convertView.findViewById(R.id.user_post_like_count);
             TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
+            TextView sharesCount = (TextView) convertView.findViewById(R.id.user_post_share_count);
             ImageButton followButton = (ImageButton) convertView.findViewById(R.id.mini_profile_add_button);
             if (post.ownerID != FirebaseAuth.getInstance().getCurrentUser().getUid())
                 followButton(followButton,FirebaseAuth.getInstance().getCurrentUser().getUid(), post.ownerID);
@@ -172,6 +170,8 @@ public class NotificationFragment extends Fragment {
             postBodyTextView.setText(post.content);
             numLikes.setText(Integer.toString(post.likes));
             numComments.setText(Integer.toString(post.comments));
+            sharesCount.setText(Integer.toString(post.shares));
+
             try {
                 if (post.ProfilePicture != null)
                     Picasso.with(getContext()).load(post.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicView);
@@ -234,27 +234,27 @@ public class NotificationFragment extends Fragment {
 
         public void setButtons(final View view, final String postID, final String ownerID)
         {
-            likeButton = (ImageButton) view.findViewById(R.id.user_post_like_button);
+            final ImageButton likeButton = (ImageButton) view.findViewById(R.id.user_post_like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(Likes.hasLiked(2, postID, ownerID )){
+                    if(Likes.hasLiked(1, postID, ownerID )){
                         likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
                         Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                        FirebaseDatabase.getInstance().getReference("Likes").child(postID).child(ownerID).removeValue();
-                        Post.changeCount("likes", postID, false);
+                        Post.Unlike(postID, ownerID);
+                        updateCounts(postID,view);
 
                     }
                     else{
                         likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
-                        Likes.Like(2, postID, ownerID);
-                        Post.changeCount("likes", postID, true);
                         Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                        Post.Like(postID, ownerID);
+                        updateCounts(postID,view);
                     }
                 }
             });
 
-            commentButton = (ImageButton) view.findViewById(R.id.user_post_comment_button);
+            final ImageButton commentButton = (ImageButton) view.findViewById(R.id.user_post_comment_button);
             commentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -263,14 +263,17 @@ public class NotificationFragment extends Fragment {
                     intent.putExtra("postID", postID.toString());
                     intent.putExtra("type", "Post");
                     context.startActivity(intent);
+                    updateCounts(postID,view);
                 }
             });
 
-            shareButton = (ImageButton) view.findViewById(R.id.user_post_share_button);
+            final ImageButton shareButton = (ImageButton) view.findViewById(R.id.user_post_share_button);
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: increment shares, implement sharing
+                    shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
+                    Post.Share(postID, ownerID);
+                    updateCounts(postID, view);
                 }
             });
 
@@ -282,6 +285,24 @@ public class NotificationFragment extends Fragment {
                 }
             });
 
+        }
+        public void updateCounts(final String postID, View convertView){
+            final TextView numLikes = (TextView) convertView.findViewById(R.id.user_post_like_count);
+            final TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
+            final TextView sharesCount = (TextView) convertView.findViewById(R.id.user_post_share_count);
+            Post.requestPost(postID, "authToken", new Post.PostReceivedListener() {
+                @Override
+                public void onPostReceived(Post... posts) {
+                    Post pst = posts[0];
+                    try{
+                        numLikes.setText(Integer.toString(pst.likes));
+                        numComments.setText(Integer.toString(pst.comments));
+                        sharesCount.setText(String.valueOf(pst.shares));
+
+
+                    } catch(Exception e){}
+                }
+            });
         }
 
         @Override

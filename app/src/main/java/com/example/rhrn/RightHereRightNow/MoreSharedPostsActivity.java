@@ -36,14 +36,14 @@ public class MoreSharedPostsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_more_posts);
+        setContentView(R.layout.activity_more_shared_posts);
         backButton = (ImageButton) findViewById(R.id.back_button);
         options = (ImageButton) findViewById(R.id.profile_app_bar_options);
         postTitle = (TextView) findViewById(R.id.profile_name_chat);
-        postList = (ListView) findViewById(R.id.user_all_posts);
+        postList = (ListView) findViewById(R.id.user_all_shared_posts);
         postArrayList = new ArrayList<>();
-        postAdapter = new NotificationFragment.PostAdapter(this, postArrayList);
-        postList.setAdapter(postAdapter);
+        //postAdapter = new NotificationFragment.PostAdapter(MoreSharedPostsActivity.this, postArrayList);
+        //postList.setAdapter(postAdapter);
         //loadMorePosts = (ProgressBar) LayoutInflater.from(this).inflate(R.layout.progress_bar, null);
         //findViewById(R.id.load_more_posts);
         View mProgressBarFooter = ((LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
@@ -74,7 +74,7 @@ public class MoreSharedPostsActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    postAdapter.notifyDataSetChanged();
+                    //postAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -95,21 +95,16 @@ public class MoreSharedPostsActivity extends AppCompatActivity {
                             android.util.Log.e("nat", posts[0].ownerID);
                             postArrayList.add(posts[0]);
                             android.util.Log.e("nat", String.valueOf(postArrayList.size()));
-
+                            postAdapter.notifyDataSetChanged();
                         }
                     });
 
                 }
 
-                try {
-                    postTitle.setText(postArrayList.get(0).DisplayName + "'s Posts");
+                    try{postTitle.setText(postArrayList.get(0).DisplayName + "'s Posts");}catch (Exception e){}
                     postAdapter = new NotificationFragment.PostAdapter(MoreSharedPostsActivity.this, postArrayList);
                     android.util.Log.e("nat", String.valueOf(postAdapter.getCount()));
                     postList.setAdapter(postAdapter);
-                } catch (Exception e) {
-                    android.util.Log.e("nat", e.toString());
-
-                }
             }
 
             @Override

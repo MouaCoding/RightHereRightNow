@@ -44,14 +44,14 @@ public class MoreSharedEventsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_more_events);
+        setContentView(R.layout.activity_more_shared_events);
         backButton = (ImageButton) findViewById(R.id.back_button);
         options = (ImageButton) findViewById(R.id.profile_app_bar_options);
         eventTitle = (TextView) findViewById(R.id.profile_name_chat);
-        eventList = (ListView) findViewById(R.id.user_all_events);
+        eventList = (ListView) findViewById(R.id.user_all_shared_events);
         eventArrayList = new ArrayList<>();
-        eventAdapter = new TrendingFragment.EventAdapter(this, eventArrayList);
-        eventList.setAdapter(eventAdapter);
+        //eventAdapter = new TrendingFragment.EventAdapter(MoreSharedEventsActivity.this, eventArrayList);
+        //eventList.setAdapter(eventAdapter);
         //loadMoreEvents = (ProgressBar) LayoutInflater.from(this).inflate(R.layout.progress_bar, null);
         //findViewById(R.id.load_more_events);
         View mProgressBarFooter = ((LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
@@ -89,7 +89,7 @@ public class MoreSharedEventsActivity extends AppCompatActivity {
                         getUserEvents(scrollCount * 25);
                     } catch (Exception e) {
                     }
-                    eventAdapter.notifyDataSetChanged();
+//                    eventAdapter.notifyDataSetChanged();
                     Log.i("counttt", Integer.toString(scrollCount));
                 }
 
@@ -111,16 +111,15 @@ public class MoreSharedEventsActivity extends AppCompatActivity {
                         @Override
                         public void onEventReceived(Event... events) {
                             eventArrayList.add(0, events[0]);
+                            eventAdapter.notifyDataSetChanged();
                         }
                     });
 
                 }
-                try {
-                    eventTitle.setText(eventArrayList.get(0).DisplayName + "'s Events");
+                try {eventTitle.setText(eventArrayList.get(0).DisplayName + "'s Events");} catch (Exception e) {}
                     eventAdapter = new TrendingFragment.EventAdapter(MoreSharedEventsActivity.this, eventArrayList);
                     eventList.setAdapter(eventAdapter);
-                } catch (Exception e) {
-                }
+
             }
 
             @Override

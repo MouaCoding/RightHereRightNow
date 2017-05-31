@@ -40,7 +40,9 @@ public class ViewUserActivity extends AppCompatActivity {
             numLikes,
             about,
             morePosts,
-            moreEvents;
+            moreEvents,
+            moreSharedPosts,
+            moreSharedEvents;
     public ImageView profilePicture;
     public ImageButton backButton;
 
@@ -139,6 +141,25 @@ public class ViewUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MoreEventsActivity.class);
+                intent.putExtra("userKey", getIntent().getStringExtra("otherUserID"));
+                startActivity(intent);
+            }
+        });
+        moreSharedPosts = (TextView) findViewById(R.id.more_shared_posts);
+        moreSharedPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MoreSharedPostsActivity.class);
+                intent.putExtra("userKey", getIntent().getStringExtra("otherUserID"));
+                startActivity(intent);
+            }
+        });
+
+        moreSharedEvents = (TextView) findViewById(R.id.more_shared_events);
+        moreSharedEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MoreSharedEventsActivity.class);
                 intent.putExtra("userKey", getIntent().getStringExtra("otherUserID"));
                 startActivity(intent);
             }
@@ -266,7 +287,7 @@ public class ViewUserActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot shareSnap : dataSnapshot.getChildren()){
-                            Shares share = shareSnap.getValue(Shares.class);
+                            final Shares share = shareSnap.getValue(Shares.class);
                             android.util.Log.e("nat", share.id );
 
                             Post.requestPost(share.id, "auth", new Post.PostReceivedListener() {
@@ -275,7 +296,7 @@ public class ViewUserActivity extends AppCompatActivity {
                                     Post pst = posts[0];
                                     sharedPostArray.add(0, pst);
                                     android.util.Log.e("nat", String.valueOf(sharedEventAdapter.getCount()));
-
+                                    sharedPostAdapter.notifyDataSetChanged();
                                 }
 
 
@@ -310,7 +331,7 @@ public class ViewUserActivity extends AppCompatActivity {
                                     Event ev = events[0];
                                     sharedEventArray.add(0, ev);
                                     android.util.Log.e("nat", String.valueOf(sharedEventAdapter.getCount()));
-
+                                    sharedEventAdapter.notifyDataSetChanged();
                                 }
 
 

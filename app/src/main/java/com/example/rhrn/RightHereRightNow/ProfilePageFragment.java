@@ -459,7 +459,7 @@ public class ProfilePageFragment extends Fragment {
                                     Post pst = posts[0];
                                     sharedPostArray.add(0, pst);
                                     android.util.Log.e("nat", String.valueOf(sharedEventAdapter.getCount()));
-
+                                    sharedPostAdapter.notifyDataSetChanged();
                                 }
 
 
@@ -494,7 +494,7 @@ public class ProfilePageFragment extends Fragment {
                                     Event ev = events[0];
                                     sharedEventArray.add(0, ev);
                                     android.util.Log.e("nat", String.valueOf(sharedEventAdapter.getCount()));
-
+                                    sharedEventAdapter.notifyDataSetChanged();
                                 }
 
 

@@ -149,6 +149,7 @@ public class UserEventView extends FrameLayout {
         shareButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
                 Event.Share(EventID, currUsr);
                 updateCounts(EventID);
             }
