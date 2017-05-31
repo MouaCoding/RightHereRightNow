@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:background="@drawable/top_nav_color"
     android:orientation="vertical"
     tools:context="com.example.rhrn.RightHereRightNow.ViewEventActivity">
 
@@ -23,19 +24,18 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Optional if user evented an image, it should display at the top-->
             <ImageView
                 android:id="@+id/view_user_eventimage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:src="@drawable/ic_media_route_connecting_00_light"
@@ -239,12 +239,16 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/comments_section" />
 
+            <!--<ListView-->
+            <!--android:id="@+id/view_event_comment_list"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="15dp" />-->
             <ListView
                 android:id="@+id/view_event_comment_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_marginTop="15dp" />
-
             <include
                 layout="@layout/comment_post_make"
                 android:layout_width="match_parent"

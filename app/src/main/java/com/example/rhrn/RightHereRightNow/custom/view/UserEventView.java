@@ -138,7 +138,7 @@ public class UserEventView extends FrameLayout {
                 Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", EventID.toString());
-                intent.putExtra("type", 2);
+                intent.putExtra("type", "Event");
                 //context.startActivityForResult(intent, RC);
                 context.startActivity(intent);
                 updateCounts(EventID);
@@ -149,6 +149,7 @@ public class UserEventView extends FrameLayout {
         shareButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
                 Event.Share(EventID, currUsr);
                 updateCounts(EventID);
             }

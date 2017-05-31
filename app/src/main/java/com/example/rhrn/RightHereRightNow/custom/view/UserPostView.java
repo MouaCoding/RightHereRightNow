@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,7 +103,7 @@ public class UserPostView extends FrameLayout {
                 Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
                 intent.putExtra("postID", PostID.toString());
-                intent.putExtra("type", 1);
+                intent.putExtra("type", "Post");
                 //context.startActivityForResult(intent, RC);
                 context.startActivity(intent);
                 updateCounts(PostID);
@@ -115,6 +116,7 @@ public class UserPostView extends FrameLayout {
         shareButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
                 Post.Share(PostID, currUsr);
                 updateCounts(PostID);
             }

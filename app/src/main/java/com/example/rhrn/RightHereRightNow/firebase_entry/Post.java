@@ -197,7 +197,7 @@ public class Post {
                     mutableData.setValue(0);
                 }
                 else{
-                    Shares.Share(1, postID, currUsr);
+                    Shares.Share("Post", postID, currUsr);
                     int count = mutableData.getValue(Integer.class);
                     mutableData.setValue(count + 1);
 

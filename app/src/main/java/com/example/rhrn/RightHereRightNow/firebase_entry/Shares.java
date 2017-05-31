@@ -14,13 +14,15 @@ import com.google.firebase.database.Transaction;
 
 public class Shares {
 
-    public int type;
+    public String type;
     public String id;
     public Object timeStamp;
 
-    Shares(int Type, String ID){ type = Type; id = ID; timeStamp = ServerValue.TIMESTAMP;}
+    Shares(String Type, String ID){ type = Type; id = ID; timeStamp = ServerValue.TIMESTAMP;}
 
-    public static void Share(int type, String id, String user){
+    public Shares() {}
+
+    public static void Share(String type, String id, String user){
 
         DatabaseReference rootref = FirebaseDatabase.getInstance().getReference("Shares").child(user);
         DatabaseReference ref = rootref.push();
@@ -29,7 +31,6 @@ public class Shares {
 
 
     }
-
 
 }
 

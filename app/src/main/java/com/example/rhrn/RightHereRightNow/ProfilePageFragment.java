@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Shares;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -62,7 +63,9 @@ public class ProfilePageFragment extends Fragment {
             numLikes,
             about,
             morePosts,
-            moreEvents;
+            moreEvents,
+            moreSharedPosts,
+            moreSharedEvents;
     public EditText profileMain;
     public ImageView profilePicture, edit, editDisplay;
     public ImageButton changeProfile, options;
@@ -79,11 +82,14 @@ public class ProfilePageFragment extends Fragment {
             profileFollowers;
 
     //Populating list of posts and events
-    public ListView postList, eventList;
-    public ArrayList<Post> postArray;
-    public ArrayList<Event> eventArray;
+    public ListView postList, eventList, sharedPosts, sharedEvents;
+    public ArrayList<Post> postArray, sharedPostArray;
+    public ArrayList<Event> eventArray, sharedEventArray;
     public NotificationFragment.PostAdapter postAdapter;
     public TrendingFragment.EventAdapter eventAdapter;
+    public SharingAdapters.SharedPostAdapter sharedPostAdapter;
+    public SharingAdapters.SharedEventAdapter sharedEventAdapter;
+
 
 
     public User temp;
@@ -238,6 +244,26 @@ public class ProfilePageFragment extends Fragment {
             }
         });
 
+        moreSharedPosts = (TextView) r.findViewById(R.id.more_shared_posts);
+        moreSharedPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MoreSharedPostsActivity.class);
+                intent.putExtra("userKey", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
+            }
+        });
+
+        moreSharedEvents = (TextView) r.findViewById(R.id.more_shared_events);
+        moreSharedEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MoreSharedEventsActivity.class);
+                intent.putExtra("userKey", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
+            }
+        });
+
         //Posts
         miniProfilePicture = (ImageView) r.findViewById(R.id.mini_profile_picture);
         miniUserName = (TextView) r.findViewById(R.id.mini_name);
@@ -247,10 +273,17 @@ public class ProfilePageFragment extends Fragment {
         postsNumComments = (TextView) r.findViewById(R.id.user_post_comment_count);
         postList = (ListView) r.findViewById(R.id.post_list);
         eventList = (ListView) r.findViewById(R.id.event_list);
+        sharedPosts = (ListView) r.findViewById(R.id.shared_post_list);
+        sharedEvents = (ListView) r.findViewById(R.id.shared_event_list);
         postsNumShares = (TextView) r.findViewById(R.id.user_post_share_count);
         postArray = new ArrayList<>();
         eventArray = new ArrayList<>();
+        sharedEventArray = new ArrayList<>();
+        sharedPostArray = new ArrayList<>();
 
+
+        populateSharedPost();
+        populateSharedEvent();
         queryFirebase();
         populatePost();
         populateEvent();
@@ -407,6 +440,75 @@ public class ProfilePageFragment extends Fragment {
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());
                     }
+                });
+    }
+
+    public void populateSharedPost() {
+        DatabaseReference shared = FirebaseDatabase.getInstance().getReference("Shares").child(fbuser.getUid().toString());
+        shared.orderByChild("type").equalTo("Post").limitToLast(1)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot shareSnap : dataSnapshot.getChildren()){
+                            Shares share = shareSnap.getValue(Shares.class);
+                            android.util.Log.e("nat", share.id );
+
+                            Post.requestPost(share.id, "auth", new Post.PostReceivedListener() {
+                                @Override
+                                public void onPostReceived(Post... posts) {
+                                    Post pst = posts[0];
+                                    sharedPostArray.add(0, pst);
+                                    android.util.Log.e("nat", String.valueOf(sharedEventAdapter.getCount()));
+                                    sharedPostAdapter.notifyDataSetChanged();
+                                }
+
+
+                            });
+                        }
+
+                        sharedPostAdapter = new SharingAdapters.SharedPostAdapter(getContext(), sharedPostArray, true);
+                        sharedPosts.setAdapter(sharedPostAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+
+    public void populateSharedEvent() {
+        DatabaseReference shared = FirebaseDatabase.getInstance().getReference("Shares").child(fbuser.getUid().toString());
+        shared.orderByChild("type").equalTo("Event").limitToLast(1)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot shareSnap : dataSnapshot.getChildren()){
+                            Shares share = shareSnap.getValue(Shares.class);
+                            android.util.Log.e("nat", share.id );
+
+                            Event.requestEvent(share.id, "auth", new Event.EventReceivedListener() {
+                                @Override
+                                public void onEventReceived(Event... events) {
+                                    Event ev = events[0];
+                                    sharedEventArray.add(0, ev);
+                                    android.util.Log.e("nat", String.valueOf(sharedEventAdapter.getCount()));
+                                    sharedEventAdapter.notifyDataSetChanged();
+                                }
+
+
+                            });
+                        }
+
+                        sharedEventAdapter = new SharingAdapters.SharedEventAdapter(getContext(), sharedEventArray, true);
+                        sharedEvents.setAdapter(sharedEventAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                   }
                 });
     }
 

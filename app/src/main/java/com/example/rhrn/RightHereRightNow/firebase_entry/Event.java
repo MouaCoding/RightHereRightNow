@@ -254,7 +254,7 @@ public class Event {
                     mutableData.setValue(0);
                 }
                 else{
-                    Shares.Share(2, eventID, currUsr);
+                    Shares.Share("Event", eventID, currUsr);
                     int count = mutableData.getValue(Integer.class);
                     mutableData.setValue(count + 1);
 
