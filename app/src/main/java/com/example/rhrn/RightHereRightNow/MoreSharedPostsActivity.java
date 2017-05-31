@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Shares;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,10 +29,11 @@ public class MoreSharedPostsActivity extends AppCompatActivity {
     public TextView postTitle;
     public ListView postList;
     public ArrayList<Post> postArrayList;
-    public NotificationFragment.PostAdapter postAdapter;
+    public SharingAdapters.SharedPostAdapter postAdapter;
     public ProgressBar loadMorePosts;
     public int loadPosts = 0;
     public int scrollCount = 0;
+    public boolean isOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class MoreSharedPostsActivity extends AppCompatActivity {
         postTitle = (TextView) findViewById(R.id.profile_name_chat);
         postList = (ListView) findViewById(R.id.user_all_shared_posts);
         postArrayList = new ArrayList<>();
+        isOwner = FirebaseAuth.getInstance().getCurrentUser().getUid().equals(getIntent().getStringExtra("userKey"));
         //postAdapter = new NotificationFragment.PostAdapter(MoreSharedPostsActivity.this, postArrayList);
         //postList.setAdapter(postAdapter);
         //loadMorePosts = (ProgressBar) LayoutInflater.from(this).inflate(R.layout.progress_bar, null);
@@ -102,7 +105,7 @@ public class MoreSharedPostsActivity extends AppCompatActivity {
                 }
 
                     try{postTitle.setText(postArrayList.get(0).DisplayName + "'s Posts");}catch (Exception e){}
-                    postAdapter = new NotificationFragment.PostAdapter(MoreSharedPostsActivity.this, postArrayList);
+                    postAdapter = new SharingAdapters.SharedPostAdapter(MoreSharedPostsActivity.this, postArrayList, isOwner);
                     android.util.Log.e("nat", String.valueOf(postAdapter.getCount()));
                     postList.setAdapter(postAdapter);
             }

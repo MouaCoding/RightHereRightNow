@@ -27,7 +27,7 @@
                 android:id="@+id/userNameLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.96"
+                android:layout_weight="0.70"
                 android:orientation="vertical">
 
 

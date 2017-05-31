@@ -33,12 +33,14 @@ public class MoreSharedEventsActivity extends AppCompatActivity {
     public TextView eventTitle;
     public ListView eventList;
     public ArrayList<Event> eventArrayList;
-    public TrendingFragment.EventAdapter eventAdapter;
+    public SharingAdapters.SharedEventAdapter eventAdapter;
 
     public ProgressBar loadMoreEvents;
 
     public int loadEvents = 0;
     public int scrollCount = 0;
+
+    public boolean isOwner;
     int first = 0;
 
     @Override
@@ -50,6 +52,7 @@ public class MoreSharedEventsActivity extends AppCompatActivity {
         eventTitle = (TextView) findViewById(R.id.profile_name_chat);
         eventList = (ListView) findViewById(R.id.user_all_shared_events);
         eventArrayList = new ArrayList<>();
+        isOwner = FirebaseAuth.getInstance().getCurrentUser().getUid().equals(getIntent().getStringExtra("userKey"));
         //eventAdapter = new TrendingFragment.EventAdapter(MoreSharedEventsActivity.this, eventArrayList);
         //eventList.setAdapter(eventAdapter);
         //loadMoreEvents = (ProgressBar) LayoutInflater.from(this).inflate(R.layout.progress_bar, null);
@@ -117,7 +120,7 @@ public class MoreSharedEventsActivity extends AppCompatActivity {
 
                 }
                 try {eventTitle.setText(eventArrayList.get(0).DisplayName + "'s Events");} catch (Exception e) {}
-                    eventAdapter = new TrendingFragment.EventAdapter(MoreSharedEventsActivity.this, eventArrayList);
+                    eventAdapter = new SharingAdapters.SharedEventAdapter(MoreSharedEventsActivity.this, eventArrayList, isOwner);
                     eventList.setAdapter(eventAdapter);
 
             }
