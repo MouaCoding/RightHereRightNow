@@ -1,11 +1,17 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -15,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Comments;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
+import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
 import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.firebase.client.ServerValue;
@@ -42,7 +49,10 @@ import java.util.ArrayList;
 
 
 public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCallback {
-    public TextView content, likes, comments, shares, displayName, handle;
+    public TextView content, likes, comments, shares, displayName, handle, viewComments;
+    private TextView likesCount;
+    private TextView commentsCount;
+    private TextView sharesCount;
     public ImageView profile, eventImage;
     public ImageButton back, likeButton, commentButton, shareButton;
     public EditText commentContent;
@@ -50,10 +60,12 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
     public GoogleMap mMap;
     private LatLng createLoc;
     private MapView event_location;
+    private CheckBox anon;
 
     public ArrayList<Comments> commentArray;
     public ListView commentList;
     public CommentsListActivity.commentsAdapter commentsAdapter;
+    String EventID, currUsr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +81,22 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         eventImage.requestFocus();
         commentList = (ListView) findViewById(R.id.view_event_comment_list);
         handle = (TextView) findViewById(R.id.view_user_handle);
+        anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
         commentContent = (EditText) findViewById(R.id.Comment_content);
+        likesCount = (TextView) findViewById(R.id.user_event_like_count);
+        commentsCount = (TextView) findViewById (R.id.user_event_comment_count);
+        sharesCount = (TextView) findViewById(R.id.user_event_share_count);
+        viewComments = (TextView) findViewById(R.id.view_comments);
+        viewComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                commentList.setVisibility(View.VISIBLE);
+                getComments(getIntent().getStringExtra("eventid"), false);
+            }
+        });
+        EventID = getIntent().getStringExtra("eventid");
+        currUsr = getIntent().getStringExtra("ownerID");
+
         commentArray = new ArrayList<>();
         commentsAdapter = new CommentsListActivity.commentsAdapter(ViewEventActivity.this,commentArray, "Event");
         commentList.setAdapter(commentsAdapter);
@@ -112,17 +139,67 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                 String temp = commentContent.getText().toString();
                 temp = temp.trim();
                 if (temp.length() > 0) {
-                    createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), getIntent().getStringExtra("eventid"), temp, 0, null);
-                    if(getIntent().getStringExtra("type").equals("Event"))
+                    commentArray = new ArrayList<Comments>();
+                    createComment(getIntent().getStringExtra("ownerID"), getIntent().getStringExtra("eventid"), temp, 0, null, anon.isChecked());
+                    if(((String)getIntent().getStringExtra("type")).equals("Event"))
                         Event.changeCount("comments", getIntent().getStringExtra("eventid"), true);
-                    else if(getIntent().getStringExtra("type").equals("Post"))
+                    else if(((String)getIntent().getStringExtra("type")).equals("Post"))
                         Post.changeCount("comments", getIntent().getStringExtra("eventid"), true);
-                    getComments(getIntent().getStringExtra("eventid"), false);
+                    getComments(getIntent().getStringExtra("eventid"), true);
+                    commentContent.setText("");
+                    commentsAdapter.notifyDataSetChanged();
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Please Enter Comment", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        likeButton = (ImageButton) findViewById(R.id.user_event_like_button);
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Likes.hasLiked(2, EventID, currUsr )){
+                    likeButton.setColorFilter(ContextCompat.getColor(ViewEventActivity.this,R.color.colorTextDark));
+                    Toast.makeText(ViewEventActivity.this, "Unliked", Toast.LENGTH_SHORT).show();
+                    Event.Unlike(EventID, currUsr);
+                    updateCounts(EventID);
+                }
+                else{
+                    likeButton.setColorFilter(ContextCompat.getColor(ViewEventActivity.this,R.color.crimson));
+                    Likes.Like(2, EventID, currUsr);
+                    Toast.makeText(ViewEventActivity.this, "Liked", Toast.LENGTH_SHORT).show();
+                    Event.Like(EventID, currUsr);
+                    updateCounts(EventID);
+                }
+            }
+        });
+
+        commentButton = (ImageButton) findViewById(R.id.user_event_comment_button);
+        commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = ViewEventActivity.this;
+                Bundle params = new Bundle();
+                Intent intent = new Intent(context, CommentsListActivity.class);
+                intent.putExtra("postID", EventID.toString());
+                intent.putExtra("type", "Event");
+                //context.startActivityForResult(intent, RC);
+                context.startActivity(intent);
+                updateCounts(EventID);
+
+            }
+        });
+        shareButton = (ImageButton) findViewById(R.id.user_event_share_button);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareButton.setColorFilter(ContextCompat.getColor(ViewEventActivity.this,R.color.MainBlue));
+                Event.Share(EventID, currUsr);
+                updateCounts(EventID);
+            }
+        });
+
         //event_location.getMapAsync(this);
         //event_location.onCreate(savedInstanceState);
         String eventid = null;
@@ -133,11 +210,25 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
             //TODO:MM - get the post location
             //getPostLocation(postid);
         }
-        commentArray = new ArrayList<>();
-        getComments(getIntent().getStringExtra("eventid"), true);
         //createLoc = new LatLng(0,0);
 
 
+    }
+
+    public void updateCounts(final String eventID){
+        Event.requestEvent(eventID, "authToken", new Event.EventReceivedListener() {
+            @Override
+            public void onEventReceived(Event... events) {
+                Event ev = events[0];
+                try{
+                    likesCount.setText(Integer.toString(ev.likes));
+                    commentsCount.setText(Integer.toString(ev.comments));
+                    sharesCount.setText(String.valueOf(ev.shares));
+
+
+                } catch(Exception e){}
+            }
+        });
     }
 
     @Override
@@ -184,7 +275,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-    public void createComment(String userID, String postID, String Content, int Order, String responseID) {
+    public void createComment(String userID, String postID, String Content, int Order, String responseID, boolean anon) {
 
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference rootreference = FirebaseDatabase.getInstance().getReference("Comments").child(postID);
@@ -197,7 +288,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         String key = reference.getKey();
 
         DatabaseReference createdComment = FirebaseDatabase.getInstance().getReference("Comments").child(postID).child(key);
-        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, false, ServerValue.TIMESTAMP));
+        createdComment.setValue(new Comments(userID, key, Content, postID, Order, 0, 0, anon, ServerValue.TIMESTAMP));
         createdComment.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
     }
 

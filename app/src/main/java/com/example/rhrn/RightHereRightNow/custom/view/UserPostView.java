@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,15 +19,18 @@ import com.example.rhrn.RightHereRightNow.App;
 import com.example.rhrn.RightHereRightNow.CommentsListActivity;
 import com.example.rhrn.RightHereRightNow.NotificationFragment;
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.ViewPostActivity;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Post;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -44,7 +48,7 @@ public class UserPostView extends FrameLayout {
     private TextView likesCount;
     private TextView commentsCount;
     private TextView sharesCount;
-
+    private ImageView postImage;
 
     private ImageButton likeButton;
     private ImageButton commentButton;
@@ -77,18 +81,19 @@ public class UserPostView extends FrameLayout {
         likeButton = (ImageButton) findViewById(R.id.user_post_like_button);
         commentButton = (ImageButton) findViewById(R.id.user_post_comment_button);
         shareButton = (ImageButton) findViewById(R.id.user_post_share_button);
+        postImage = (ImageView) findViewById(R.id.view_post_image);
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(Likes.hasLiked(1, PostID, currUsr )){
-                    likeButton.setColorFilter(R.color.colorTextDark);
+                    likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
                     Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
                     Post.Unlike(PostID, currUsr);
                     updateCounts(PostID);
 
                 }
                 else{
-                    likeButton.setColorFilter(R.color.crimson);
+                    likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
                     Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
                     Post.Like(PostID, currUsr);
                     updateCounts(PostID);
@@ -152,6 +157,28 @@ public class UserPostView extends FrameLayout {
         likesCount.setText(Integer.toString(p.likes));
         commentsCount.setText(Integer.toString(p.comments));
         sharesCount.setText(Integer.toString(p.shares));
+
+        try{
+            if(p.PostPicture != null) postImage.setVisibility(View.VISIBLE);
+            Picasso.with(getContext()).load(p.PostPicture).transform(new CircleTransform()).into(postImage);
+        }catch (Exception e){}
+
+        postBodyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),ViewPostActivity.class);
+                intent.putExtra("postid",p.postID);
+                getContext().startActivity(intent);
+            }
+        });
+        postImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),ViewPostActivity.class);
+                intent.putExtra("postid",p.postID);
+                getContext().startActivity(intent);
+            }
+        });
 
         options.setOnClickListener(new OnClickListener() {
             @Override

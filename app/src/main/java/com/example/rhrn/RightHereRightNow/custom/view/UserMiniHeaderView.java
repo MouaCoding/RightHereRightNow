@@ -19,6 +19,7 @@ import com.example.rhrn.RightHereRightNow.ViewUserActivity;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.FollowingUser;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
+import com.example.rhrn.RightHereRightNow.util.CircleTransform;
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -157,15 +158,9 @@ public class UserMiniHeaderView extends FrameLayout {
         userHandleView.setText(user.handle);
         otherUserID = user.uid;
         curUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        //Try if user has profile pic
         try {
-    //Convert the URL to aa Bitmap using function, then set the profile picture
-            miniProfilePicView.setImageBitmap(getBitmapFromURL(user.ProfilePicture));
+            Picasso.with(getContext()).load(user.ProfilePicture).transform(new CircleTransform()).into(miniProfilePicView);
         }catch (Exception e){}
-    // eventMiniImageView.setImageBitmap(ev.image);
-
-
-
     }
 
     //stackoverflow function

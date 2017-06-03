@@ -232,6 +232,7 @@ public class TrendingFragment extends Fragment {
                     Intent intent = new Intent(getContext(), ViewEventActivity.class);
                     intent.putExtra("eventid", event.eventID);
                     intent.putExtra("type", "Event");
+                    intent.putExtra("ownerID", event.ownerID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
                 }
@@ -242,6 +243,7 @@ public class TrendingFragment extends Fragment {
                     Intent intent = new Intent(getContext(), ViewEventActivity.class);
                     intent.putExtra("eventid", event.eventID);
                     intent.putExtra("type", "Event");
+                    intent.putExtra("ownerID", event.ownerID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().startActivity(intent);
                 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
@@ -26,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class FollowingListActivity extends AppCompatActivity {
@@ -52,6 +56,12 @@ public class FollowingListActivity extends AppCompatActivity {
         options = (ImageButton) findViewById(R.id.profile_app_bar_options);
         userTitle = (TextView) findViewById(R.id.profile_name_chat);
         userList = (ListView) findViewById(R.id.following_list);
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu();
+            }
+        });
         userArrayList = new ArrayList<>();
         userAdapter = new MessageListActivity.UserAdapter(this, userArrayList);
         userList.setAdapter(userAdapter);
@@ -138,5 +148,26 @@ public class FollowingListActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    private void popupMenu() {
+        PopupMenu popup = new PopupMenu(FollowingListActivity.this, options);
+        popup.getMenuInflater().inflate(R.menu.other_options_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                int i = item.getItemId();
+                if (i == R.id.logout) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear all activities above it
+                    startActivity(intent);
+                    finish();
+                    return true;
+                } else {
+                    return onMenuItemClick(item);
+                }
+            }
+        });
+        popup.show();
     }
 }
