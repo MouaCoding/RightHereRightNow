@@ -143,7 +143,7 @@ public class MessageListActivity extends AppCompatActivity {
         MessageListActivity.this.invalidateOptionsMenu();
         if (requestCode == NEW_MESSAGE && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                User a = new User(null, null, data.getStringExtra("name"), data.getStringExtra("handle"), null, null, null, null, null, null, 0, 0, 0);
+                User a = new User(null, null, data.getStringExtra("name"), data.getStringExtra("handle"), null, null, null, null, null, data.getStringExtra("key"), 0, 0, 0);
                 try {
                     a.ProfilePicture = data.getStringExtra("profile");
                 } catch (Exception e) {
@@ -271,6 +271,7 @@ public class MessageListActivity extends AppCompatActivity {
             date = (TextView) convertView.findViewById(R.id.date);
             ImageView imageView = (ImageView) convertView.findViewById(R.id.messaging_profile_picture);
             nameView.setText(user.DisplayName);
+            messageView.setText(user.handle);
             //setExtraValues(user.uid, fbuser.getUid());
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) nameView.getLayoutParams();
 

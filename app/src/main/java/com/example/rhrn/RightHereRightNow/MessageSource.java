@@ -20,10 +20,10 @@ public class MessageSource {
     private static final Firebase sRef = new Firebase("https://righthererightnow-72e20.firebaseio.com/");
     private static SimpleDateFormat sDateFormat = new SimpleDateFormat("MM-dd-yyyy-hh:mm:ss aa");
     private static final String TAG = "MessageDataSource";
-    private static final String COLUMN_TEXT = "Message";
-    private static final String COLUMN_SENDER = "Sender ID";
-    private static final String COLUMN_DATE = "Date";
-    private static final String COLUMN_RECEIVER = "Receiver ID";
+    private static final String COLUMN_TEXT = "message";
+    private static final String COLUMN_SENDER = "sender";
+    private static final String COLUMN_DATE = "date";
+    private static final String COLUMN_RECEIVER = "receiver";
 
 
     public static void saveMessage(Messages message, String conversationId) {

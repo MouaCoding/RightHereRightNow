@@ -16,15 +16,24 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="96dp"
+        android:visibility="gone"
+        android:id="@+id/view_post_image"/>
     <TextView
         android:id="@+id/user_post_body"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:padding="4dp"
         android:text="@string/na"
         android:textAppearance="@android:style/TextAppearance.Material.Large" />
-
+</LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

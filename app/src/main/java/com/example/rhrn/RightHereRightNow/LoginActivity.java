@@ -190,7 +190,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //if clicked, then draws a check and set PREFS_NAME
-                SharedPreferences settings = getSharedPreferences("PREFS_NAME", 0);
+                SharedPreferences settings = getSharedPreferences("com.example.rhrn.RightHereRightNow", 0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putBoolean("isChecked", isChecked);
                 editor.commit();
@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
 
         //Sets settings1 to PREFS_NAME and set it to the boolean isChecked
-        SharedPreferences settings1 = getSharedPreferences("PREFS_NAME", 0);
+        SharedPreferences settings1 = getSharedPreferences("com.example.rhrn.RightHereRightNow", 0);
         isChecked = settings1.getBoolean("isChecked", false);
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

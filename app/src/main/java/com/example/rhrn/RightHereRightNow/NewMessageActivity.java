@@ -146,14 +146,17 @@ public class NewMessageActivity extends MessageListActivity {
                                 Intent i = new Intent();
                                 i.putExtra("name", receiver.DisplayName);
                                 i.putExtra("handle", receiver.handle);
+                                i.putExtra("key", receiver.uid);
                                 try {
                                     i.putExtra("profile", receiver.ProfilePicture);
                                 } catch (Exception e) {
                                 }
                                 setResult(RESULT_OK, i);
                             }
-                            if (receiverID != null)
+                            if (receiverID != null) {
                                 rootRef.child(userKey).child("UsersMessaged").child(receiverID).setValue(true);
+                                rootRef.child(receiverID).child("UsersMessaged").child(userKey).setValue(true);
+                            }
                             else
                                 Toast.makeText(NewMessageActivity.this, "No User with that handle found!", Toast.LENGTH_SHORT).show();
                             MessageSource.saveMessage(msg, mConvoId);

@@ -56,5 +56,7 @@
         <item name="android:textSize">20sp</item> <!--item text size-->
     </style>
 
+    <style name="MainAppTheme" parent="AppDialogTheme" />
+
 
 </resources>

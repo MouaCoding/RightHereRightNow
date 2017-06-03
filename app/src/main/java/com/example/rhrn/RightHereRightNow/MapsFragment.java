@@ -789,15 +789,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     //drawPointsWithinUserRadius();
                     listView();
                     return true;
-                } else if (i == R.id.action2) {
-                    Toast.makeText(getApplicationContext(), "Here are some quotes to brighten your day.", Toast.LENGTH_LONG).show();
-                    return true;
-                } else if (i == R.id.action3) {
-                    Toast.makeText(getApplicationContext(), "Keep Calm and Never Give Up.", Toast.LENGTH_LONG).show();
-                    return true;
-                } else if (i == R.id.action4) {
-                    Toast.makeText(getApplicationContext(), "The Sky is the Limit.", Toast.LENGTH_LONG).show();
-                    return true;
                 } else if (i == R.id.logout) {
                     logout = 1;
                     // TODO delete token

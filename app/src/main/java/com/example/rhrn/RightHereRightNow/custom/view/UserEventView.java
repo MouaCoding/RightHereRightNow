@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.rhrn.RightHereRightNow.App;
 import com.example.rhrn.RightHereRightNow.CommentsListActivity;
 import com.example.rhrn.RightHereRightNow.R;
+import com.example.rhrn.RightHereRightNow.ViewEventActivity;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Event;
 import com.example.rhrn.RightHereRightNow.firebase_entry.Likes;
 import com.example.rhrn.RightHereRightNow.firebase_entry.User;
@@ -43,10 +44,6 @@ import java.util.concurrent.TimeUnit;
 import static com.example.rhrn.RightHereRightNow.MapsFragment.getBitmapFromURL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-/**
- * Created by Bradley Wang on 3/6/2017.
- */
-
 public class UserEventView extends FrameLayout {
     public App app = (App) getApplicationContext();
     private UserMiniHeaderView eventMakerHeader;
@@ -66,6 +63,7 @@ public class UserEventView extends FrameLayout {
     private Spinner eventRSVPStateSpinner;
 
     private String EventID;
+    private String OwnerID;
     private int CommentCount;
     private String currUsr = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
 
@@ -155,6 +153,29 @@ public class UserEventView extends FrameLayout {
             }
         });
 
+        eventTitleView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ViewEventActivity.class);
+                intent.putExtra("eventid", EventID);
+                intent.putExtra("type", "Event");
+                intent.putExtra("ownerID", OwnerID);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
+            }
+        });
+        eventMiniImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ViewEventActivity.class);
+                intent.putExtra("eventid", EventID);
+                intent.putExtra("type", "Event");
+                intent.putExtra("ownerID", OwnerID);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
+            }
+        });
+
         options = (ImageButton) findViewById(R.id.mini_profile_more_button);
     }
 
@@ -167,6 +188,7 @@ public class UserEventView extends FrameLayout {
                 try {
                     setEvent(ev);
                     EventID = eventID;
+                    OwnerID = ev.ownerID;
                 }catch(Exception e){}
 
             }

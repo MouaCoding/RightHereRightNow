@@ -1,22 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action1"
         android:title="List View"
-        />
-
-    <item
-        android:id="@+id/action2"
-        android:title="RHRNMessage2"
-        />
-
-    <item
-        android:id="@+id/action3"
-        android:title="RHRNMessage3"
-        />
-    <item
-        android:id="@+id/action4"
-        android:title="RHRNMessage4"
         />
     <item
         android:id="@+id/logout"

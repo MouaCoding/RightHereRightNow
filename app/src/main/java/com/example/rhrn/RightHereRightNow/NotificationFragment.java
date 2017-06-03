@@ -42,6 +42,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static android.view.View.VISIBLE;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -134,7 +135,6 @@ public class NotificationFragment extends Fragment {
     public static class PostAdapter extends ArrayAdapter<Post> {
         private ArrayList<Post> mPosts;
         private ArrayList<Post> mPostsFilter;
-
         private ImageButton options;
         int postDeleted = 0;
 
@@ -157,6 +157,7 @@ public class NotificationFragment extends Fragment {
             TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
             TextView sharesCount = (TextView) convertView.findViewById(R.id.user_post_share_count);
             ImageButton followButton = (ImageButton) convertView.findViewById(R.id.mini_profile_add_button);
+            ImageView postImage = (ImageView) convertView.findViewById(R.id.view_post_image);
             if (post.ownerID != FirebaseAuth.getInstance().getCurrentUser().getUid())
                 followButton(followButton,FirebaseAuth.getInstance().getCurrentUser().getUid(), post.ownerID);
 
@@ -178,7 +179,29 @@ public class NotificationFragment extends Fragment {
                 else
                     Picasso.with(getContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(miniProfilePicView);
             } catch(Exception e){}
+            try{
+                Picasso.with(getContext()).load(post.PostPicture).transform(new CircleTransform()).into(postImage);
+                if(post.PostPicture != null) postImage.setVisibility(View.VISIBLE);
+            }catch (Exception e){}
             displayNameView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                    intent.putExtra("otherUserID", post.ownerID);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
+                }
+            });
+            miniProfilePicView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                    intent.putExtra("otherUserID", post.ownerID);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
+                }
+            });
+            postBodyTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(),ViewPostActivity.class);
@@ -186,7 +209,7 @@ public class NotificationFragment extends Fragment {
                     getContext().startActivity(intent);
                 }
             });
-            miniProfilePicView.setOnClickListener(new View.OnClickListener() {
+            postImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(),ViewPostActivity.class);

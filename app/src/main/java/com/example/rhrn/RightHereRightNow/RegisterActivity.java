@@ -236,7 +236,7 @@ public class RegisterActivity extends LoginActivity {
         checkIfHandleExists(handle1);
         //TODO: Password Check
         if (password1.length() <= 4) {
-            user_password.setError("At least 4 characters, 1 of which is a Number");
+            user_password.setError("At least 6 characters, 1 of which is a Number");
             return false;
         }
         /*
