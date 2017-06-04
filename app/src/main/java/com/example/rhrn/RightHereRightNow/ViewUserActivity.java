@@ -227,7 +227,8 @@ public class ViewUserActivity extends AppCompatActivity {
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                                 Post post = userSnapshot.getValue(Post.class);
                                 //Most recent first
-                                postArray.add(0, post);
+                                if(!post.isAnon)
+                                    postArray.add(0, post);
                             }
                             if (postArray.size() != 0) {
                                 postAdapter = new NotificationFragment.PostAdapter(ViewUserActivity.this, postArray);

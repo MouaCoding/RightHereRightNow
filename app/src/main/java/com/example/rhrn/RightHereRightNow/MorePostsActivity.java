@@ -86,9 +86,11 @@ public class MorePostsActivity extends AppCompatActivity {
         ref.orderByChild("ownerID").equalTo(getIntent().getStringExtra("userKey")).limitToLast(n).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
-                    postArrayList.add(0, dataSnapshot1.getValue(Post.class));
-
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    Post pst = dataSnapshot1.getValue(Post.class);
+                    if(!pst.isAnon){
+                        postArrayList.add(pst);}
+                }
                 try {
                     postTitle.setText(postArrayList.get(0).DisplayName + "'s Posts");
                     postAdapter = new NotificationFragment.PostAdapter(MorePostsActivity.this, postArrayList);

@@ -2,6 +2,8 @@ package com.example.rhrn.RightHereRightNow;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
     TextView content, likes, comments, shares, displayName;
     ImageView profile;
     GoogleMap mMap;
+    ImageButton back;
     private LatLng createLoc;
     private MapView post_location;
 
@@ -51,9 +54,17 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
         shares = (TextView) findViewById(R.id.user_post_share_count);
         displayName = (TextView) findViewById(R.id.view_user_displayname);
         commentList = (ListView) findViewById(R.id.view_post_comment_list);
+        back = (ImageButton) findViewById(R.id.view_post_back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         commentArray = new ArrayList<>();
 
         post_location = (MapView) findViewById(R.id.post_location_map_view);
+
         //post_location.getMapAsync(this);
         //post_location.onCreate(savedInstanceState);
         String postid = null;
@@ -84,13 +95,23 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
                 likes.setText(Integer.toString(post.likes));
                 comments.setText(Integer.toString(post.comments));
                 shares.setText(Integer.toString(post.shares));
-                displayName.setText(post.DisplayName);
-                try {
-                    if (post.ProfilePicture != null)
-                        Picasso.with(getBaseContext()).load(post.ProfilePicture).into(profile);
-                    else
-                        Picasso.with(getBaseContext()).load(R.mipmap.ic_launcher).into(profile);
-                } catch (Exception e) {
+                if(!post.isAnon) {
+                    displayName.setText(post.DisplayName);
+                    try {
+                        if (post.ProfilePicture != null)
+                            Picasso.with(getBaseContext()).load(post.ProfilePicture).into(profile);
+                        else
+                            Picasso.with(getBaseContext()).load(R.mipmap.ic_launcher).into(profile);
+                    } catch (Exception e) {
+                    }
+                }
+
+                else{
+                    displayName.setText("Anonymous");
+                    displayName.setClickable(false);
+                    profile.setImageResource(R.drawable.happy);
+                    profile.setClickable(false);
+
                 }
             }
 

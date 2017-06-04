@@ -300,7 +300,7 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
 
             //set date and time to today, right now?
             createdPost.setValue(new Post(FirebaseAuth.getInstance().getCurrentUser().getUid(), createdPost.getKey(), timeAndDate, time,
-                    postContent, "response Post ID", 10, 0, 0, 0, false));
+                    postContent, "response Post ID", 10, 0, 0, 0, anon.isChecked()));
 
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
             setExtraValues(createdPost.getKey(), FirebaseAuth.getInstance().getCurrentUser().getUid());

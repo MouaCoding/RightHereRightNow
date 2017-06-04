@@ -10,7 +10,7 @@
     tools:context="com.example.rhrn.RightHereRightNow.ViewPostActivity">
 
     <ImageButton
-        android:id="@+id/back_button"
+        android:id="@+id/view_post_back_button"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"

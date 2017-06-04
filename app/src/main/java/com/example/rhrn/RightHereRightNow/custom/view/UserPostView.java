@@ -163,6 +163,7 @@ public class UserPostView extends FrameLayout {
             Picasso.with(getContext()).load(p.PostPicture).transform(new CircleTransform()).into(postImage);
         }catch (Exception e){}
 
+
         postBodyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -269,6 +270,7 @@ public class UserPostView extends FrameLayout {
                                 FirebaseDatabase.getInstance().getReference().child("Post").child(postID).removeValue();
                                 FirebaseDatabase.getInstance().getReference().child("PostLocations").child(postID).removeValue();
                                 FirebaseDatabase.getInstance().getReference().child("NotificationRequest").child(ownerID).child(postID).removeValue();
+
                             }
                         } //Has bad word
                     }//else number of reports exists

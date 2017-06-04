@@ -46,6 +46,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import static com.example.rhrn.RightHereRightNow.NotificationFragment.app;
+import static com.example.rhrn.RightHereRightNow.R.id.android_pay;
 import static com.example.rhrn.RightHereRightNow.R.id.comment_more_options;
 import static com.example.rhrn.RightHereRightNow.R.id.view;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -57,7 +58,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class CommentsListActivity extends Activity {
 
-    private Button backButton;
+    private ImageButton backButton;
     private Button postButton;
     private CheckBox anon;
     private EditText content;
@@ -91,38 +92,41 @@ public class CommentsListActivity extends Activity {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAdapter.clear();
+                //mAdapter.clear();
                 String temp = content.getText().toString();
                 temp = temp.trim();
                 if (temp.length() > 0) {
                     Comments comment = createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID, temp, 0, null, anon.isChecked());
+                    mAdapter.add(comment);
+                    mAdapter.notifyDataSetChanged();
                     if(type.equals("Event"))
                         Event.changeCount("comments", postID, true);
                     else if(type.equals("Post"))
                         Post.changeCount("comments", postID, true);
-                        getComments(postID, true);
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Please Enter Comment", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
-        backButton = (Button) findViewById(R.id.comment_back_button);
+        backButton = (ImageButton) findViewById(R.id.comment_back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        getComments(postID, true);
+        getComments(postID);
 
     }
 
 
-    public void getComments(String postID, boolean first) {
+    public void getComments(String postID) {
         Toast.makeText(getApplicationContext(), "Got here", Toast.LENGTH_LONG).show();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments").child(postID);
         ref.orderByChild("timestamp_create");
-        if (first) {
+
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -131,35 +135,14 @@ public class CommentsListActivity extends Activity {
                         mComments.add(comment);
                         mAdapter.notifyDataSetChanged();
                     }
-                }
 
+                }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {}
             });
 
-        } else {
-            ref.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Comments comment = dataSnapshot.getValue(Comments.class);
-                    mAdapter.add(comment);
-                }
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {}
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {}
-            });
         }
-
-
-    }
 
     public Comments createComment(String userID, String postID, String Content, int Order, String responseID, boolean anon) {
 
@@ -209,7 +192,7 @@ public class CommentsListActivity extends Activity {
 
             setOptions(convertView, comment.commentID, comment.ownerID, comment.responseID, type);
 
-            if (comment.isAnon == true) {
+            if (comment.isAnon) {
                 displayName.setText("Anonymous");
                 handle.setText("");
                 Picasso.with(getContext()).load(R.drawable.happy).transform(new CircleTransform()).into(miniProfilePicture);
@@ -240,24 +223,26 @@ public class CommentsListActivity extends Activity {
             }
             content.setText(comment.content);
 
-            displayName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
-                    intent.putExtra("otherUserID", comment.ownerID);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getContext().startActivity(intent);
-                }
-            });
-            miniProfilePicture.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
-                    intent.putExtra("otherUserID", comment.ownerID);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getContext().startActivity(intent);
-                }
-            });
+            if(!comment.isAnon) {
+                displayName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                        intent.putExtra("otherUserID", comment.ownerID);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().startActivity(intent);
+                    }
+                });
+                miniProfilePicture.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                        intent.putExtra("otherUserID", comment.ownerID);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().startActivity(intent);
+                    }
+                });
+            }
 
             return convertView;
         }
@@ -319,6 +304,7 @@ public class CommentsListActivity extends Activity {
                     Toast.makeText(getContext(), "Deleting Comment...", Toast.LENGTH_SHORT).show();
                     FirebaseDatabase.getInstance().getReference().child("Comments").child(responseID).child(commentID).removeValue();
                     Toast.makeText(getContext(), "Comment Deleted!", Toast.LENGTH_SHORT).show();
+                    mAdapter.notifyDataSetChanged();
                     if(type.equals("Post")){
                         Post.changeCount("comments", responseID, false);
                     }
@@ -326,7 +312,7 @@ public class CommentsListActivity extends Activity {
                         Event.changeCount("comments", responseID, false);
 
                     }
-                    mAdapter.notifyDataSetChanged();
+
                 }
             });
 
@@ -344,24 +330,27 @@ public class CommentsListActivity extends Activity {
         }
 
         public void reportComment(final String ownerID, final String responseID, final String commentID, final String type) {
+            android.util.Log.e("nat", responseID + commentID + type);
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments");
             ref.child(responseID).child(commentID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if ((String) dataSnapshot.child("description").getValue() == null) return;
+                    if ((String) dataSnapshot.child("content").getValue() == null) return;
                     else {
-                        if (!dataSnapshot.child("numberOfReports").exists())
-                            ref.child(responseID).child(commentID).child("numberOfReports").setValue(0);
+                        if (!dataSnapshot.child("numberOfReports").exists()){
+                            android.util.Log.e("Nat", "got under numberOfReports");
+                            ref.child(responseID).child(commentID).child("numberOfReports").setValue(0);}
                         else {
                             long numberOfReports = (long) dataSnapshot.child("numberOfReports").getValue();
                             //parse whitespace
-                            String[] content = ((String) dataSnapshot.child("description").getValue()).split("\\s+");
+                            String[] content = ((String) dataSnapshot.child("content").getValue()).split("\\s+");
                             if (hasBadWord(content)) {
                                 numberOfReports++;
                                 ref.child(responseID).child(commentID).child("numberOfReports").setValue(numberOfReports);
                                 //TODO: set the amount of reports before a event is deleted
                                 if (numberOfReports > 5) {
                                     FirebaseDatabase.getInstance().getReference().child("Comments").child(responseID).child(commentID).removeValue();
+                                    mAdapter.notifyDataSetChanged();
                                     if(type.equals("Post")){
                                         Post.changeCount("comments", responseID, false);
                                     }
@@ -384,6 +373,7 @@ public class CommentsListActivity extends Activity {
         }
 
         public boolean hasBadWord(String[] content) {
+            android.util.Log.e("Nat", "hasBadWord");
             for(String c : content) {
                 for (String badWord : app.badWords) {
                     c = c.toLowerCase();

@@ -407,7 +407,8 @@ public class ProfilePageFragment extends Fragment {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             Post post = userSnapshot.getValue(Post.class);
                             //Most recent first
-                            postArray.add(0, post);
+                            if(!post.isAnon){
+                            postArray.add(0, post);}
                         }
                         postAdapter = new NotificationFragment.PostAdapter(getContext(), postArray);
                         postList.setAdapter(postAdapter);
