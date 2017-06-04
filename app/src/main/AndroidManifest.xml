@@ -62,7 +62,6 @@
         <activity android:name=".AboutMeActivity" />
         <activity android:name=".ViewUserActivity" />
         <activity android:name=".WallActivity" />
-        <activity android:name=".CommentsListActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -83,6 +82,8 @@
         <activity android:name=".ViewPostActivity" />
         <activity android:name=".CityEventsActivity" />
         <activity android:name=".ViewEventActivity" />
+        <activity android:name=".CommentsListActivity" />
+
 
         <service
             android:name=".notifications.RHRNMessagingService"

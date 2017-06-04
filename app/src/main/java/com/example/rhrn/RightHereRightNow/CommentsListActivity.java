@@ -1,5 +1,6 @@
 package com.example.rhrn.RightHereRightNow;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -44,7 +46,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import static com.example.rhrn.RightHereRightNow.NotificationFragment.app;
-import static com.example.rhrn.RightHereRightNow.R.id.comment_options;
+import static com.example.rhrn.RightHereRightNow.R.id.comment_more_options;
 import static com.example.rhrn.RightHereRightNow.R.id.view;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -53,16 +55,15 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by NatSand on 4/25/17.
  */
 
-public class CommentsListActivity extends FragmentActivity {
+public class CommentsListActivity extends Activity {
 
-    private Button newComment;
     private Button backButton;
     private Button postButton;
     private CheckBox anon;
     private EditText content;
     private ListView mListView;
     private ArrayList<Comments> mComments;
-    private commentsAdapter mAdapter;
+    private static CommentsAdapter mAdapter;
     public App mApp;
 
     String postID;
@@ -81,7 +82,7 @@ public class CommentsListActivity extends FragmentActivity {
         mApp = (App) getApplicationContext();
         mComments = new ArrayList<>();
         mListView = (ListView) findViewById(R.id.comment_list_view);
-        mAdapter = new commentsAdapter(getBaseContext(), mComments, type);
+        mAdapter = new CommentsAdapter(CommentsListActivity.this, mComments, type);
         mListView.setAdapter(mAdapter);
         anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
         content = (EditText) findViewById(R.id.Comment_content);
@@ -113,6 +114,7 @@ public class CommentsListActivity extends FragmentActivity {
             }
         });
         getComments(postID, true);
+
     }
 
 
@@ -179,25 +181,33 @@ public class CommentsListActivity extends FragmentActivity {
         return Result;
     }
 
-    public static class commentsAdapter extends ArrayAdapter<Comments> {
-        final String currUsr = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        int commentDeleted = 0;
+    public static class CommentsAdapter extends ArrayAdapter<Comments> {
+
+        private ArrayList<Comments> mComments;
+        private ImageButton options;
+        int postDeleted = 0;
         String type;
 
-        commentsAdapter(Context context, ArrayList<Comments> commentses, final String Type) {
-            super(context, R.layout.comment_post_display, R.id.comment_text, commentses);
+        CommentsAdapter(Context context, ArrayList<Comments> commentses, String Type){
+            super(context, R.layout.comment_post_display, R.id.comment_content, commentses);
+            mComments = commentses;
             type = Type;
-        }
 
+        }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             convertView = super.getView(position, convertView, parent);
             final Comments comment = getItem(position);
-            TextView commentText = (TextView) convertView.findViewById(R.id.comment_text);
-            final TextView displayName = (TextView) convertView.findViewById(R.id.comment_simp_user_name);
-            final TextView handle = (TextView) convertView.findViewById(R.id.comment_simp_user_handle);
-            final ImageView miniProfilePicture = (ImageView) convertView.findViewById(R.id.comment_simp_user_image);
-            final ImageView commentOptions = (ImageView) convertView.findViewById(R.id.comment_options);
+
+
+            final ImageView miniProfilePicture = (ImageView) convertView.findViewById(R.id.comment_profile_picture);;
+            final TextView displayName= (TextView) convertView.findViewById(R.id.comment_displayName);
+            final TextView handle= (TextView) convertView.findViewById(R.id.comment_handle);
+            final TextView content = (TextView) convertView.findViewById(R.id.comment_content);
+
+
+
+            setOptions(convertView, comment.commentID, comment.ownerID, comment.responseID, type);
 
             if (comment.isAnon == true) {
                 displayName.setText("Anonymous");
@@ -228,35 +238,24 @@ public class CommentsListActivity extends FragmentActivity {
                 } catch (Exception e) {
                 }
             }
+            content.setText(comment.content);
 
-            commentText.setText(comment.content);
-
-            if(!comment.isAnon) {
-                displayName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), ViewUserActivity.class);
-                        intent.putExtra("otherUserID", comment.ownerID);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getContext().startActivity(intent);
-                    }
-                });
-                miniProfilePicture.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), ViewUserActivity.class);
-                        intent.putExtra("otherUserID", comment.ownerID);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getContext().startActivity(intent);
-                    }
-                });
-            }
-
-            final View view = convertView;
-            commentOptions.setOnClickListener(new View.OnClickListener() {
+            displayName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    popupMenu(view, comment.ownerID, comment.responseID, comment.commentID, type);
+                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                    intent.putExtra("otherUserID", comment.ownerID);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
+                }
+            });
+            miniProfilePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ViewUserActivity.class);
+                    intent.putExtra("otherUserID", comment.ownerID);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
                 }
             });
 
@@ -264,25 +263,44 @@ public class CommentsListActivity extends FragmentActivity {
         }
 
 
-        public void popupMenu(View view, final String ownerID, final String responseID, final String commentID, final String type) {
-            ImageView options = (ImageView) view.findViewById(R.id.comment_options);
-            options = (ImageView) view.findViewById(R.id.comment_options);
+        public void setOptions(final View view, final String commentID, final String ownerID, final String responseID, final String type)
+        {
+
+
+            options = (ImageButton) view.findViewById(R.id.comment_more_options);
+            options.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupMenu(view, ownerID, commentID, responseID, type);
+                }
+            });
+
+
+
+        }
+
+
+        public void popupMenu(View view, final String ownerID, final String commentID, final String responseID, final String type)
+        {
+//
+            options = (ImageButton) view.findViewById(R.id.comment_more_options);
             final PopupMenu popup = new PopupMenu(view.getContext(), options);
             popup.getMenuInflater().inflate(R.menu.comment_options, popup.getMenu());
-            if (String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getUid()).equals(ownerID))
+            if(String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getUid()).equals(ownerID))
                 popup.getMenu().findItem(R.id.delete_comment).setVisible(true);
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     int i = item.getItemId();
                     if (i == R.id.delete_comment) {
-                        promptDelete(ownerID, responseID, commentID, type);
+                        promptDelete(ownerID, responseID, commentID, type );
                         return true;
                     }
                     if (i == R.id.report_comment) {
-                        Toast.makeText(getContext(), "Reporting Comment...", Toast.LENGTH_SHORT).show();
-                        reportEvent(ownerID, responseID, commentID, type);
+                        Toast.makeText(getContext(),"Reporting Comment...",Toast.LENGTH_SHORT).show();
+                        reportComment(ownerID, responseID, commentID, type);
                         return true;
-                    } else {
+                    }
+                    else {
                         return onMenuItemClick(item);
                     }
                 }
@@ -292,12 +310,11 @@ public class CommentsListActivity extends FragmentActivity {
 
         public void promptDelete(final String ownerID, final String responseID, final String commentID, final String type) {
             android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getContext());
-            dlgAlert.setMessage("Are you sure you want to unshare this event? This action cannot be undone!");
-            dlgAlert.setTitle("Unshare Event?");
+            dlgAlert.setMessage("Are you sure you want to delete this comment? ? This action cannot be undone!");
+            dlgAlert.setTitle("Delete Comment?");
 
             dlgAlert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    commentDeleted = 1;
                     //Perform delete
                     Toast.makeText(getContext(), "Deleting Comment...", Toast.LENGTH_SHORT).show();
                     FirebaseDatabase.getInstance().getReference().child("Comments").child(responseID).child(commentID).removeValue();
@@ -309,7 +326,7 @@ public class CommentsListActivity extends FragmentActivity {
                         Event.changeCount("comments", responseID, false);
 
                     }
-                    //TODO: update likes received...
+                    mAdapter.notifyDataSetChanged();
                 }
             });
 
@@ -326,7 +343,7 @@ public class CommentsListActivity extends FragmentActivity {
             dlgAlert.show();
         }
 
-        public void reportEvent(final String ownerID, final String responseID, final String commentID, final String type) {
+        public void reportComment(final String ownerID, final String responseID, final String commentID, final String type) {
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments");
             ref.child(responseID).child(commentID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -378,6 +395,25 @@ public class CommentsListActivity extends FragmentActivity {
             }
             Toast.makeText(getContext(), "There is nothing to report.", Toast.LENGTH_SHORT).show();
             return false;
+        }
+
+        public int getCount() {
+
+            return mComments.size();
+        }
+
+        //Get the data item associated with the specified position in the data set.
+        @Override
+        public Comments getItem(int position) {
+
+            return mComments.get(position);
+        }
+
+        //Get the row id associated with the specified position in the list.
+        @Override
+        public long getItemId(int position) {
+
+            return position;
         }
     }
 }

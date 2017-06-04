@@ -1,76 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/comment_disp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_weight="0"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/comment_profile_picture"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_gravity="left|center_vertical"
+            android:layout_margin="12dp"
+            android:layout_weight="0.26"
+            app:srcCompat="@mipmap/ic_launcher" />
 
         <LinearLayout
-            android:id="@+id/Header_only"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/comment_simp_user_image"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                app:srcCompat="@mipmap/ic_launcher" />
-
-            <LinearLayout
-                android:id="@+id/userNameLayout"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/comment_displayName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.70"
-                android:orientation="vertical">
+                android:layout_gravity="left|center_vertical"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:gravity="bottom|left"
+                android:text="Display Name"
+                android:textAppearance="@android:style/TextAppearance.Material.Menu" />
 
-
-                <TextView
-                    android:id="@+id/comment_simp_user_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/display_name"
-                    android:textAppearance="@android:style/TextAppearance.Material.Title"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/comment_simp_user_handle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/handle"
-                    android:textAppearance="@android:style/TextAppearance.Material.Title"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/comment_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Comment_Here" />
-            </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/comment_options"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/comment_handle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:layout_margin="1dp"
-                android:background="@android:color/transparent"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginBottom="6dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:gravity="top|left"
+                android:text="Handle" />
 
         </LinearLayout>
 
-        <View
-            android:id="@+id/view2"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
+        <ImageButton
+            android:id="@+id/comment_more_options"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="left"
+            android:layout_margin="1dp"
+            android:layout_weight="0.50"
+            android:background="@android:color/transparent"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_more_vert_black_24dp" />
 
     </LinearLayout>
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/comment_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="@string/enter_comment"
+        android:textSize="18sp" />
+
+</LinearLayout>

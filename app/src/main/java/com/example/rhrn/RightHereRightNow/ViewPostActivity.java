@@ -37,7 +37,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
 
     ArrayList<Comments> commentArray;
     ListView commentList;
-    CommentsListActivity.commentsAdapter commentsAdapter;
+    CommentsListActivity.CommentsAdapter commentsAdapter;
 
 
     @Override
@@ -135,7 +135,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
                         Comments comments = dataSnapshot1.getValue(Comments.class);
                         commentArray.add(comments);
                     }
-                    commentsAdapter = new CommentsListActivity.commentsAdapter(getBaseContext(), commentArray, "Post");
+                    commentsAdapter = new CommentsListActivity.CommentsAdapter(getBaseContext(), commentArray, "Post");
                     commentList.setAdapter(commentsAdapter);
                 }
             }

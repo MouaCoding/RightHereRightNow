@@ -64,7 +64,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
 
     public ArrayList<Comments> commentArray;
     public ListView commentList;
-    public CommentsListActivity.commentsAdapter commentsAdapter;
+    public CommentsListActivity.CommentsAdapter commentsAdapter;
     String EventID, currUsr;
 
     @Override
@@ -98,7 +98,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         currUsr = getIntent().getStringExtra("ownerID");
 
         commentArray = new ArrayList<>();
-        commentsAdapter = new CommentsListActivity.commentsAdapter(ViewEventActivity.this,commentArray, "Event");
+        commentsAdapter = new CommentsListActivity.CommentsAdapter(ViewEventActivity.this, commentArray, "Event");
         commentList.setAdapter(commentsAdapter);
         commentList.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
@@ -390,7 +390,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                         Comments comments = dataSnapshot1.getValue(Comments.class);
                         commentArray.add(comments);
                     }
-                    commentsAdapter = new CommentsListActivity.commentsAdapter(ViewEventActivity.this, commentArray, "Event");
+                    commentsAdapter = new CommentsListActivity.CommentsAdapter(ViewEventActivity.this, commentArray, "Event");
                     commentList.setAdapter(commentsAdapter);
                     //commentsAdapter.notifyDataSetChanged();
                     commentList.setOnTouchListener(new ListView.OnTouchListener() {
