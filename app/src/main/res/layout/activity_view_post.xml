@@ -6,20 +6,8 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@drawable/top_nav_color"
     android:orientation="vertical"
     tools:context="com.example.rhrn.RightHereRightNow.ViewPostActivity">
-
-    <ImageButton
-        android:id="@+id/view_post_back_button"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:background="@android:color/transparent"
-        android:padding="8dp"
-        app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -31,16 +19,14 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- Optional if user evented an image, it should display at the top-->
+            <!-- Optional if user posted an image, it should display at the top-->
             <ImageView
-                android:id="@+id/view_user_eventimage"
+                android:id="@+id/view_user_postimage"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:src="@drawable/ic_media_route_connecting_00_light"
                 android:visibility="gone" />
-
-            <requestFocus />
 
             <View
                 android:layout_width="match_parent"
@@ -81,29 +67,15 @@
                     android:src="@mipmap/ic_launcher" />
 
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/view_user_displayname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:text="username"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/view_user_displayname"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_weight="1"
-                        android:text="username"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/view_user_handle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="handle"
-                        android:textSize="20sp" />
-
-                </LinearLayout>
 
             </LinearLayout>
 
@@ -242,6 +214,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="15dp" />
+
+            <include
+                layout="@layout/comment_post_make"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="40dp"
+                android:layout_weight="4.70" />
 
         </LinearLayout>
     </ScrollView>

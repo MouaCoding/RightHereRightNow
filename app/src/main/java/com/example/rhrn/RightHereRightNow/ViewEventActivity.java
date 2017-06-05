@@ -141,7 +141,6 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                 }
                 else{
                     likeButton.setColorFilter(ContextCompat.getColor(ViewEventActivity.this,R.color.crimson));
-                    Likes.Like(2, EventID, currUsr);
                     Toast.makeText(ViewEventActivity.this, "Liked", Toast.LENGTH_SHORT).show();
                     Event.Like(EventID, currUsr);
                     updateCounts(EventID);
@@ -171,6 +170,24 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                 shareButton.setColorFilter(ContextCompat.getColor(ViewEventActivity.this,R.color.MainBlue));
                 Event.Share(EventID, currUsr);
                 updateCounts(EventID);
+            }
+        });
+        displayName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewEventActivity.this, ViewUserActivity.class);
+                intent.putExtra("otherUserID", getIntent().getExtras().getString("eventid"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewEventActivity.this, ViewUserActivity.class);
+                intent.putExtra("otherUserID", getIntent().getExtras().getString("eventid"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
 

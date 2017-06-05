@@ -206,6 +206,7 @@ public class NotificationFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(),ViewPostActivity.class);
                     intent.putExtra("postid",post.postID);
+                    intent.putExtra("type", "Event");
                     intent.putExtra("ownerID", post.ownerID);
                     getContext().startActivity(intent);
                 }
@@ -215,6 +216,7 @@ public class NotificationFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(),ViewPostActivity.class);
                     intent.putExtra("postid",post.postID);
+                    intent.putExtra("type", "Event");
                     intent.putExtra("ownerID", post.ownerID);
                     getContext().startActivity(intent);
                 }
