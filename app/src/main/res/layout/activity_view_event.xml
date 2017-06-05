@@ -48,10 +48,12 @@
                 android:layout_marginTop="15dp"
                 android:background="?android:attr/listDivider" />
 
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:layout_weight="1"
                 android:text="@string/event_description" />
 
             <TextView
@@ -214,18 +216,6 @@
 
                 </LinearLayout>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider" />
-
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/event_location_map_view"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_weight="0.6" />
 
             <View
                 android:layout_width="match_parent"

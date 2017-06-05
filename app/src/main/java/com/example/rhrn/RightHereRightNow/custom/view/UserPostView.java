@@ -168,6 +168,8 @@ public class UserPostView extends FrameLayout {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),ViewPostActivity.class);
                 intent.putExtra("postid",p.postID);
+                intent.putExtra("type", "Event");
+                intent.putExtra("ownerID", p.ownerID);
                 getContext().startActivity(intent);
             }
         });
@@ -176,6 +178,8 @@ public class UserPostView extends FrameLayout {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),ViewPostActivity.class);
                 intent.putExtra("postid",p.postID);
+                intent.putExtra("type", "Event");
+                intent.putExtra("ownerID", p.ownerID);
                 getContext().startActivity(intent);
             }
         });

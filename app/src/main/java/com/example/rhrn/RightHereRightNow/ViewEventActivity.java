@@ -199,6 +199,24 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                 updateCounts(EventID);
             }
         });
+        displayName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewEventActivity.this, ViewUserActivity.class);
+                intent.putExtra("otherUserID", getIntent().getExtras().getString("eventid"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewEventActivity.this, ViewUserActivity.class);
+                intent.putExtra("otherUserID", getIntent().getExtras().getString("eventid"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
 
         //event_location.getMapAsync(this);
         //event_location.onCreate(savedInstanceState);

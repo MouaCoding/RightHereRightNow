@@ -329,7 +329,7 @@ public class TrendingFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
-                    Event.Share(EventID, currUsr);
+                    Event.Share(EventID, FirebaseAuth.getInstance().getCurrentUser().getUid());
                     updateCounts(EventID,view);
                 }
             });

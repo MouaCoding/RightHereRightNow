@@ -33,7 +33,7 @@
         <!--android:padding="8dp"-->
         <!--app:srcCompat="@drawable/ic_menu_black_24dp" />-->
 
-    <include layout="@layout/messaging_bar"
+    <include layout="@layout/messaging_bar_red"
         android:id="@+id/include"></include>
 
     <EditText

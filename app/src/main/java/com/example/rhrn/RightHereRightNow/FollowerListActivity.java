@@ -50,9 +50,10 @@ public class FollowerListActivity extends AppCompatActivity {
         );
 
         backButton = (ImageButton) findViewById(R.id.back_button);
-        options = (ImageButton) findViewById(R.id.profile_app_bar_options);
+
         userTitle = (TextView) findViewById(R.id.profile_name_chat);
         userList = (ListView) findViewById(R.id.follower_list);
+        options = (ImageButton) findViewById(R.id.profile_app_bar_options);
         options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
