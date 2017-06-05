@@ -140,6 +140,7 @@ public class FollowerListActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         });
+                        FirebaseDatabase.getInstance().getReference().child("User").child(key).child("NumberFollowers").setValue(userArrayList.size());
                     }catch(Exception e){}
                 }
             }

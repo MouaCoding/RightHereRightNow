@@ -176,7 +176,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ViewEventActivity.this, ViewUserActivity.class);
-                intent.putExtra("otherUserID", getIntent().getExtras().getString("eventid"));
+                intent.putExtra("otherUserID", getIntent().getExtras().getString("ownerID"));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
@@ -185,7 +185,7 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ViewEventActivity.this, ViewUserActivity.class);
-                intent.putExtra("otherUserID", getIntent().getExtras().getString("eventid"));
+                intent.putExtra("otherUserID", getIntent().getExtras().getString("ownerID"));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }

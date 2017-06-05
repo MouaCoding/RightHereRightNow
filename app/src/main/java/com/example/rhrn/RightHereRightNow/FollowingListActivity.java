@@ -142,6 +142,8 @@ public class FollowingListActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         });
+                        FirebaseDatabase.getInstance().getReference().child("User").child(key).child("NumberFollowing").setValue(userArrayList.size());
+
                     }catch(Exception e){}
                 }
             }

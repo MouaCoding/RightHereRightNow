@@ -118,9 +118,7 @@ public class UserEventView extends FrameLayout {
                 }
                 else{
                     likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
-                    Likes.Like(2, EventID, currUsr);
                     Event.changeCount("likes", EventID, true);
-
                     Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
                     Event.Like(EventID, currUsr);
                     updateCounts(EventID);

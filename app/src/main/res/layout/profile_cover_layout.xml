@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="John Smith"
+            android:text="Username"
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 
@@ -55,7 +55,7 @@
     </RelativeLayout>
 
     <TextView
-        android:text="\@jsmith1"
+        android:text="handle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/profile_userhandle"
