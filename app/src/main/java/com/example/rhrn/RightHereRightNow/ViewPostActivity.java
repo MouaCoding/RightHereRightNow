@@ -99,11 +99,9 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
                 getComments(getIntent().getStringExtra("postid"), false);
             }
         });
-        EventID = getIntent().getStringExtra("postid");
-        currUsr = getIntent().getStringExtra("ownerID");
 
         commentArray = new ArrayList<>();
-        commentsAdapter = new CommentsListActivity.commentsAdapter(ViewPostActivity.this,commentArray, "Post");
+        commentsAdapter = new CommentsListActivity.CommentsAdapter(ViewPostActivity.this,commentArray, "Post");
         commentList.setAdapter(commentsAdapter);
         commentList.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
@@ -164,17 +162,17 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Likes.hasLiked(1, EventID, currUsr )){
+                if(Likes.hasLiked(1, postID, currUsr )){
                     likeButton.setColorFilter(ContextCompat.getColor(ViewPostActivity.this,R.color.colorTextDark));
                     Toast.makeText(ViewPostActivity.this, "Unliked", Toast.LENGTH_SHORT).show();
-                    Post.Unlike(EventID, currUsr);
-                    updateCounts(EventID);
+                    Post.Unlike(postID, currUsr);
+                    updateCounts(postID);
                 }
                 else{
                     likeButton.setColorFilter(ContextCompat.getColor(ViewPostActivity.this,R.color.crimson));
                     Toast.makeText(ViewPostActivity.this, "Liked", Toast.LENGTH_SHORT).show();
-                    Post.Like(EventID, currUsr);
-                    updateCounts(EventID);
+                    Post.Like(postID, currUsr);
+                    updateCounts(postID);
                 }
             }
         });
@@ -186,11 +184,11 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
                 Context context = ViewPostActivity.this;
                 Bundle params = new Bundle();
                 Intent intent = new Intent(context, CommentsListActivity.class);
-                intent.putExtra("postID", EventID.toString());
+                intent.putExtra("postID", postID.toString());
                 intent.putExtra("type", "Post");
                 //context.startActivityForResult(intent, RC);
                 context.startActivity(intent);
-                updateCounts(EventID);
+                updateCounts(postID);
 
             }
         });
@@ -199,8 +197,8 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
                 shareButton.setColorFilter(ContextCompat.getColor(ViewPostActivity.this,R.color.MainBlue));
-                Post.Share(EventID, currUsr);
-                updateCounts(EventID);
+                Post.Share(postID, currUsr);
+                updateCounts(postID);
             }
         });
         displayName.setOnClickListener(new View.OnClickListener() {
@@ -340,7 +338,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
                     } catch (Exception e) {
                     }
                 }
-            }
+
 
                 else{
                     displayName.setText("Anonymous");
@@ -509,20 +507,6 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
-    public void updateCounts(final String postID){
-        Post.requestPost(postID, "authToken", new Post.PostReceivedListener() {
-            @Override
-            public void onPostReceived(Post... posts) {
-                Post pst = posts[0];
-                try{
-                    likes.setText(Integer.toString(pst.likes));
-                    comments.setText(Integer.toString(pst.comments));
-                    shares.setText(String.valueOf(pst.shares));
 
-
-                } catch(Exception e){}
-            }
-        });
-    }
 
 }

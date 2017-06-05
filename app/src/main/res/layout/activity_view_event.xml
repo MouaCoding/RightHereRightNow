@@ -38,6 +38,7 @@
                 android:layout_height="200dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:src="@drawable/ic_media_route_connecting_00_light"
                 android:visibility="gone" />
 
             <requestFocus />
@@ -48,12 +49,10 @@
                 android:layout_marginTop="15dp"
                 android:background="?android:attr/listDivider" />
 
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_weight="1"
                 android:text="@string/event_description" />
 
             <TextView
@@ -222,6 +221,18 @@
                 android:layout_height="1dp"
                 android:background="?android:attr/listDivider" />
 
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/event_location_map_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_weight="0.6" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -238,8 +249,13 @@
                 android:id="@+id/view_event_comment_list"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_marginTop="15dp"
-                android:visibility="gone"/>
+                android:layout_marginTop="15dp" />
+            <include
+                layout="@layout/comment_post_make"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="50dp"
+                android:layout_weight="4.70" />
 
         </LinearLayout>
     </ScrollView>

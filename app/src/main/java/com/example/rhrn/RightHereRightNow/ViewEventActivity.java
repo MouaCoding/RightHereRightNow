@@ -141,7 +141,6 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
                 }
                 else{
                     likeButton.setColorFilter(ContextCompat.getColor(ViewEventActivity.this,R.color.crimson));
-                    Likes.Like(2, EventID, currUsr);
                     Toast.makeText(ViewEventActivity.this, "Liked", Toast.LENGTH_SHORT).show();
                     Event.Like(EventID, currUsr);
                     updateCounts(EventID);
