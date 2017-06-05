@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -58,12 +59,14 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import java.util.Arrays;
 
+import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 
 
@@ -101,6 +104,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); // hide keyboard until clicked
 
         //Setup a Firebase object
         firebaseAuth = FirebaseAuth.getInstance();
@@ -170,6 +175,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
         facebookRegister();
+
 
         twitterLoginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
         twitterLoginButton.setCallback(new Callback<TwitterSession>() {
@@ -407,8 +413,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void success(Result<com.twitter.sdk.android.core.models.User> userResult) {
                 com.twitter.sdk.android.core.models.User usr = userResult.data;
-                User curUser = new User(usr.name, usr.name, usr.screenName, "@" + usr.screenName, usr.email, null, null, usr.location, usr.location, "000", fbuser.getUid(), 0, 0, 0);
-                RootRef.child("User").child(fbuser.getUid()).setValue(curUser);
+                //FirebaseAuth.getInstance().getCurrentUser().updateEmail(usr.email);
+                try {
+                    User curUser = new User(usr.name, usr.name, usr.screenName, "@" + usr.screenName, usr.email, null, null, usr.location, usr.location, "000", FirebaseAuth.getInstance().getCurrentUser().getUid(), 0, 0, 0);
+                    RootRef.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(curUser);
+                }catch(Exception e){}
             }
 
             @Override

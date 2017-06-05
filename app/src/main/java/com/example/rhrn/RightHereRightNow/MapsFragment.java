@@ -787,13 +787,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 int i = item.getItemId();
-                if (i == R.id.action1) {
+                /*if (i == R.id.action1) {
                     Toast.makeText(getApplicationContext(), "Local Post and Events in a List.", Toast.LENGTH_LONG).show();
                     //listview=1;
                     //drawPointsWithinUserRadius();
                     listView();
                     return true;
-                } else if (i == R.id.logout) {
+                } else */
+                if (i == R.id.logout) {
                     logout = 1;
                     // TODO delete token
                     RHRNNotifications.unsubscribeFromMessages();
