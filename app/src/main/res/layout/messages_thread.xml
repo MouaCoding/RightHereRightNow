@@ -7,7 +7,7 @@
     android:orientation ="vertical"
     tools:context=".ChatActivity" >
 
-    <include layout="@layout/messaging_bar"/>
+    <include layout="@layout/messaging_bar_red"/>
 
 
     <ListView

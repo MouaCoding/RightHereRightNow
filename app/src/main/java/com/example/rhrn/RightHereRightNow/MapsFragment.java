@@ -522,6 +522,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                                 cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/dixon.jpg?alt=media&token=b4d67a69-4016-405c-9a91-1c8d94195440");
                             if ((dataSnapshot.child("CityName").getValue()).equals("Vacaville"))
                                 cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/vacaville.jpg?alt=media&token=89ec6f85-edb5-4428-8384-ceb554e14113");
+                            if ((dataSnapshot.child("CityName").getValue()).equals("Winters"))
+                                cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/winters.png?alt=media&token=7c1b633b-c1e3-4df3-bd36-9a9d082c1841");
+                            if ((dataSnapshot.child("CityName").getValue()).equals("San Francisco"))
+                                cityRef.child("Picture").setValue("https://firebasestorage.googleapis.com/v0/b/righthererightnow-72e20.appspot.com/o/sanfrancisco.jpg?alt=media&token=6cdb2008-b37a-40ec-b8c2-92780aa08ebb");
 
                         } else {
                             //city does not exist, so create new

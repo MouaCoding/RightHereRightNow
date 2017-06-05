@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         // populate pager with fragments
         mainViewPager = (ViewPager) findViewById(R.id.main_content_view_pager);
-        mainViewPager.setOffscreenPageLimit(4);
+        //mainViewPager.setOffscreenPageLimit(4);
         mainViewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)

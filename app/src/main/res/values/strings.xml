@@ -130,7 +130,7 @@
     <string name="event_type">Event Type</string>
     <string name="view_event_content">Event Content...</string>
     <string name="refresh">Refresh</string>
-    <string name="comments_section">View Comments</string>
+    <string name="comments_section">Click to View Comments</string>
     <string name="hyperlocale">HyperLocale List</string>
     <string name="map_event">Events</string>
     <string name="DeletePost">Delete Post</string>
