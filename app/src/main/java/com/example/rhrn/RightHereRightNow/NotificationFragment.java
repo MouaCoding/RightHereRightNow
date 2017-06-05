@@ -206,6 +206,7 @@ public class NotificationFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(),ViewPostActivity.class);
                     intent.putExtra("postid",post.postID);
+                    intent.putExtra("ownerID", post.ownerID);
                     getContext().startActivity(intent);
                 }
             });
@@ -214,6 +215,7 @@ public class NotificationFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(),ViewPostActivity.class);
                     intent.putExtra("postid",post.postID);
+                    intent.putExtra("ownerID", post.ownerID);
                     getContext().startActivity(intent);
                 }
             });
@@ -630,6 +632,7 @@ public class NotificationFragment extends Fragment {
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 Intent intent = new Intent(getActivity(),ViewPostActivity.class);
                                 intent.putExtra("postid",mPosts.get(position).postID);
+                                intent.putExtra("ownerID", mPosts.get(position).ownerID);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 getContext().startActivity(intent);
                             }

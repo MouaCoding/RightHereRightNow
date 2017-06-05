@@ -99,6 +99,7 @@ public class CommentsListActivity extends Activity {
                     Comments comment = createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID, temp, 0, null, anon.isChecked());
                     mAdapter.add(comment);
                     mAdapter.notifyDataSetChanged();
+                    content.setText("");
                     if(type.equals("Event"))
                         Event.changeCount("comments", postID, true);
                     else if(type.equals("Post"))
