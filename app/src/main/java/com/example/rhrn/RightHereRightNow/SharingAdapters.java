@@ -80,7 +80,7 @@ public class SharingAdapters {
                 followButton(followButton,FirebaseAuth.getInstance().getCurrentUser().getUid(), post.ownerID);
 
 
-            setButtons(convertView, post.postID, post.ownerID);
+            setButtons(convertView, post.postID, FirebaseAuth.getInstance().getCurrentUser().getUid());
             if(postDeleted == 0)
                 setExtraValues(post.postID, post.ownerID);
 
@@ -160,6 +160,7 @@ public class SharingAdapters {
                         Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
                         FirebaseDatabase.getInstance().getReference("Likes").child(postID).child(ownerID).removeValue();
                         Post.changeCount("likes", postID, false);
+                        updateCounts(postID,view);
 
                     }
                     else{
@@ -167,6 +168,7 @@ public class SharingAdapters {
                         Likes.Like(2, postID, ownerID);
                         Post.changeCount("likes", postID, true);
                         Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                        updateCounts(postID,view);
                     }
                 }
             });
@@ -180,6 +182,7 @@ public class SharingAdapters {
                     intent.putExtra("postID", postID.toString());
                     intent.putExtra("type", "Post");
                     context.startActivity(intent);
+                    updateCounts(postID,view);
                 }
             });
 
@@ -187,7 +190,9 @@ public class SharingAdapters {
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: increment shares, implement sharing
+                    shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
+                    Post.Share(postID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    updateCounts(postID,view);
                 }
             });
 
@@ -199,6 +204,28 @@ public class SharingAdapters {
                 }
             });
 
+
+
+        }
+
+
+        public void updateCounts(final String postID, View convertView){
+            final TextView numLikes = (TextView) convertView.findViewById(R.id.user_post_like_count);
+            final TextView numComments = (TextView) convertView.findViewById(R.id.user_post_comment_count);
+            final TextView sharesCount = (TextView) convertView.findViewById(R.id.user_post_share_count);
+            Post.requestPost(postID, "authToken", new Post.PostReceivedListener() {
+                @Override
+                public void onPostReceived(Post... posts) {
+                    Post pst = posts[0];
+                    try{
+                        numLikes.setText(Integer.toString(pst.likes));
+                        numComments.setText(Integer.toString(pst.comments));
+                        sharesCount.setText(String.valueOf(pst.shares));
+
+
+                    } catch(Exception e){}
+                }
+            });
         }
 
         @Override
@@ -442,7 +469,7 @@ public class SharingAdapters {
             displayNameView.setText(event.DisplayName);
             userHandleView.setText(event.handle);
 
-            setButtons(convertView, event.eventID, event.ownerID);
+            setButtons(convertView, event.eventID, FirebaseAuth.getInstance().getCurrentUser().getUid());
             if (eventDeleted == 0)
                 setExtraValues(event.eventID, event.ownerID);
 
@@ -545,11 +572,13 @@ public class SharingAdapters {
                         Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
                         FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
                         Event.changeCount("likes", EventID, false);
+                        updateCounts(EventID,view);
                     } else {
                         likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
                         Likes.Like(2, EventID, currUsr);
                         Event.changeCount("likes", EventID, true);
                         Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                        updateCounts(EventID,view);
                     }
                 }
             });
@@ -564,6 +593,7 @@ public class SharingAdapters {
                     intent.putExtra("postID", EventID.toString());
                     intent.putExtra("type", "Event");
                     context.startActivity(intent);
+                    updateCounts(EventID,view);
 
                 }
             });
@@ -572,7 +602,9 @@ public class SharingAdapters {
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: increment shares, implement sharing
+                    shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
+                    Event.Share(EventID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    updateCounts(EventID,view);
                 }
             });
             options = (ImageButton) view.findViewById(R.id.mini_profile_more_button);
@@ -583,6 +615,25 @@ public class SharingAdapters {
                 }
             });
 
+        }
+
+        public void updateCounts(final String eventID, View view){
+            final TextView numLikes = (TextView) view.findViewById(R.id.user_event_like_count);
+            final TextView numComments = (TextView) view.findViewById(R.id.user_event_comment_count);
+            final TextView sharesCount = (TextView) view.findViewById(R.id.user_event_share_count);
+            Event.requestEvent(eventID, "authToken", new Event.EventReceivedListener() {
+                @Override
+                public void onEventReceived(Event... events) {
+                    Event ev = events[0];
+                    try{
+                        numLikes.setText(Integer.toString(ev.likes));
+                        numComments.setText(Integer.toString(ev.comments));
+                        sharesCount.setText(String.valueOf(ev.shares));
+
+
+                    } catch(Exception e){}
+                }
+            });
         }
 
         public void setExtraValues(final String eventID, final String ownerID) {
