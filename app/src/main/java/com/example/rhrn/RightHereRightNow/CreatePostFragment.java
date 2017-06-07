@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
@@ -86,7 +87,7 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
                 createPost();
             }
         });
-        anon = (CheckBox) r.findViewById(R.id.AnonBox);
+
         //Initializes each text view to the class's objects
         post_content = (EditText) r.findViewById(R.id.content_post);
         post_location = (MapView) r.findViewById(R.id.post_location_map_view);
@@ -94,6 +95,7 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
         postImage = (ImageView) r.findViewById(R.id.post_image);
         post_location.getMapAsync(this);
         post_location.onCreate(savedInstanceState);
+
 
         Location loc = LocationUtils.getBestAvailableLastKnownLocation(getContext());
         createLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
@@ -161,8 +163,8 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
                 //Picasso.with(getContext()).load(filePath).into(profilePicture);
                 postImage.setImageBitmap(bitmap);
                 postImage.setVisibility(View.VISIBLE);
-                uploadPhoto.setVisibility(View.GONE);
-                uploadPhotoText.setVisibility(View.GONE);
+                uploadPhoto.setVisibility(GONE);
+                uploadPhotoText.setVisibility(GONE);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -300,7 +302,7 @@ public class CreatePostFragment extends Fragment implements OnMapReadyCallback {
 
             //set date and time to today, right now?
             createdPost.setValue(new Post(FirebaseAuth.getInstance().getCurrentUser().getUid(), createdPost.getKey(), timeAndDate, time,
-                    postContent, "response Post ID", 10, 0, 0, 0, anon.isChecked()));
+                    postContent, "response Post ID", 10, 0, 0, 0, false));
 
             createdPost.child("timestamp_create").setValue(ServerValue.TIMESTAMP);
             setExtraValues(createdPost.getKey(), FirebaseAuth.getInstance().getCurrentUser().getUid());

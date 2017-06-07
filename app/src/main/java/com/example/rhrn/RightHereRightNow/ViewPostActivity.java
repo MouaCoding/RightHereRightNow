@@ -87,8 +87,6 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
         postImage.requestFocus();
         commentList = (ListView) findViewById(R.id.view_post_comment_list);
         handle = (TextView) findViewById(R.id.view_user_handle);
-        anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
-        commentContent = (EditText) findViewById(R.id.Comment_content);
         likesCount = (TextView) findViewById(R.id.user_post_like_count);
         commentsCount = (TextView) findViewById (R.id.user_post_comment_count);
         sharesCount = (TextView) findViewById(R.id.user_post_share_count);
@@ -132,30 +130,6 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
                 finish();
-            }
-        });
-
-        postButton = (Button) findViewById(R.id.Comment_post_button);
-        postButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //commentsAdapter.clear();
-                String temp = commentContent.getText().toString();
-                temp = temp.trim();
-                if (temp.length() > 0) {
-                    commentArray = new ArrayList<Comments>();
-                    createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), getIntent().getStringExtra("postid"), temp, 0, null, anon.isChecked());
-                    if(((String)getIntent().getStringExtra("type")).equals("Event"))
-                        Event.changeCount("comments", getIntent().getStringExtra("postid"), true);
-                    else if(((String)getIntent().getStringExtra("type")).equals("Post"))
-                        Post.changeCount("comments", getIntent().getStringExtra("postid"), true);
-                    getComments(getIntent().getStringExtra("postid"), true);
-                    commentContent.setText("");
-                    commentsAdapter.notifyDataSetChanged();
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please Enter Comment", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 

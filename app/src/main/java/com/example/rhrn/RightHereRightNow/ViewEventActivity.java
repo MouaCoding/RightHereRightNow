@@ -79,7 +79,6 @@ public class ViewEventActivity extends AppCompatActivity implements OnMapReadyCa
         eventImage.requestFocus();
         commentList = (ListView) findViewById(R.id.view_event_comment_list);
         handle = (TextView) findViewById(R.id.view_user_handle);
-        anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
         likesCount = (TextView) findViewById(R.id.user_event_like_count);
         commentsCount = (TextView) findViewById (R.id.user_event_comment_count);
         sharesCount = (TextView) findViewById(R.id.user_event_share_count);

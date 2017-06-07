@@ -250,12 +250,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="15dp" />
-            <include
-                layout="@layout/comment_post_make"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="50dp"
-                android:layout_weight="4.70" />
 
         </LinearLayout>
     </ScrollView>

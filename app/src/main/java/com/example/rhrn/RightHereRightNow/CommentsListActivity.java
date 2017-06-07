@@ -45,6 +45,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static android.view.View.GONE;
 import static com.example.rhrn.RightHereRightNow.NotificationFragment.app;
 import static com.example.rhrn.RightHereRightNow.R.id.android_pay;
 import static com.example.rhrn.RightHereRightNow.R.id.comment_more_options;
@@ -85,7 +86,8 @@ public class CommentsListActivity extends Activity {
         mListView = (ListView) findViewById(R.id.comment_list_view);
         mAdapter = new CommentsAdapter(CommentsListActivity.this, mComments, type);
         mListView.setAdapter(mAdapter);
-        anon = (CheckBox) findViewById(R.id.comment_anonymous_check);
+
+
         content = (EditText) findViewById(R.id.Comment_content);
 
         postButton = (Button) findViewById(R.id.Comment_post_button);
@@ -96,7 +98,7 @@ public class CommentsListActivity extends Activity {
                 String temp = content.getText().toString();
                 temp = temp.trim();
                 if (temp.length() > 0) {
-                    Comments comment = createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID, temp, 0, null, anon.isChecked());
+                    Comments comment = createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), postID, temp, 0, null, false);
                     mAdapter.add(comment);
                     mAdapter.notifyDataSetChanged();
                     content.setText("");

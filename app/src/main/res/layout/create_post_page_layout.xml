@@ -55,30 +55,7 @@
             android:visibility="gone"/>
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-
-        <CheckBox
-            android:id="@+id/AnonBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.82"
-            android:text="@string/Anon_label" />
-
-        <Button
-            android:id="@+id/confirm_post_button"
-            style="@style/Widget.AppCompat.Button.Small"
-            android:background="@drawable/button_with_border"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.74"
-            android:text="@string/post_button" />
-    </LinearLayout>
-
-    <EditText
+        <EditText
         android:id="@+id/content_post"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -95,6 +72,15 @@
         android:layout_height="240dp"
         android:layout_margin="8dp"
         android:layout_weight="0.6" />
+
+        <Button
+            android:id="@+id/confirm_post_button"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.74"
+            android:background="@drawable/button_with_border"
+            android:text="@string/post_button" />
     </LinearLayout>
     </ScrollView>
 </LinearLayout>

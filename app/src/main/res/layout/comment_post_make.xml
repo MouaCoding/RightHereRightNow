@@ -5,17 +5,26 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:background="?android:attr/listDivider" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/comment_anonymous_check"
+        <EditText
+            android:id="@+id/Comment_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/Anon_label" />
+            android:ems="10"
+            android:hint="@string/enter_comment"
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/Comment_post_button"
@@ -26,20 +35,6 @@
 
 
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/Comment_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/enter_comment"
-        android:inputType="textPersonName" />
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
 
 
 </LinearLayout>
