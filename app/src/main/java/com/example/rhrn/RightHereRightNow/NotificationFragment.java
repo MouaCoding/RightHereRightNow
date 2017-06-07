@@ -266,19 +266,31 @@ public class NotificationFragment extends Fragment {
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(Likes.hasLiked(1, postID, userNow )){
-                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
-                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                        Post.Unlike(postID, userNow);
-                        updateCounts(postID,view);
+                    FirebaseDatabase.getInstance().getReference().child("Likes").child(postID)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.hasChild(userNow)){
+                                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
+                                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                                        Post.Unlike(postID, userNow);
+                                        updateCounts(postID, view);
 
-                    }
-                    else{
-                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
-                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                        Post.Like(postID, userNow);
-                        updateCounts(postID,view);
-                    }
+                                    }
+                                    else{
+                                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
+                                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                                        Post.Like(postID, userNow);
+                                        updateCounts(postID, view);
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                 }
             });
 

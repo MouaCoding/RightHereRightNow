@@ -85,20 +85,31 @@ public class UserPostView extends FrameLayout {
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Likes.hasLiked(1, PostID, currUsr )){
-                    likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
-                    Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                    Post.Unlike(PostID, currUsr);
-                    updateCounts(PostID);
+               FirebaseDatabase.getInstance().getReference().child("Likes").child(PostID)
+                       .addListenerForSingleValueEvent(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(DataSnapshot dataSnapshot) {
+                               if(dataSnapshot.hasChild(currUsr)){
+                                   likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
+                                   Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                                   Post.Unlike(PostID, currUsr);
+                                   updateCounts(PostID);
 
-                }
-                else{
-                    likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
-                    Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                    Post.Like(PostID, currUsr);
-                    updateCounts(PostID);
-                }
+                               }
+                                 else{
+                                   likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
+                                   Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                                   Post.Like(PostID, currUsr);
+                                   updateCounts(PostID);
+                               }
 
+                           }
+
+                           @Override
+                           public void onCancelled(DatabaseError databaseError) {
+
+                           }
+                       });
             }
         });
         commentButton.setOnClickListener(new OnClickListener() {

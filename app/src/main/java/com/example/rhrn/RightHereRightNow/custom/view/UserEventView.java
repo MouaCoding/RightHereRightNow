@@ -109,19 +109,30 @@ public class UserEventView extends FrameLayout {
         likeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Likes.hasLiked(2, EventID, currUsr )){
-                    likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
-                    Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                    Event.Unlike(EventID, currUsr);
-                    updateCounts(EventID);
+               FirebaseDatabase.getInstance().getReference().child("Likes").child(EventID)
+                       .addListenerForSingleValueEvent(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(DataSnapshot dataSnapshot) {
+                               if(dataSnapshot.hasChild(currUsr)){
+                                   likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
+                                   Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                                   Event.Unlike(EventID, currUsr);
+                                   updateCounts(EventID);
 
-                }
-                else{
-                    likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
-                    Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                    Event.Like(EventID, currUsr);
-                    updateCounts(EventID);
-                }
+                               }
+                               else{
+                                   likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
+                                   Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                                   Event.Like(EventID, currUsr);
+                                   updateCounts(EventID);
+                               }
+                           }
+
+                           @Override
+                           public void onCancelled(DatabaseError databaseError) {
+
+                           }
+                       });
             }
         });
 

@@ -120,11 +120,11 @@ public class Post {
                     mutableData.setValue(0);
                 }
                 else{
-                    if(!Likes.hasLiked(1, postID, currUsr)) {
+
                         Likes.Like(1, postID, currUsr);
                         int count = mutableData.getValue(Integer.class);
                         mutableData.setValue(count + 1);
-                    }
+
                 }
                 return Transaction.success(mutableData);
             }
@@ -145,11 +145,11 @@ public class Post {
                     mutableData.setValue(0);
                 }
                 else{
-                    if(Likes.hasLiked(1, postID, currUsr)){
+
                         Likes.Unlike(1, postID, currUsr);
                         int count = mutableData.getValue(Integer.class);
                         mutableData.setValue(count - 1);
-                    }
+
 
                 }
                 return Transaction.success(mutableData);

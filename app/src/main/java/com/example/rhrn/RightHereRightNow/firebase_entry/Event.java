@@ -175,11 +175,11 @@ public class Event {
                     mutableData.setValue(0);
                 }
                 else{
-                    if(!Likes.hasLiked(2, eventID, currUsr)) {
+
                         Likes.Like(2, eventID, currUsr);
                         int count = mutableData.getValue(Integer.class);
                         mutableData.setValue(count + 1);
-                    }
+
                 }
                 return Transaction.success(mutableData);
             }
@@ -200,11 +200,11 @@ public class Event {
                     mutableData.setValue(0);
                 }
                 else{
-                    if(Likes.hasLiked(2, eventID, currUsr)){
+
                         Likes.Unlike(2, eventID, currUsr);
                         int count = mutableData.getValue(Integer.class);
                         mutableData.setValue(count - 1);
-                    }
+
 
                 }
                 return Transaction.success(mutableData);

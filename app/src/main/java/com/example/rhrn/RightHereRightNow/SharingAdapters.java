@@ -149,27 +149,37 @@ public class SharingAdapters {
             });
         }
 
-        public void setButtons(final View view, final String postID, final String ownerID)
+        public void setButtons(final View view, final String PostID, final String ownerID)
         {
             likeButton = (ImageButton) view.findViewById(R.id.user_post_like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(Likes.hasLiked(2, postID, ownerID )){
-                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
-                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                        FirebaseDatabase.getInstance().getReference("Likes").child(postID).child(ownerID).removeValue();
-                        Post.changeCount("likes", postID, false);
-                        updateCounts(postID,view);
+                    FirebaseDatabase.getInstance().getReference().child("Likes").child(PostID)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.hasChild(ownerID)){
+                                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
+                                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                                        Post.Unlike(PostID, ownerID);
+                                        updateCounts(PostID, view);
 
-                    }
-                    else{
-                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
-                        Likes.Like(2, postID, ownerID);
-                        Post.changeCount("likes", postID, true);
-                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                        updateCounts(postID,view);
-                    }
+                                    }
+                                    else{
+                                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
+                                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                                        Post.Like(PostID, ownerID);
+                                        updateCounts(PostID, view);
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                 }
             });
 
@@ -179,10 +189,10 @@ public class SharingAdapters {
                 public void onClick(View v) {
                     Context context = getContext();
                     Intent intent = new Intent(context, CommentsListActivity.class);
-                    intent.putExtra("postID", postID.toString());
+                    intent.putExtra("postID", PostID.toString());
                     intent.putExtra("type", "Post");
                     context.startActivity(intent);
-                    updateCounts(postID,view);
+                    updateCounts(PostID,view);
                 }
             });
 
@@ -191,8 +201,8 @@ public class SharingAdapters {
                 @Override
                 public void onClick(View v) {
                     shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
-                    Post.Share(postID, FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    updateCounts(postID,view);
+                    Post.Share(PostID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    updateCounts(PostID,view);
                 }
             });
 
@@ -200,7 +210,7 @@ public class SharingAdapters {
             options.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    popupMenu(view, ownerID, postID);
+                    popupMenu(view, ownerID, PostID);
                 }
             });
 
@@ -567,19 +577,30 @@ public class SharingAdapters {
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (Likes.hasLiked(2, EventID, currUsr)) {
-                        likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorTextDark));
-                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                        FirebaseDatabase.getInstance().getReference("Likes").child(EventID).child(currUsr).removeValue();
-                        Event.changeCount("likes", EventID, false);
-                        updateCounts(EventID,view);
-                    } else {
-                        likeButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.crimson));
-                        Likes.Like(2, EventID, currUsr);
-                        Event.changeCount("likes", EventID, true);
-                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                        updateCounts(EventID,view);
-                    }
+                    FirebaseDatabase.getInstance().getReference().child("Likes").child(EventID)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.hasChild(currUsr)){
+                                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
+                                        Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                                        Event.Unlike(EventID, currUsr);
+                                        updateCounts(EventID, view);
+
+                                    }
+                                    else{
+                                        likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
+                                        Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                                        Event.Like(EventID, currUsr);
+                                        updateCounts(EventID, view);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                 }
             });
 
