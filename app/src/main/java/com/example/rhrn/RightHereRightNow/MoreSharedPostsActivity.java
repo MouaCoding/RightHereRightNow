@@ -101,15 +101,35 @@ public class MoreSharedPostsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     Shares share = dataSnapshot1.getValue(Shares.class);
-                    Post.requestPost(share.id, "auth", new Post.PostReceivedListener() {
-                        @Override
-                        public void onPostReceived(Post... posts) {
-                            android.util.Log.e("nat", posts[0].ownerID);
-                            postArrayList.add(posts[0]);
-                            android.util.Log.e("nat", String.valueOf(postArrayList.size()));
-                            postAdapter.notifyDataSetChanged();
-                        }
-                    });
+                   final String key = dataSnapshot1.getKey();
+                    final String id = share.id;
+
+                    FirebaseDatabase.getInstance().getReference().child("Post")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.hasChild(id)){
+                                        Post.requestPost(id, "auth", new Post.PostReceivedListener() {
+                                            @Override
+                                            public void onPostReceived(Post... posts) {
+                                                android.util.Log.e("nat", posts[0].ownerID);
+                                                postArrayList.add(posts[0]);
+                                                android.util.Log.e("nat", String.valueOf(postArrayList.size()));
+                                                postAdapter.notifyDataSetChanged();
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        FirebaseDatabase.getInstance().getReference().child("Shares").child(getIntent()
+                                                .getStringExtra("userKey")).child(key).removeValue(); // delete if has been deleted.
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
 
                 }
 

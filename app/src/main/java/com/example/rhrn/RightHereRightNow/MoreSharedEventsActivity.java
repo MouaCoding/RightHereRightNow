@@ -118,14 +118,34 @@ public class MoreSharedEventsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    final String key = dataSnapshot.getKey();
                     Shares share = dataSnapshot1.getValue(Shares.class);
-                    Event.requestEvent(share.id, "auth", new Event.EventReceivedListener() {
-                        @Override
-                        public void onEventReceived(Event... events) {
-                            eventArrayList.add(0, events[0]);
-                            eventAdapter.notifyDataSetChanged();
-                        }
-                    });
+                    final String id = share.id;
+                    FirebaseDatabase.getInstance().getReference().child("Event")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.hasChild(id)){
+                                        Event.requestEvent(id, "auth", new Event.EventReceivedListener() {
+                                            @Override
+                                            public void onEventReceived(Event... events) {
+                                                eventArrayList.add(0, events[0]);
+                                                eventAdapter.notifyDataSetChanged();
+                                            }
+                                        });
+
+                                    }
+                                    else{
+                                        FirebaseDatabase.getInstance().getReference().child("Shares").child(getIntent()
+                                                .getStringExtra("userKey")).child(key).removeValue(); // delete if has been deleted.
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
 
                 }
                 try {eventTitle.setText(eventArrayList.get(0).DisplayName + "'s Events");} catch (Exception e) {}
