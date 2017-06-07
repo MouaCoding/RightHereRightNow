@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -143,7 +144,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
                 temp = temp.trim();
                 if (temp.length() > 0) {
                     commentArray = new ArrayList<Comments>();
-                    createComment(getIntent().getStringExtra("ownerID"), getIntent().getStringExtra("postid"), temp, 0, null, anon.isChecked());
+                    createComment(FirebaseAuth.getInstance().getCurrentUser().getUid(), getIntent().getStringExtra("postid"), temp, 0, null, anon.isChecked());
                     if(((String)getIntent().getStringExtra("type")).equals("Event"))
                         Event.changeCount("comments", getIntent().getStringExtra("postid"), true);
                     else if(((String)getIntent().getStringExtra("type")).equals("Post"))

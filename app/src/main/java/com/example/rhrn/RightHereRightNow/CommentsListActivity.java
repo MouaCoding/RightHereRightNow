@@ -124,7 +124,7 @@ public class CommentsListActivity extends Activity {
 
 
     public void getComments(String postID) {
-        Toast.makeText(getApplicationContext(), "Got here", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Comments Section", Toast.LENGTH_LONG).show();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Comments").child(postID);
         ref.orderByChild("timestamp_create");
 
