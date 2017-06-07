@@ -1037,12 +1037,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 final FragmentManager manager = getActivity().getSupportFragmentManager();
-                if (manager.findFragmentById(R.id.post_event_create_shim_fragment_container) != null)
-                    manager.beginTransaction()
-                            .replace(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
-                            .addToBackStack(null).commit();
-
-                else
+//                if (manager.findFragmentById(R.id.post_event_create_shim_fragment_container) != null)
+//                    manager.beginTransaction()
+//                            .replace(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
+//                            .addToBackStack(null).commit();
+//
+//                else
                     manager.beginTransaction()
                             .add(R.id.post_event_create_shim_fragment_container, new CreatePostFragment())
                             .addToBackStack(null).commit();
@@ -1073,12 +1073,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 final FragmentManager manager = getActivity().getSupportFragmentManager();
-                if (manager.findFragmentById(R.id.post_event_create_shim_fragment_container) != null)
-                    manager.beginTransaction()
-                            .replace(R.id.post_event_create_shim_fragment_container, new CreateEventFragment())
-                            .addToBackStack(null)
-                            .commit();
-                else
+//                if (manager.findFragmentById(R.id.post_event_create_shim_fragment_container) != null)
+//                    manager.beginTransaction()
+//                            .replace(R.id.post_event_create_shim_fragment_container, new CreateEventFragment())
+//                            .addToBackStack(null)
+//                            .commit();
+//                else
                     manager.beginTransaction()
                             .add(R.id.post_event_create_shim_fragment_container, new CreateEventFragment())
                             .addToBackStack(null)

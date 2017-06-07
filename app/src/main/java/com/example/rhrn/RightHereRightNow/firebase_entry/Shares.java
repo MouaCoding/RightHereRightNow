@@ -24,10 +24,9 @@ public class Shares {
 
     public static void Share(String type, String id, String user){
 
-        DatabaseReference rootref = FirebaseDatabase.getInstance().getReference("Shares").child(user);
-        DatabaseReference ref = rootref.push();
-        String key = ref.getKey().toString();
-        rootref.child(key).setValue(new Shares(type, id));
+        DatabaseReference rootref = FirebaseDatabase.getInstance().getReference("Shares").child(user).child(id);
+
+        rootref.setValue(new Shares(type, id));
 
 
     }

@@ -692,8 +692,10 @@ public class SharingAdapters {
                     eventDeleted = 1;
                     //Perform delete
                     Toast.makeText(getContext(), "Unsharing Event...", Toast.LENGTH_SHORT).show();
+
                     FirebaseDatabase.getInstance().getReference().child("Shares").child(ownerID).child(eventID).removeValue();
                     Toast.makeText(getContext(), "Event Unshared!", Toast.LENGTH_SHORT).show();
+
                     //TODO: update likes received...
                 }
             });

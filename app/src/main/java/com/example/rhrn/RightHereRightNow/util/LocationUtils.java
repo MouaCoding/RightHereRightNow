@@ -25,4 +25,5 @@ public class LocationUtils {
 
         return bestAvailable == null ? new Location("dummy") : bestAvailable;
     }
+
 }
