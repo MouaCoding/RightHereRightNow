@@ -56,6 +56,10 @@ public class TrendingFragment extends Fragment {
     public FloatingActionButton filterCity;
     private static final int FILTER_CITY = 0;
     public int filteredCity = 0;
+    final static String userNow = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -293,17 +297,16 @@ public class TrendingFragment extends Fragment {
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(Likes.hasLiked(2, EventID, currUsr )){
+                    if(Likes.hasLiked(2, EventID, userNow)){
                         likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
                         Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                        Event.Unlike(EventID, currUsr);
+                        Event.Unlike(EventID, userNow);
                         updateCounts(EventID,view);
                     }
                     else{
                         likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
-                        Likes.Like(2, EventID, currUsr);
                         Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                        Event.Like(EventID, currUsr);
+                        Event.Like(EventID, userNow);
                         updateCounts(EventID,view);
                     }
                 }
@@ -329,7 +332,7 @@ public class TrendingFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
-                    Event.Share(EventID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    Event.Share(EventID, userNow);
                     updateCounts(EventID,view);
                 }
             });

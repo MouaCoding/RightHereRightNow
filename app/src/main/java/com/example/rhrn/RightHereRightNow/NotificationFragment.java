@@ -62,6 +62,7 @@ public class NotificationFragment extends Fragment {
     NotificationManager notificationManager;
     int notifyFlag=0;
     int numUsersFollowed = 0;
+    final static String userNow = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -265,17 +266,17 @@ public class NotificationFragment extends Fragment {
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(Likes.hasLiked(1, postID, ownerID )){
+                    if(Likes.hasLiked(1, postID, userNow )){
                         likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorTextDark));
                         Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
-                        Post.Unlike(postID, ownerID);
+                        Post.Unlike(postID, userNow);
                         updateCounts(postID,view);
 
                     }
                     else{
                         likeButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.crimson));
                         Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
-                        Post.Like(postID, ownerID);
+                        Post.Like(postID, userNow);
                         updateCounts(postID,view);
                     }
                 }
@@ -299,7 +300,7 @@ public class NotificationFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     shareButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.MainBlue));
-                    Post.Share(postID, ownerID);
+                    Post.Share(postID, userNow);
                     updateCounts(postID, view);
                 }
             });
