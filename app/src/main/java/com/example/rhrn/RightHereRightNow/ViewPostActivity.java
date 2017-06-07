@@ -206,7 +206,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ViewPostActivity.this, ViewUserActivity.class);
-                intent.putExtra("otherUserID", getIntent().getExtras().getString("eventid"));
+                intent.putExtra("otherUserID", ownerID);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
@@ -215,7 +215,7 @@ public class ViewPostActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ViewPostActivity.this, ViewUserActivity.class);
-                intent.putExtra("otherUserID", getIntent().getExtras().getString("eventid"));
+                intent.putExtra("otherUserID", ownerID);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
