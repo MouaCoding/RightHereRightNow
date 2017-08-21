@@ -8,17 +8,18 @@
         android:title="Maps"
         app:showAsAction="always" />
     <item
-        android:id="@+id/megaphone"
-        android:enabled="true"
-        android:icon="@drawable/megaphone"
-        android:title="Trending"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/menu"
         android:enabled="true"
         android:icon="@drawable/ic_menu_black_24dp"
         android:title="Create"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/megaphone"
+        android:enabled="true"
+        android:icon="@drawable/megaphone"
+        android:title="Trending"
+        app:showAsAction="always" />
+    <!--
     <item
         android:id="@+id/music_social_group"
         android:enabled="true"
@@ -31,4 +32,5 @@
         android:icon="@drawable/ic_recent_actors_black_24dp"
         android:title="Profile"
         app:showAsAction="always" />
+        -->
 </menu>
