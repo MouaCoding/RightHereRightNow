@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.mouaincorporate.matt.MapConnect.SocialActivity">
+    tools:context="com.example.rhrn.RightHereRightNow.SocialActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

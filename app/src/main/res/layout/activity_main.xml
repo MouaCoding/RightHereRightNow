@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mouaincorporate.matt.MapConnect.MainActivity">
+    tools:context="com.example.rhrn.RightHereRightNow.MainActivity">
 
-    <com.mouaincorporate.matt.MapConnect.custom.view.NonScrollingViewPager
+    <com.example.rhrn.RightHereRightNow.custom.view.NonScrollingViewPager
         android:id="@+id/main_content_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-    </com.mouaincorporate.matt.MapConnect.custom.view.NonScrollingViewPager>
+    </com.example.rhrn.RightHereRightNow.custom.view.NonScrollingViewPager>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/main_bottom_navigation"

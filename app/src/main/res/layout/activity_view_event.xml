@@ -8,7 +8,7 @@
     android:focusableInTouchMode="true"
     android:background="@drawable/top_nav_color"
     android:orientation="vertical"
-    tools:context="com.mouaincorporate.matt.MapConnect.ViewEventActivity">
+    tools:context="com.example.rhrn.RightHereRightNow.ViewEventActivity">
 
     <ImageButton
         android:id="@+id/back_button"

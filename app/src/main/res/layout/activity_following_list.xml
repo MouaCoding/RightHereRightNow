@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mouaincorporate.matt.MapConnect.FollowingListActivity">
+    tools:context="com.example.rhrn.RightHereRightNow.FollowingListActivity">
 
     <include
         layout="@layout/messaging_bar"

@@ -18,7 +18,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.mouaincorporate.matt.MapConnect"
+        applicationId "com.example.matt.myapplication"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
@@ -65,7 +65,6 @@ dependencies {
     compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.firebase:geofire-android:2.1.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:multidex:1.0.1'
     testCompile 'junit:junit:4.12'
 }
 

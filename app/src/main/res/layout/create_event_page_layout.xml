@@ -292,7 +292,7 @@
                 android:inputType="none"
                 android:textAlignment="center" />
 
-            <com.mouaincorporate.matt.MapConnect.custom.view.ScrollInterceptingMapView
+            <com.example.rhrn.RightHereRightNow.custom.view.ScrollInterceptingMapView
                 android:id="@+id/event_location_map_view"
                 android:layout_width="match_parent"
                 android:layout_height="240dp"

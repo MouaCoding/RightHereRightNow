@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.mouaincorporate.matt.MapConnect.LoginActivity">
+    tools:context="com.example.rhrn.RightHereRightNow.LoginActivity">
 
         <ProgressBar
             android:id="@+id/login_progress"

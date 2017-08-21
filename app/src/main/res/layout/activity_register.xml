@@ -13,7 +13,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.mouaincorporate.matt.MapConnect.RegisterActivity">
+        tools:context="com.example.rhrn.RightHereRightNow.RegisterActivity">
 
 
         <EditText

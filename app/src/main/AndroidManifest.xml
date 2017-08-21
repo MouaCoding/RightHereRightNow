@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mouaincorporate.matt.MapConnect">
+    package="com.example.rhrn.RightHereRightNow">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -21,14 +21,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.mouaincorporate.matt.MapConnect.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/rhrnlogo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.mouaincorporate.matt.MapConnect.MainActivity"
+            android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan" />
 
         <!--
@@ -47,7 +47,7 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name="com.mouaincorporate.matt.MapConnect.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,17 +55,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mouaincorporate.matt.MapConnect.RegisterActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.ChatActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.MessageListActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.NewMessageActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.AboutMeActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.ViewUserActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.WallActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".MessageListActivity" />
+        <activity android:name=".NewMessageActivity" />
+        <activity android:name=".AboutMeActivity" />
+        <activity android:name=".ViewUserActivity" />
+        <activity android:name=".WallActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.mouaincorporate.android.fileprovider"
+            android:authorities="com.example.android.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -77,23 +77,23 @@
             android:name="io.fabric.ApiKey"
             android:value="134cf1747263e127c412def9f67626d8c3389c82" />
 
-        <activity android:name="com.mouaincorporate.matt.MapConnect.ForgotPasswordActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.AlmostDoneActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.ViewPostActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.CityEventsActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.ViewEventActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.CommentsListActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".AlmostDoneActivity" />
+        <activity android:name=".ViewPostActivity" />
+        <activity android:name=".CityEventsActivity" />
+        <activity android:name=".ViewEventActivity" />
+        <activity android:name=".CommentsListActivity" />
 
 
         <service
-            android:name="com.mouaincorporate.matt.MapConnect.notifications.RHRNMessagingService"
+            android:name=".notifications.RHRNMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name="com.mouaincorporate.matt.MapConnect.notifications.RHRNInstanceIDService"
+            android:name=".notifications.RHRNInstanceIDService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -101,15 +101,15 @@
         </service>
 
         <activity
-            android:name="com.mouaincorporate.matt.MapConnect.FilterCityActivity"
+            android:name=".FilterCityActivity"
             android:label="@string/title_activity_filter_city"
             android:theme="@style/AppTheme" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.MorePostsActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.MoreEventsActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.MoreSharedPostsActivity"/>
-        <activity android:name="com.mouaincorporate.matt.MapConnect.MoreSharedEventsActivity"/>
-        <activity android:name="com.mouaincorporate.matt.MapConnect.FollowingListActivity" />
-        <activity android:name="com.mouaincorporate.matt.MapConnect.FollowerListActivity"></activity>
+        <activity android:name=".MorePostsActivity" />
+        <activity android:name=".MoreEventsActivity" />
+        <activity android:name=".MoreSharedPostsActivity"/>
+        <activity android:name=".MoreSharedEventsActivity"/>
+        <activity android:name=".FollowingListActivity" />
+        <activity android:name=".FollowerListActivity"></activity>
     </application>
 
 </manifest>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mouaincorporate.matt.MapConnect.AlmostDoneActivity">
+    tools:context="com.example.rhrn.RightHereRightNow.AlmostDoneActivity">
 
     <ImageView
         android:id="@+id/app_name"

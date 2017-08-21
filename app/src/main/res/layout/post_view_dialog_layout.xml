@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.mouaincorporate.matt.MapConnect.custom.view.UserPostView
+    <com.example.rhrn.RightHereRightNow.custom.view.UserPostView
         android:id="@+id/user_post"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
