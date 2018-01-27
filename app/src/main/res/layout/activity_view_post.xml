@@ -8,7 +8,7 @@
     android:focusableInTouchMode="true"
     android:background="@drawable/top_nav_color"
     android:orientation="vertical"
-    tools:context="com.example.rhrn.RightHereRightNow.ViewPostActivity">
+    tools:context="com.mouaincorporate.matt.MapConnect.ViewPostActivity">
 
     <ImageButton
         android:id="@+id/back_button"
@@ -38,7 +38,6 @@
                 android:layout_height="200dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:src="@drawable/ic_media_route_connecting_00_light"
                 android:visibility="gone" />
 
             <requestFocus />

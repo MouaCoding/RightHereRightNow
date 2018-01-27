@@ -15,17 +15,27 @@
         app:itemTextColor="@color/colorAccent"
         app:menu="@menu/top_navigation_menu"
         />
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/testimage"/>
 
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/primary_map"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent">
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/primary_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/create_new_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="40dp"
+            app:backgroundTint="@color/MainRed"
+            app:fabSize="mini"
+            app:srcCompat="@android:drawable/ic_input_add" />
+    </FrameLayout>
 
 </LinearLayout>
